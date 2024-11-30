@@ -11,7 +11,13 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        textDark: '#3C3C3C'
       },
+
+      fontFamily: {
+				outfit: ['var(--font-outfit)', 'sans-serif'],
+				inter: ['var(--font-inter)', 'sans-serif'],
+			},
     },
   },
   plugins: [],

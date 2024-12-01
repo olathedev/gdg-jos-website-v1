@@ -9,7 +9,7 @@ import { motion as m } from "framer-motion";
 
 const Header = () => {
   return (
-    <div className="relative w-full bg-devfest-hero-banner bg-center bg-cover min-h-[80vh] md:min-h-[95vh]">
+    <div className="relative w-full bg-devfest-hero-banner bg-center bg-cover min-h-[85vh] md:min-h-[95vh]">
       <div className="absolute w-full h-full bg-black bg-opacity-85 z-0"></div>
       <nav className="relative z-10 container mx-auto px-4 md:px-10 py-10">
         <div className="flex justify-between items-center">
@@ -31,7 +31,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <div className="relative mt-6 z-10 w-full h-full flex items-center justify-center px-4">
+      <div className="relative my-8 z-10 w-full h-full flex items-center justify-center px-4">
         <m.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}

@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import { motion as m } from "framer-motion";
 import SpiralIcon from "../shared/icons/SpiralIcon";
+import Link from "next/link";
 
 const Hero = () => {
   const textVariants = {
@@ -72,7 +73,7 @@ const Hero = () => {
   };
   return (
     <div className="w-full flex grow">
-      <div className="flex flex-col md:flex-row gap-16 h-grow">
+      <div className="flex flex-col md:flex-row gap-5 md:gap-16 h-grow">
         <div className="md:w-1/2 pt-6 md:pt-20 h-full flex flex-col justify-between">
           <m.div
             initial="hidden"
@@ -87,7 +88,10 @@ const Hero = () => {
               Connect With Local Developers
             </m.h1>
 
-            <m.p variants={textVariants} className="text-[#3C3C3C] text-lg text-center md:text-start">
+            <m.p
+              variants={textVariants}
+              className="text-[#3C3C3C] text-lg text-center md:text-start"
+            >
               Google Developer Group (GDG) Jos is a <br />
               Google-supported community where developers and tech enthusiasts
               come together to learn, share, and explore the latest
@@ -129,10 +133,12 @@ const Hero = () => {
                 Become a Member
               </m.button>
 
-              <button className="py-2.5 flex w-1/2 gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">
-                <SpiralIcon />
-                Devfest 2024
-              </button>
+              <Link href="/devfest" className="w-1/2">
+                <button className="py-2.5 flex w-full gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">
+                  <SpiralIcon />
+                  Devfest 2024
+                </button>
+              </Link>
             </m.div>
           </m.div>
 

@@ -8,16 +8,19 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "devfest-hero-banner": "url('/images/devfestbanner.jpg')",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        textDark: '#3C3C3C'
+        textDark: "#3C3C3C",
       },
 
       fontFamily: {
-				outfit: ['var(--font-outfit)', 'sans-serif'],
-				inter: ['var(--font-inter)', 'sans-serif'],
-			},
+        outfit: ["var(--font-outfit)", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
+      },
     },
   },
   plugins: [],

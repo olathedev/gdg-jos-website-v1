@@ -5,6 +5,7 @@ import HamburgerVector from "@/components/shared/icons/HamburgerVector";
 import Locationicon from "@/components/shared/icons/Locationicon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
+import { motion as m } from "framer-motion";
 
 const Header = () => {
   return (
@@ -18,7 +19,7 @@ const Header = () => {
               alt=""
               height={38}
               width={80}
-              className="h-[35px] w-[60px] md:w-[80] md:h-[38]"
+              className="h-[35px] w-[60px] md:w-[85] md:h-[38]"
             />
             <h3 className="text-xl font-light text-white">
               <span className="font-bold">GDG</span> Jos
@@ -31,7 +32,12 @@ const Header = () => {
         </div>
       </nav>
       <div className="relative mt-6 z-10 w-full h-full flex items-center justify-center px-4">
-        <div className="w-full flex flex-col h-full grow items-center justify-center">
+        <m.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="w-full flex flex-col h-full grow items-center justify-center"
+        >
           <Image
             src="/svgs/devfesttext.svg"
             alt=""
@@ -40,12 +46,22 @@ const Header = () => {
             className="h-[150px] w-[400px] md:w-[700px] md:h-[200px]"
           />
 
-          <h3 className="text-white text-center tex-xl md:text-2xl font-medium">
+          <m.h3
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.4, delay: 0.3, ease: "easeOut" }}
+            className="text-white text-center tex-xl md:text-2xl font-medium"
+          >
             The most anticipated tech event
             <br /> in Jos, Plateau State
-          </h3>
+          </m.h3>
 
-          <div className="w-full md:w-auto flex  gap-4 md:gap-6 mt-8">
+          <m.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+            className="w-full md:w-auto flex  gap-4 md:gap-6 mt-8"
+          >
             <AppGradientButton className="w-1/2 md:w-[200px]">
               <Image src="/svgs/handshake.svg" alt="" width={29} height={29} />
               Become a Partner
@@ -55,9 +71,14 @@ const Header = () => {
               <Image src="/svgs/mic.svg" alt="" width={29} height={29} />
               Become a Partner
             </AppGradientButton>
-          </div>
+          </m.div>
 
-          <div className="border-2 border-white rounded-lg py-2 px-8 flex flex-col gap-2 md:flex-row md:gap-10 items-center justify-between mt-8 text-white">
+          <m.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+            className="border-2 border-white rounded-lg py-2 px-8 flex flex-col gap-2 md:flex-row md:gap-10 items-center justify-between mt-8 text-white"
+          >
             <div className="flex items-center gap-1">
               <span className=""></span>
               <CalendarIcon />
@@ -70,8 +91,8 @@ const Header = () => {
                 Site
               </p>
             </div>
-          </div>
-        </div>
+          </m.div>
+        </m.div>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const Nav = ({ openNav }: Props) => {
         <nav className="w-full py-10">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <Image src='/images/gdglogo.png' alt="" height={42} width={97} />
+                    <Image src='/images/gdglogo.png' alt="" height={42} width={97} className='h-[35px] w-[60px] md:w-full md:h-full' />
                     <h3 className="text-xl font-light"><span className="font-bold">GDG</span> Jos</h3>
                 </div>
 

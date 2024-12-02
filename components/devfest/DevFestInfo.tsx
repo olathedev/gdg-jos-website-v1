@@ -23,13 +23,13 @@ const DevFestInfo = () => {
           by the Google Developer Groups Jos community, brings together
           developers, designers, and tech enthusiasts from across the region.
           Explore cutting-edge topics, attend insightful sessions, and be part
-          of the vibrant GDG Jos community. Don't miss out on this exciting
+          of the vibrant GDG Jos community. Dont miss out on this exciting
           event!
         </p>
 
         <div className="flex gap-20 mt-4">
           <div className="flex flex-col text-center">
-            <h1 className="text-6xl font-medium text-textDark">12</h1>
+            <h1 className="text-6xl font-medium text-textDark">13</h1>
             <span className="border-b w-full my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Speakers</p>
           </div>

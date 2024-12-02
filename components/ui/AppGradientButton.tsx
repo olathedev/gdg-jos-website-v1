@@ -4,7 +4,7 @@ import { motion as m } from "framer-motion";
 
 type Props = {
   className: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const AppGradientButton = ({ className, children }: Props) => {

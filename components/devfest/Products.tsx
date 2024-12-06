@@ -26,7 +26,7 @@ const Products = () => {
     },
   ];
   return (
-    <section className="w-full h-[650px] bg-[#FFFAEB] mt-20 flex flex-col gap-10 items-center justify-center">
+    <section className="w-full h-[650px] bg-[#FFFAEB] mt-20 flex flex-col gap-10 items-center justify-center overflow-auto whitespace-nowrap">
       <h1 className="text-3xl md:text-[40px]  font-medium text-textDark text-center leading-[44px]">
         Stay updated on the products <br /> you love
       </h1>

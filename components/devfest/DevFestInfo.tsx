@@ -55,10 +55,13 @@ const DevFestInfo = () => {
 
         <div className="w-full flex justify-center md:justify-start">
 
-          <AppGradientButton className="mt-4 w-[200px]">
-            <Image src="/svgs/ticket.svg" alt="" width={29} height={29} />
-            Book a Ticket
-          </AppGradientButton>
+
+          <a href="https://bit.ly/devfestjos2024" target="_blank">
+            <AppGradientButton className="mt-4 w-[200px]">
+              <Image src="/svgs/ticket.svg" alt="" width={29} height={29} />
+              Book a Ticket
+            </AppGradientButton>
+          </a>
         </div>
       </div>
       <div className="md:w-[45%] md:flex justify-center hidden">

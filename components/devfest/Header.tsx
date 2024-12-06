@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import CalendarIcon from "@/components/shared/icons/CalendarIcon";
-import HamburgerVector from "@/components/shared/icons/HamburgerVector";
 import Locationicon from "@/components/shared/icons/Locationicon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
@@ -63,17 +62,21 @@ const Header = () => {
             transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
             className="w-full md:w-auto flex  gap-4 md:gap-6 mt-8"
           >
+            <a href="https://bit.ly/devfestjos2024" target="_blank">
+
             <AppGradientButton className="w-1/2 md:w-[200px]">
               <Image src="/svgs/handshake.svg" alt="" width={29} height={29} />
               Become a Partner
             </AppGradientButton>
+            </a>
 
-            <AppGradientButton className="w-1/2 md:w-[200px]">
-              <Image src="/svgs/mic.svg" alt="" width={29} height={29} />
-              Become a Partner
-            </AppGradientButton>
+            <a href="https://bit.ly/DevfestJos_Speakers " target="_blank">
+              <AppGradientButton className="w-1/2 md:w-[200px]">
+                <Image src="/svgs/mic.svg" alt="" width={29} height={29} />
+                Become a Speaker
+              </AppGradientButton>
+            </a>
           </m.div>
-
           <m.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -95,7 +98,7 @@ const Header = () => {
           </m.div>
         </m.div>
       </div>
-    </div>
+    </div >
   );
 };
 

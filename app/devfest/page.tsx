@@ -100,7 +100,83 @@ const DevFest = () => {
         <AppGradientButton className="w-[230px] text-lg font-medium">See all Swags</AppGradientButton>
       </section>
 
-      <section className="my-20"></section>
+      <section className="my-20 container mx-auto px-10 flex gap-10 items-center ">
+        <div className="w-1/2 flex flex-col gap-6">
+          <h1 className="text-[40px]  font-medium text-textDark leading-[44px]">
+            Join The <br />
+            Community
+          </h1>
+
+          <p className="text-lg text-textDark ">Join the GDG Jos community to connect with developers,
+            designers, and tech enthusiasts. Share ideas, learn new skills, and collaborate on exciting projects to grow in your tech journey!</p>
+
+          <div>
+            <AppGradientButton className="px-8">
+              <Image
+                src="/svgs/userGroup.svg"
+                alt=""
+                width={29}
+                height={29}
+              />
+              Become a Member
+            </AppGradientButton>
+          </div>
+        </div>
+        <div className="grow">
+          <img src='/images/community.png' alt='' />
+        </div>
+      </section>
+
+      <section className="my-20 container mx-auto px-10 flex flex-col gap-14 justify-center items-center text-textDark">
+        <h1 className="text-[40px]  font-medium text-textDark">Sponsors/Partners</h1>
+        <div className="flex items-center gap-10">
+          <div className="">
+            <Image src='/images/partners/wtm.png' alt="" width={200} height={80} />
+          </div>
+          <div>
+            <Image src='/images/partners/onep.png' alt="" width={170} height={40} className="o" />
+
+          </div>
+          <Image src='/images/partners/cenaro.png' alt="" width={119} height={60} />
+          <div className="">
+            <Image src='/images/partners/malt.png' alt="" width={150} height={35} />
+          </div>
+          <div>
+            <Image src='/images/partners/aiti.png' alt="" width={120} height={53} />
+          </div>
+          <div>
+            <Image src='/images/partners/cardify.png' alt="" width={150} height={35} />
+          </div>
+
+
+
+        </div>
+
+        <div className="flex items-center gap-10 mt-2">
+          <div className="">
+            <Image src='/images/partners/google.png' alt="" width={160} height={50} />
+          </div>
+          <div>
+            <Image src='/images/partners/block.png' alt="" width={200} height={40} className="o" />
+
+          </div>
+          <Image src='/images/partners/codemagic.png' alt="" width={200} height={40} />
+        </div>
+
+        <div>
+          <AppGradientButton className="px-8 mt-6">
+            <Image
+              src="/svgs/handshake.svg"
+              alt=""
+              width={29}
+              height={29}
+            />
+            Become a Partner
+          </AppGradientButton>
+        </div>
+      </section>
+
+  
     </div>
   );
 };

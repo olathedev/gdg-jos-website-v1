@@ -133,12 +133,12 @@ const Hero = () => {
                 Become a Member
               </m.button>
 
-              <Link href="/devfest" className="w-1/2">
+              <a href="/devfest" className="w-1/2">
                 <button className="py-2.5 flex w-full gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">
                   <SpiralIcon />
                   Devfest 2024
                 </button>
-              </Link>
+              </a>
             </m.div>
           </m.div>
 

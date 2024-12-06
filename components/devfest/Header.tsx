@@ -6,6 +6,7 @@ import Locationicon from "@/components/shared/icons/Locationicon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
 import { motion as m } from "framer-motion";
+import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
 
 const Header = () => {
   return (
@@ -27,7 +28,7 @@ const Header = () => {
           </div>
 
           <div className="cursor-pointer">
-            <HamburgerVector />
+            <HamburgerwhiteIcon />
           </div>
         </div>
       </nav>

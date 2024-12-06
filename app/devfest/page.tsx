@@ -1,4 +1,5 @@
 import AwaitsYou from "@/components/devfest/AwaitsYou";
+import Community from "@/components/devfest/Community";
 import DevFestInfo from "@/components/devfest/DevFestInfo";
 import FromPrevYear from "@/components/devfest/FromPrevYear";
 import Header from "@/components/devfest/Header";
@@ -6,6 +7,7 @@ import ImagesMarque from "@/components/devfest/ImagesMarque";
 import PhotoGallery from "@/components/devfest/PhotoGallery";
 import Products from "@/components/devfest/Products";
 import Speakers from "@/components/devfest/Speakers";
+import Swags from "@/components/devfest/Swags";
 import SpiralIcon from "@/components/shared/icons/SpiralIcon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
@@ -38,97 +40,12 @@ const DevFest = () => {
       <AwaitsYou />
 
       <Products />
-      <section className="w-full h-[890px] bg-[#F5FCFF] flex flex-col gap-10 items-center justify-center">
-        <h1 className="text-[40px]  font-medium text-textDark text-center leading-[44px]">
-          Get Your Devfest 2024
-          <br /> Swags
-        </h1>
+     <Swags />
 
-        <div className="grid grid-cols-3 gap-8">
-          <div className="flex flex-col gap-3 w-full">
-            <Image
-              src="/images/swags/swag1.png"
-              alt=""
-              width={354}
-              height={360}
-              className="object-cover"
-            />
-            <div className="flex flex-col gap-0.5 text-textDark">
-              <h4 className="text-xl">Silver Package</h4>
-              <p>N15000</p>
-              <h4 className="text-xl font-medium text-[#F9AB00]">
-                Pre-Order Now
-              </h4>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 w-full">
-            <Image
-              src="/images/swags/swag2.png"
-              alt=""
-              width={354}
-              height={360}
-              className="object-cover"
-            />
-            <div className="flex flex-col gap-0.5 text-textDark">
-              <h4 className="text-xl">Silver Package</h4>
-              <p>N15000</p>
-              <h4 className="text-xl font-medium text-[#F9AB00]">
-                Pre-Order Now
-              </h4>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 w-full">
-            <Image
-              src="/images/swags/swag3.png"
-              alt=""
-              width={354}
-              height={360}
-              className="object-cover"
-            />
-            <div className="flex flex-col gap-0.5 text-textDark">
-              <h4 className="text-xl">Silver Package</h4>
-              <p>N15000</p>
-              <h4 className="text-xl font-medium text-[#F9AB00]">
-                Pre-Order Now
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        <AppGradientButton className="w-[230px] text-lg font-medium">See all Swags</AppGradientButton>
-      </section>
-
-      <section className="my-20 container mx-auto px-10 flex gap-10 items-center ">
-        <div className="w-1/2 flex flex-col gap-6">
-          <h1 className="text-[40px]  font-medium text-textDark leading-[44px]">
-            Join The <br />
-            Community
-          </h1>
-
-          <p className="text-lg text-textDark ">Join the GDG Jos community to connect with developers,
-            designers, and tech enthusiasts. Share ideas, learn new skills, and collaborate on exciting projects to grow in your tech journey!</p>
-
-          <div>
-            <AppGradientButton className="px-8">
-              <Image
-                src="/svgs/userGroup.svg"
-                alt=""
-                width={29}
-                height={29}
-              />
-              Become a Member
-            </AppGradientButton>
-          </div>
-        </div>
-        <div className="grow">
-          <img src='/images/community.png' alt='' />
-        </div>
-      </section>
+     <Community />
 
       <section className="my-20 container mx-auto px-10 flex flex-col gap-14 justify-center items-center text-textDark">
-        <h1 className="text-[40px]  font-medium text-textDark">Sponsors/Partners</h1>
+        <h1 className="text-3xl md:text-[40px]  font-medium text-textDark">Sponsors/Partners</h1>
         <div className="flex items-center gap-10">
           <div className="">
             <Image src='/images/partners/wtm.png' alt="" width={200} height={80} />

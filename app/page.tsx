@@ -20,13 +20,13 @@ export default function Home() {
         <m.span className="absolute bottom-16 right-10">
           <BigSpiral />
         </m.span>
-        <Nav openNav={() => setIsNavOpen(!isNavOpen)} />
+        <Nav openNav={() => setIsNavOpen(true)} />
         <Hero />
         <div className="py-6"></div>
         <Footer />
       </m.div>
 
-      {isNavOpen && <CollapsedNav />}
+      {isNavOpen && <CollapsedNav closeNav={() => setIsNavOpen(false)} />}
     </main>
   );
 }

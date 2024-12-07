@@ -17,7 +17,8 @@ const Community = () => {
                 <p className="text-lg text-textDark text-center md:text-start">Join the GDG Jos community to connect with developers,
                     designers, and tech enthusiasts. Share ideas, learn new skills, and collaborate on exciting projects to grow in your tech journey!</p>
 
-                <div>
+                <a href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a" target="_blank" className="w">
+
                     <AppGradientButton className="px-8">
                         <Image
                             src="/svgs/userGroup.svg"
@@ -27,12 +28,12 @@ const Community = () => {
                         />
                         Become a Member
                     </AppGradientButton>
-                </div>
+                </a>
             </div>
             <div className="grow hidden md:flex">
                 <img src='/images/community.png' alt='' />
             </div>
-        </section>
+        </section >
     )
 }
 

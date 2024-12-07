@@ -113,25 +113,28 @@ const Hero = () => {
                 },
               }}
             >
-              <m.button
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.5 },
-                  },
-                }}
-                className="py-2.5 w-1/2 bg-gradient-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold"
-              >
-                <Image
-                  src="/svgs/userGroup.svg"
-                  alt=""
-                  width={29}
-                  height={29}
-                />
-                Become a Member
-              </m.button>
+
+              <a href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a" target="_blank" className="w-1/2">
+                <m.button
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.5 },
+                    },
+                  }}
+                  className="py-2.5 w-full bg-gradient-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold"
+                >
+                  <Image
+                    src="/svgs/userGroup.svg"
+                    alt=""
+                    width={29}
+                    height={29}
+                  />
+                  Become a Member
+                </m.button>
+              </a>
 
               <a href="/devfest" className="w-1/2">
                 <button className="py-2.5 flex w-full gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">

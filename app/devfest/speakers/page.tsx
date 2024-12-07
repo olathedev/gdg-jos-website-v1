@@ -8,7 +8,7 @@ const Speakers = () => {
       <div className="container mx-auto px-4 md:px-10 py-4 md:py-10">
         <header className='md:my-10 w-full flex flex-col items-center md:gap-3'>
           <h1 className='text-2xl md:text-[40px] font-semibold text-textDark mb-2'>Meet Our Speakers</h1>
-          <p className='text-textDark text-sm md:text-lg text-center md:w-2/3'>Meet the inspiring speakers of DevFest Jos! Gain insights from industry leaders and tech experts who are shaping the future of innovation. Interested in joining them? Apply below to share your ideas and make an impact within our vibrant community.</p>
+          <p className='text-textDark md:text-lg text-center md:w-2/3'>Meet the inspiring speakers of DevFest Jos! Gain insights from industry leaders and tech experts who are shaping the future of innovation. Interested in joining them? Apply below to share your ideas and make an impact within our vibrant community.</p>
         </header>
 
         <div className="mt-6 md:mt-16 grid md:grid-cols-4 gap-4 md:gap-6">

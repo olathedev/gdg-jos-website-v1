@@ -4,7 +4,7 @@ import SpiralIcon from "../shared/icons/SpiralIcon";
 
 const PhotoGallery = () => {
   return (
-    <section className="w-full mt-10 py-6 flex flex-col items-center gap-6 px-4">
+    <section className="w-full mt-10 py-6 md:flex flex-col items-center gap-6 px-4 hidden">
       <h1 className="text-3xl md:text-[40px] font-medium text-textDark">Photo Gallery</h1>
 
       <div className="w-full flex justify-center gap-2">

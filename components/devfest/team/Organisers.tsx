@@ -36,7 +36,7 @@ const Organisers = () => {
     ]
     return (
         <div className='mt-6 md:mt-20 flex flex-col gap-4'>
-            <h2 className='text-2xl text-[#4286F2] md:text-[30px]'>Orgnisers</h2>
+            <h2 className='text-2xl text-[#4286F2] md:text-[30px]'>Organisers</h2>
             <hr />
 
             <div className="grid md:grid-cols-3 gap-4 md:gap-16">

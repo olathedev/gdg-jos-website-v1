@@ -3,19 +3,43 @@ import React from "react";
 import Image from "next/image";
 import { motion as m } from "framer-motion";
 import BigSpiral from "../shared/icons/BigSpiral";
+import Link from "next/link";
 
-const CollapsedNav = () => {
+type Props = {
+  closeNav: () => void;
+}
+
+const CollapsedNav = ({ closeNav }: Props) => {
   return (
     <m.div
       initial={{ opacity: 0 }} // Start invisible
       animate={{ opacity: 1 }} // Fade in
       exit={{ opacity: 0 }} // Fade out
       transition={{ duration: 0.5 }}
-      className="absolute top-24 inset-0 z-20 w-full min-h-screen h-full bg-white py-20  md:py-32 container mx-auto px-10"
+      className="fixed inset-0 z-20 w-full h-screen overflow-hidden bg-white py-10 container mx-auto px-10"
     >
 
-      
-      <div className="w-full h-full relative flex flex-col ">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <Image
+            src="/images/gdglogo.png"
+            alt=""
+            height={38}
+            width={80}
+            className="h-[35px] w-[60px] md:w-[85] md:h-[38]"
+          />
+          <h3 className="text-xl font-light text-black">
+            <span className="font-bold">GDG</span> Jos
+          </h3>
+        </div>
+
+        <div className="cursor-pointer" onClick={closeNav}>
+          close
+        </div>
+      </div>
+
+
+      <div className="w-full h-full relative flex flex-col py-20  md:py-32 ">
         <Image
           src="/svgs/sting.svg"
           alt=""
@@ -27,18 +51,16 @@ const CollapsedNav = () => {
           <BigSpiral />
         </span>
         <div className="flex flex-col gap-4 cursor-pointer">
-          <div className="text-2xl md:text-3xl font-bold text-textDark">
+          <a href="" className="text-2xl md:text-3xl font-bold text-textDark">
             Become a Member
-          </div>
+          </a>
           <div className="text-2xl md:text-3xl font-bold text-textDark">Events</div>
-          <div className="text-2xl md:text-3xl font-bold text-textDark">Dev Fest</div>
-          <div className="text-2xl md:text-3xl font-bold text-textDark">
+          <a href="/devfest" className="text-2xl md:text-3xl font-bold text-textDark">DevFest</a>
+          <a href="#" className="text-2xl md:text-3xl font-bold text-textDark">
             Become a Partner
-          </div>
-          <div className="text-2xl md:text-3xl font-bold text-textDark">
-            Become a Member
-          </div>
-          <div className="text-2xl md:text-3xl font-bold text-textDark">Team</div>
+          </a>
+
+          <Link href='/devfest/team' className="text-2xl md:text-3xl font-bold text-textDark">Team</Link>
           <div className="text-2xl md:text-3xl font-bold text-textDark">Contact Us</div>
         </div>
 

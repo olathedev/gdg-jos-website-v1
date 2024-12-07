@@ -3,17 +3,41 @@ import React from "react";
 import Image from "next/image";
 import { motion as m } from "framer-motion";
 import BigSpiral from "../shared/icons/BigSpiral";
+import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
 
-const CollapsedNav = () => {
+type Props = {
+    closeNav: () => void;
+}
+
+const CollapsedNav = ({ closeNav }: Props) => {
     return (
         <m.div
-            initial={{ opacity: 0 }} // Start invisible
-            animate={{ opacity: 1 }} // Fade in
-            exit={{ opacity: 0 }} // Fade out
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="absolute top-24 inset-0 z-20 w-full min-h-screen h-full bg-white py-20  md:py-32 container mx-auto px-10"
+            className="fixed inset-0 z-20 w-full h-screen overflow-hidden bg-white py-6  px-10"
         >
-            <div className="w-full h-full relative flex flex-col ">
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Image
+                        src="/images/gdglogo.png"
+                        alt=""
+                        height={38}
+                        width={80}
+                        className="h-[35px] w-[60px] md:w-[85] md:h-[38]"
+                    />
+                    <h3 className="text-xl font-light text-black">
+                        <span className="font-bold">GDG</span> Jos
+                    </h3>
+                </div>
+
+                <div className="cursor-pointer" onClick={closeNav}>
+                    close
+                </div>
+            </div>
+
+            <div className="w-full h-full relative flex flex-col py-16 md:py-32 ">
                 <Image
                     src="/svgs/sting.svg"
                     alt=""
@@ -25,16 +49,16 @@ const CollapsedNav = () => {
                     <BigSpiral />
                 </span>
                 <div className="flex flex-col gap-4 cursor-pointer">
-                    <div className="text-2xl md:text-3xl font-bold text-textDark">
+                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
                         Get Your Swag
                     </div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark">Become a Partners</div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark">Book a Ticket</div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark">
-                        Book a Ticket
+                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Become a Partner</div>
+                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Book a Ticket</div>
+                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                        Our Speakers
                     </div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark">
-                        Book a Ticket
+                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                        Team
                     </div>
 
                 </div>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion as m } from "framer-motion";
 import BigSpiral from "../shared/icons/BigSpiral";
 import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
+import Link from "next/link";
 
 type Props = {
     closeNav: () => void;
@@ -49,17 +50,26 @@ const CollapsedNav = ({ closeNav }: Props) => {
                     <BigSpiral />
                 </span>
                 <div className="flex flex-col gap-4 cursor-pointer">
-                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
-                        Get Your Swag
-                    </div>
+                    <a href=''>
+                        <span className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                            Get Your Swag
+                        </span>
+                    </a>
                     <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Become a Partner</div>
+
                     <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Book a Ticket</div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
-                        Our Speakers
-                    </div>
-                    <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
-                        Team
-                    </div>
+
+                    <Link href='/devfest/speakers'>
+                        <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                            Our Speakers
+                        </div>
+                    </Link>
+
+                    <Link href='/devfest/team'>
+                        <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                            Team
+                        </div>
+                    </Link>
 
                 </div>
 

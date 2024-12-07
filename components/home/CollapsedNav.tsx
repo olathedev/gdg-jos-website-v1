@@ -13,6 +13,8 @@ const CollapsedNav = () => {
       transition={{ duration: 0.5 }}
       className="absolute top-24 inset-0 z-20 w-full min-h-screen h-full bg-white py-20  md:py-32 container mx-auto px-10"
     >
+
+      
       <div className="w-full h-full relative flex flex-col ">
         <Image
           src="/svgs/sting.svg"

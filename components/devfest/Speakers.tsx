@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import SpeakersCard from "./speakers/SpeakersCard";
 
 const Speakers = () => {
   return (
@@ -9,40 +10,15 @@ const Speakers = () => {
       </h1>
 
       <div className="w-full grid md:grid-cols-4 gap-4">
-        <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#4286F2] to-transparent"></div>
-          <div className="absolute bottom-4 z-10 text-white px-4">
-            <h3 className="">Manji Michael</h3>
-            <p className="text-sm">Backend Developer</p>
-          </div>
-        </div>
 
-        <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FF0000] to-transparent"></div>
-          <div className="absolute bottom-4 z-10 text-white px-4">
-            <h3 className="">Manji Michael</h3>
-            <p className="text-sm">Backend Developer</p>
-          </div>
-        </div>
 
-        <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FFA800] to-transparent"></div>
-          <div className="absolute bottom-4 z-10 text-white px-4">
-            <h3 className="">Manji Michael</h3>
-            <p className="text-sm">Backend Developer</p>
-          </div>
-        </div>
+        <SpeakersCard color='#34A853' name='Wisdom Dee Nimfa;' role='Social media and community Manager' />
+        <SpeakersCard color='#4286F2' name='Gar Manji Michael' role='Backend Engineer' />
+        <SpeakersCard color='#FF0000' name='Jaycinta Bhattacharya' role='Hackathon Wizard | Official code breaker | Generative Ai | Machine learning | Sodtware Engineering' />
+        <SpeakersCard color='#FFA800' name='Emmanuel Nwanochie' role='Senior sofware engineer, Pujano ltd' />
 
-        <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#34A853] to-transparent"></div>
-          <div className="absolute bottom-4 z-10 text-white px-4">
-            <h3 className="">Manji Michael</h3>
-            <p className="text-sm">Backend Developer</p>
-          </div>
-        </div>
       </div>
-
-      <Link href="#" className="text-[#4286F2] text-xl font-inter">
+      <Link href="/devfest/speakers" className="text-[#4286F2] text-xl font-inter">
         See all Speakers
       </Link>
     </section>

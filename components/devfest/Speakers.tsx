@@ -12,10 +12,10 @@ const Speakers = () => {
       <div className="w-full grid md:grid-cols-4 gap-4">
 
 
-        <SpeakersCard color='#34A853' name='Wisdom Dee Nimfa;' role='Social media and community Manager' />
-        <SpeakersCard color='#4286F2' name='Gar Manji Michael' role='Backend Engineer' />
-        <SpeakersCard color='#FF0000' name='Jaycinta Bhattacharya' role='Hackathon Wizard | Official code breaker | Generative Ai | Machine learning | Sodtware Engineering' />
-        <SpeakersCard color='#FFA800' name='Emmanuel Nwanochie' role='Senior sofware engineer, Pujano ltd' />
+        <SpeakersCard color='#FF0000' name='Wisdom Dee Nimfa;' role='Social media and community Manager' image='/wisdom.png' />
+        <SpeakersCard color='#4286F2' name='Gar Manji Michael' role='Backend Engineer' image='/gar.jpeg' />
+        <SpeakersCard color='#34A853' name='Jaycinta Bhattacharya' role='Hackathon Wizard | Official code breaker | Generative Ai | Machine learning | Sodtware Engineering' image='/jay.jpeg' />
+        <SpeakersCard color='#FFA800' name='Emmanuel Nwanochie' role='Senior sofware engineer, Pujano ltd' image='/emma.png' />
 
       </div>
       <Link href="/devfest/speakers" className="text-[#4286F2] text-xl font-inter">

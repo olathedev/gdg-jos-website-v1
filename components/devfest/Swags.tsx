@@ -66,7 +66,7 @@ const Swags = () => {
             <a href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a" target="_blank" className="w">
                 <AppGradientButton className="w-[230px] text-lg font-medium">See all Swags</AppGradientButton>
             </a>
-            
+
         </section>
     )
 }

@@ -12,17 +12,17 @@ const Speakers = () => {
         </header>
 
         <div className="mt-6 md:mt-16 grid md:grid-cols-4 gap-4 md:gap-6">
-          <SpeakersCard color='#34A853' name='Wisdom Dee Nimfa;' role='Social media and community Manager' />
-          <SpeakersCard color='#4286F2' name='Gar Manji Michael' role='Backend Engineer' />
-          <SpeakersCard color='#FF0000' name='Jaycinta Bhattacharya' role='Hackathon Wizard | Official code breaker | Generative Ai | Machine learning | Sodtware Engineering' />
-          <SpeakersCard color='#FFA800' name='Emmanuel Nwanochie' role='Senior sofware engineer, Pujano ltd' />
-          <SpeakersCard color='#4286F2' name='Kingsley Ezekiel;' role='Cyber Security Analyst, USCO' />
+          <SpeakersCard color='#FF0000' name='Wisdom Dee Nimfa;' role='Social media and community Manager' image='/wisdom.png' />
+          <SpeakersCard color='#4286F2' name='Gar Manji Michael' role='Backend Engineer' image='/gar.jpeg' />
+          <SpeakersCard color='#34A853' name='Jaycinta Bhattacharya' role='Hackathon Wizard | Official code breaker | Generative Ai | Machine learning | Sodtware Engineering' image='/jay.jpeg' />
+          <SpeakersCard color='#FFA800' name='Emmanuel Nwanochie' role='Senior sofware engineer, Pujano ltd' image='/emma.png' />
+          <SpeakersCard color='#34A853 ' name='Kingsley Ezekiel;' role='Cyber Security Analyst, USCO' image='/kingsley.jpeg' />
 
-          <SpeakersCard color='#FF0000' name='Paul Michael;' role='Founder and CEO , 72 Academy and Innovation LTD' />
-          <SpeakersCard color='#FFA800' name='Joy Ajiboye;' role='Software Engineer' />
-          <SpeakersCard color='#34A853' name='Abdallah Haggos;' role='Founder - ClimateTech Nigeria' />
-          <SpeakersCard color='#FFA800' name='Paul Umaru;' role='MCT | Microsoft EMEA Gold Ambassador | Application Consultant | Ai expert' />
-          <SpeakersCard color='#34A853' name='Dinfa Dashe;' role='Blockchain Professional' />
+          <SpeakersCard color='#FF0000' name='Paul Michael;' role='Founder and CEO , 72 Academy and Innovation LTD' image='/pm.png' />
+          <SpeakersCard color='#FFA800' name='Joy Ajiboye;' role='Software Engineer' image='/joy.jpeg' />
+          <SpeakersCard color='#34A853' name='Abdallah Haggos;' role='Founder - ClimateTech Nigeria' image='/haggos.png' />
+          <SpeakersCard color='#FFA800' name='Paul Umaru;' role='MCT | Microsoft EMEA Gold Ambassador | Application Consultant | Ai expert' image='/paulu.jpeg' />
+          <SpeakersCard color='#4286F2' name='Dinfa Dashe;' role='Blockchain Professional' image='/dinfa.jpeg' />
 
 
 

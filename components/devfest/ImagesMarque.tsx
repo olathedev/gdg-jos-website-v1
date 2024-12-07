@@ -11,11 +11,9 @@ const ImagesMarque = () => {
             key={index}
             className="w-[304px] h-[360px] mx-2 bg-gray-200 rounded-xl"
           >
-            <Image
+            <img
               src={`/images/image-marque/pic${number}.png`}
               alt=""
-              width={304}
-              height={360}
               className="object-cover w-full h-full rounded-xl"
             />
           </div>

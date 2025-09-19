@@ -6,15 +6,27 @@ const ImagesMarque = () => {
   return (
     <section className="w-full">
       <Marquee speed={50} pauseOnHover={true}>
-        {[1, 2, 3, 4, 5, 6].map((number, index) => (
+        {[
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292408/pic2_cwzwle.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292385/pic6_nq2ydy.png",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292394/pic1_ssmzx7.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758289190/devfestbanner_v12utp.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292404/pic4_aphqof.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292385/pic5_gifxgq.png",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292408/pic2_cwzwle.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292394/pic1_ssmzx7.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758289190/devfestbanner_v12utp.jpg",
+          "https://res.cloudinary.com/dxssytv0p/image/upload/v1758292404/pic4_aphqof.jpg",
+        ].map((number, index) => (
           <div
             key={index}
-            className="w-[304px] h-[360px] mx-2 bg-gray-200 rounded-xl"
+            className="w-[304px] h-[360px] mx-2  rounded-xl relative"
           >
-            <img
-              src={`/images/image-marque/pic${number}.png`}
+            <Image
+              src={number}
               alt=""
               className="object-cover w-full h-full rounded-xl"
+              fill
             />
           </div>
         ))}

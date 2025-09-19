@@ -1,9 +1,17 @@
+"use client"
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
+import CountUp from "react-countup";
+import { useInView } from "react-intersection-observer";
 
 const DevFestInfo = () => {
+  const { ref, inView } = useInView({ triggerOnce: true });
+
   return (
-    <section className="relative container mx-auto md:mt-8 pb-6 md:pb-32 px-4 flex flex-col md:flex-row gap-10 md:gap-20 md:items-center md:px-10 overflow-hidden">
+    <section
+      ref={ref}
+      className="relative container mx-auto md:mt-8 pb-6 md:pb-32 px-4 flex flex-col md:flex-row gap-10 md:gap-20 md:items-center md:px-10 overflow-hidden"
+    >
       <div className="md:w-[55%] flex flex-col gap-3">
         <div className="flex items-center gap-1">
           <Image
@@ -28,25 +36,64 @@ const DevFestInfo = () => {
 
         <div className="w-full flex justify-between px-3 md:px-0 md:gap-20 mt-4">
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl font-medium text-textDark">13</h1>
+            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+              <CountUp end={13} start={inView ? 0 : 0} duration={2} redraw={false} preserveValue={true} enableScrollSpy={false} useEasing={true} separator="," delay={0} {...(!inView && { end: 0 })} />
+            </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Speakers</p>
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl  font-medium text-textDark">8</h1>
+            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+              <CountUp
+                end={inView ? 8 : 0}
+                start={0}
+                duration={2}
+                redraw={false}
+                preserveValue={true}
+                enableScrollSpy={false}
+                useEasing={true}
+                separator=","
+                delay={0}
+              />
+            </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Sessions</p>
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl  font-medium text-textDark">5</h1>
+            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+              <CountUp
+                end={inView ? 5 : 0}
+                start={0}
+                duration={2}
+                redraw={false}
+                preserveValue={true}
+                enableScrollSpy={false}
+                useEasing={true}
+                separator=","
+                delay={0}
+              />
+            </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Tracks</p>
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl  font-medium text-textDark">500+</h1>
+            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+              <CountUp
+                start={0}
+                end={inView ? 500 : 0}
+                duration={2.5}
+                redraw={false}
+                preserveValue={true}
+                enableScrollSpy={false}
+                useEasing={true}
+                separator=","
+                delay={0}
+                suffix="+"
+              />
+            </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Attendees</p>
           </div>
@@ -66,7 +113,7 @@ const DevFestInfo = () => {
       </div>
       <div className="md:w-[45%] md:flex justify-center hidden">
         <Image
-          src="/images/devfestjos.png"
+          src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758290592/Devfest_jos_G_2_aosniw.svg"
           alt=""
           height={420}
           width={420}

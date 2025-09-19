@@ -9,15 +9,59 @@ import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
 import CollapsedNav from "./CollpasedNav2";
 
 const Header = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false)
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  // Parent container animation variants for staggering children
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2, // Stagger child animations by 0.2s
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  // Child animation variants
+  const childVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6, // Slightly faster for snappier feel
+        ease: [0.4, 0, 0.2, 1], // Custom easing for smooth, modern motion
+      },
+    },
+  };
+
+  // Button-specific animation with spring effect
+  const buttonVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring", // Spring animation for a lively, modern effect
+        stiffness: 120,
+        damping: 15,
+        duration: 0.5,
+      },
+    },
+  };
+
   return (
-
     <>
-      {isNavOpen && (
-        <CollapsedNav closeNav={() => setIsNavOpen(false)} />
-      )}
-      <div className="relative w-full bg-devfest-hero-banner bg-center bg-cover min-h-[85vh] md:min-h-[95vh]">
-
+      {isNavOpen && <CollapsedNav closeNav={() => setIsNavOpen(false)} />}
+      <div
+        className="relative w-full bg-center bg-cover min-h-[85vh] md:min-h-[98vh] flex flex-col"
+        style={{
+          backgroundImage:
+            "url('https://res.cloudinary.com/dxssytv0p/image/upload/v1758289190/devfestbanner_v12utp.jpg')",
+        }}
+      >
         <div className="absolute w-full h-full bg-black bg-opacity-85 z-0"></div>
         <nav className="relative z-10 container mx-auto px-4 md:px-10 py-10">
           <div className="flex justify-between items-center">
@@ -39,74 +83,83 @@ const Header = () => {
             </div>
           </div>
         </nav>
-        <div className="relative my-8 z-10 w-full h-full flex items-center justify-center px-4">
+        <div className="relative z-10 w-full flex-1 flex items-center  justify-center px-4 h-full">
           <m.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
             className="w-full flex flex-col h-full grow items-center justify-center"
           >
-            <Image
-              src="/svgs/devfesttext.svg"
-              alt=""
-              height={700}
-              width={200}
-              className="h-[150px] w-[400px] md:w-[700px] md:h-[200px]"
-            />
+            <m.div variants={childVariants}>
+              <Image
+                src="/svgs/devfesttext.svg"
+                alt=""
+                height={550}
+                width={200}
+                className="h-[150px] w-[400px] md:w-[700px] md:h-[200px]"
+              />
+            </m.div>
 
             <m.h3
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.4, delay: 0.3, ease: "easeOut" }}
-              className="text-white text-center tex-xl md:text-2xl font-medium"
+              variants={childVariants}
+              className="text-white text-center text-lg md:text-[22px] font-medium"
             >
               The most anticipated tech event
               <br /> in Jos, Plateau State
             </m.h3>
 
             <m.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+              variants={containerVariants}
               className="w-full md:w-auto flex gap-4 md:gap-6 mt-8"
             >
-              <a href="https://bit.ly/devfestjos2024" target="_blank" className="w-1/2 md:w-[200px]">
-
+              <m.a
+                variants={buttonVariants}
+                href="https://bit.ly/devfestjos2024"
+                target="_blank"
+                className="w-1/2 md:w-[200px]"
+              >
                 <AppGradientButton className="w-full">
-                  <Image src="/svgs/handshake.svg" alt="" width={29} height={29} />
+                  <Image
+                    src="/svgs/handshake.svg"
+                    alt=""
+                    width={29}
+                    height={29}
+                  />
                   Become a Partner
                 </AppGradientButton>
-              </a>
+              </m.a>
 
-              <a href="https://bit.ly/DevfestJos_Speakers " target="_blank" className="w-1/2 md:w-[200px]">
+              <m.a
+                variants={buttonVariants}
+                href="https://bit.ly/DevfestJos_Speakers"
+                target="_blank"
+                className="w-1/2 md:w-[200px]"
+              >
                 <AppGradientButton className="w-full">
                   <Image src="/svgs/mic.svg" alt="" width={29} height={29} />
                   Become a Speaker
                 </AppGradientButton>
-              </a>
+              </m.a>
             </m.div>
+
             <m.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
+              variants={childVariants}
               className="border-2 border-white rounded-lg py-2 px-8 flex flex-col gap-2 md:flex-row md:gap-10 items-center justify-between mt-8 text-white"
             >
               <div className="flex items-center gap-1">
-                <span className=""></span>
                 <CalendarIcon />
-                7th December, 2024
+                20th September, 2025
               </div>
               <div className="flex md:items-center gap-1 justify-center">
                 <Locationicon />
                 <p className="text-center">
-                  Mallam A. Adamu Lecture Theatre, University of Jos Permanent
-                  Site
+                  Sarau Event Center, Jos, Plateau State
                 </p>
               </div>
             </m.div>
           </m.div>
         </div>
-      </div >
+      </div>
     </>
   );
 };

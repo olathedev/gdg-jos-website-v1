@@ -1,9 +1,42 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion as m } from "framer-motion";
 import SpiralIcon from "../shared/icons/SpiralIcon";
 import Link from "next/link";
+
+const eventSlides = [
+  {
+    image: "/images/devFest.png",
+    year: "2025",
+    title: "devfest",
+    subtitle: "The most anticipated tech event in Jos, Plateau State.",
+    button: {
+      text: "Get Your Ticket",
+      href: "/devfest",
+    },
+    stats: [
+      { label: "Attendees", value: 312 },
+      { label: "Speakers", value: 53 },
+    ],
+  },
+
+  {
+    image: "/images/devFest.png",
+    year: "2025",
+    title: "devfest",
+    subtitle: "The most anticipated tech event in Jos, Plateau State.",
+    button: {
+      text: "Get Your Ticket",
+      href: "/devfest",
+    },
+    stats: [
+      { label: "Attendees", value: 312 },
+      { label: "Speakers", value: 53 },
+    ],
+  },
+  // Add more slides here if needed
+];
 
 const Hero = () => {
   const textVariants = {
@@ -71,10 +104,17 @@ const Hero = () => {
       },
     },
   };
+
+  const [current, setCurrent] = useState(0);
+
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % eventSlides.length);
+  const prevSlide = () =>
+    setCurrent((prev) => (prev - 1 + eventSlides.length) % eventSlides.length);
+
   return (
     <div className="w-full flex grow">
-      <div className="flex flex-col md:flex-row gap-5 md:gap-16 h-grow">
-        <div className="md:w-1/2 pt-6 md:pt-20 h-full flex flex-col justify-between">
+      <div className="flex flex-col md:flex-row md:items-center gap-5 md:gap-16 h-grow">
+        <div className="md:w-1/2 pt-6 md:pt-20 h-[500px] flex flex-col justify-between">
           <m.div
             initial="hidden"
             animate="visible"
@@ -113,8 +153,11 @@ const Hero = () => {
                 },
               }}
             >
-
-              <a href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a" target="_blank" className="w-1/2">
+              <a
+                href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a"
+                target="_blank"
+                className="w-1/2"
+              >
                 <m.button
                   variants={{
                     hidden: { opacity: 0, y: 20 },
@@ -203,19 +246,63 @@ const Hero = () => {
         </div>
 
         <div className="w-full md:w-1/2 flex justify-center">
-          <div className="w-full md:w-2/3">
+          <div className="w-full md:w-2/3 ">
             <p className="text-textDark text-lg text-start mb-2">
               Upcoming Events
             </p>
-            <div className="relative w-full h-[490px] md:h-full bg-black overflow-hidden rounded-lg flex flex-col">
-              <Image
-                src="/images/devFest.png"
-                alt=""
-                height={500}
-                width={300}
-                className="absolute w-full h-full object-cover"
-              />
-              <div className="mt-auto z-20 h-1/2 bg-gradient-to-t from-[#FF0000] to-[#D9D9D900]"></div>
+            <div className="relative w-full h-[490px]  bg-black overflow-hidden rounded-lg flex flex-col">
+              {eventSlides.map((slide, idx) => (
+                <Image
+                  key={slide.image}
+                  src={slide.image}
+                  alt={slide.title}
+                  height={500}
+                  width={300}
+                  className={`absolute w-full h-full object-cover transition-opacity duration-500 ${
+                    idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
+                  }`}
+                />
+              ))}
+              <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-[#FF0000] to-[#D9D9D900] z-20"></div>
+              <div className="absolute bottom-0 left-0 w-full z-30 p-6 flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-white text-4xl font-semibold italic font-inter lowercase tracking-wide">
+                    {eventSlides[current].title}
+                  </span>
+                  <span className="bg-white text-[#FF0000] font-bold text-xl px-4 py-1 rounded-full">
+                    {eventSlides[current].year}
+                  </span>
+                </div>
+                <p className="text-white text-base md:text-lg font-medium mt-2">
+                  {eventSlides[current].subtitle}
+                </p>
+                <a
+                  href={eventSlides[current].button.href}
+                  className="mt-2 inline-block text-[#FFD600] text-sm font-semibold"
+                >
+                  {eventSlides[current].button.text}
+                </a>
+
+                {/* Dots */}
+
+                {/* Optional: Prev/Next buttons */}
+                {/* <button onClick={prevSlide}>Prev</button>
+                <button onClick={nextSlide}>Next</button> */}
+              </div>
+            </div>
+
+            
+            <div className="flex gap-2 mt-4 justify-center">
+              {eventSlides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrent(idx)}
+                  className={`w-3 h-3 rounded-full ${
+                    idx === current ? "bg-black" : "bg-black/50"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>

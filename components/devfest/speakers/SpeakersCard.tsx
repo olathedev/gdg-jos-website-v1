@@ -1,23 +1,52 @@
-import React from 'react'
+import LinkedInIcon from "@/components/shared/icons/LinkedInIcon";
+import Twittericon from "@/components/shared/icons/Twittericon";
+import Image from "next/image";
+import React from "react";
 
 type Props = {
-    color: string,
-    name: string,
-    role: string,
-    image: string
-}
+  color?: string;
+  name: string;
+  role: string;
+  image: string;
+};
 
 const SpeakersCard = ({ color, name, role, image }: Props) => {
-    return (
-        <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
-            <img src={`/images/speakers${image}`} alt="" className='h-full w-full object-cover transition-all duration-500 ease-in-out hover:scale-125' />
-            <div className={`absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t ${`from-[${color}]`} to-transparent`}></div>
-            <div className="absolute bottom-4 z-10 text-white px-4">
-                <h3 className="">{name}</h3>
-                <p className="text-sm">{role}</p>
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className="flex flex-col">
+      <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          quality={100}
+          priority
+          sizes="(max-width: 768px) 100vw, 400px"
+          className="h-full w-full object-cover transition-all duration-500 ease-in-out hover:scale-110"
+        />
 
-export default SpeakersCard
+        {color && (
+          <div
+            className="absolute bottom-0 left-0 w-full h-24"
+            style={{
+              background: `linear-gradient(to top, ${color}, transparent)`,
+            }}
+          ></div>
+        )}
+      </div>
+      <div className=" grow mt-2 flex flex-col gap-1">
+        <h3 className="text-xl md:text-lg font-bold">{name}</h3>
+        <p className="text-sm text-[#3C3C3C]">{role}</p>
+      </div>
+      <div className="mt-auto flex gap-2 py-4">
+        <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
+          <LinkedInIcon />
+        </div>
+        <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
+          <Twittericon />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SpeakersCard;

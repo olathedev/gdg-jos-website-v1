@@ -8,9 +8,18 @@ type Props = {
   name: string;
   role: string;
   image: string;
+  isSpeaker?: boolean;
+  unit?: string;
 };
 
-const SpeakersCard = ({ color, name, role, image }: Props) => {
+const SpeakersCard = ({
+  color,
+  name,
+  role,
+  image,
+  isSpeaker = true,
+  unit
+}: Props) => {
   return (
     <div className="flex flex-col">
       <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
@@ -37,14 +46,19 @@ const SpeakersCard = ({ color, name, role, image }: Props) => {
         <h3 className="text-xl md:text-lg font-bold">{name}</h3>
         <p className="text-sm text-[#3C3C3C]">{role}</p>
       </div>
-      <div className="mt-auto flex gap-2 py-4">
-        <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
-          <LinkedInIcon />
+
+      {isSpeaker ? (
+        <div className="mt-auto flex gap-2 py-4">
+          <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
+            <LinkedInIcon />
+          </div>
+          <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
+            <Twittericon />
+          </div>
         </div>
-        <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
-          <Twittericon />
-        </div>
-      </div>
+      ) : (
+        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-sm">{unit}</div>
+      )}
     </div>
   );
 };

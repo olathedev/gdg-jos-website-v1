@@ -11,6 +11,7 @@ import PhotoGallery from "@/components/devfest/PhotoGallery";
 import Products from "@/components/devfest/Products";
 import Speakers from "@/components/devfest/Speakers";
 import Swags from "@/components/devfest/Swags";
+import Volunteers from "@/components/devfest/Volunteers";
 import SpiralIcon from "@/components/shared/icons/SpiralIcon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
@@ -43,6 +44,8 @@ const DevFest = () => {
       <Facilitators />
       <Pannelists />
       <Moderators />
+
+      <Volunteers />
 
       <AwaitsYou />
 

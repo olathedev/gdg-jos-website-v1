@@ -179,12 +179,12 @@ const Hero = () => {
                 </m.button>
               </a>
 
-              <a href="/devfest" className="w-1/2">
+              <Link prefetch={true} href="/devfest" className="w-1/2">
                 <button className="py-2.5 flex w-full gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">
                   <SpiralIcon />
                   Devfest 2025
                 </button>
-              </a>
+              </Link>
             </m.div>
           </m.div>
 

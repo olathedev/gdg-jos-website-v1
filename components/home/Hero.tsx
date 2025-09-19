@@ -182,7 +182,7 @@ const Hero = () => {
               <a href="/devfest" className="w-1/2">
                 <button className="py-2.5 flex w-full gap-3 justify-center items-center text-[#4285F4] border-2 border-[#4285F4] rounded-md font-semibold">
                   <SpiralIcon />
-                  Devfest 2024
+                  Devfest 2025
                 </button>
               </a>
             </m.div>

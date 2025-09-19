@@ -16,7 +16,7 @@ const CollapsedNav = ({ closeNav }: Props) => {
       animate={{ opacity: 1 }} // Fade in
       exit={{ opacity: 0 }} // Fade out
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-20 w-full h-screen overflow-hidden bg-white py-10 container mx-auto px-10"
+      className="fixed inset-0  w-full h-screen overflow-hidden bg-white py-10 container mx-auto px-10 z-40"
     >
 
       <div className="flex justify-between items-center">

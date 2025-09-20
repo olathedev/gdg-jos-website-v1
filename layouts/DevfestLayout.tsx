@@ -23,7 +23,7 @@ const DevfestLayout = ({ children }: Props) => {
 
                     <Link href='/'>
                         <div className="flex items-center gap-2">
-                            <Image src='/images/gdglogo.png' alt="" height={38} width={80} className='h-[35px] w-[60px] md:w-[80] md:h-[38]' />
+                            <Image src='/images/gdglogo.png' alt="" height={38} width={80} className='h-[30px] w-[50px]  md:h-[30px]' />
                             <h3 className="text-xl font-light"><span className="font-bold">GDG</span> Jos</h3>
                         </div>
                     </Link>

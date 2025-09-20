@@ -55,6 +55,11 @@ const CollapsedNav = ({ closeNav }: Props) => {
                             Home
                         </div>
                     </Link>
+                    <Link href='/devfest/outline'>
+                        <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                            Event outline
+                        </div>
+                    </Link>
                     <a href=''>
                         <span className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
                             Get Your Swag

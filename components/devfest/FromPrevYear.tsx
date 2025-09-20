@@ -1,7 +1,26 @@
+"use client"
 import Image from "next/image";
-import React from "react";
+import React, { useRef, useState } from "react";
 
-const FromPrevYear = () => {
+const FromPrevYear: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  const handlePlayClick = (): void => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleVideoPause = (): void => {
+    setIsPlaying(false);
+  };
+
+  const handleVideoPlay = (): void => {
+    setIsPlaying(true);
+  };
+
   return (
     <section className="w-full px-4 mt-10 md:mt-20 py-6 flex flex-col items-center gap-6">
       <h1 className="text-2xl md:text-[45px] font-inter font-semibold text-textDark mb-4">
@@ -9,19 +28,30 @@ const FromPrevYear = () => {
       </h1>
 
       <div className="w-full md:w-[840px] h-[475px] bg-slate-400 rounded-lg relative flex items-center justify-center">
-        <Image
-          src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758291332/Rectangle_63_2x_1_kyobea.png"
-          alt=""
-          fill
-          className="object-cover rounded-lg"
-        />
-        <Image
-          src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758292937/Group_10_msdbfe.svg"
-          alt=""
-          height={75}
-          width={75}
-          className="z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover"
-        />
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover rounded-lg"
+          poster="https://res.cloudinary.com/dxssytv0p/image/upload/v1758291332/Rectangle_63_2x_1_kyobea.png"
+          controls={true}
+          onPlay={handleVideoPlay}
+          onPause={handleVideoPause}
+        >
+          <source
+            src="https://res.cloudinary.com/dxssytv0p/video/upload/v1758373015/WhatsApp_Video_2024-12-07_at_07.29.59_a718ad78_qlb6oy.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+        {!isPlaying && (
+          <Image
+            src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758292937/Group_10_msdbfe.svg"
+            alt="Play button"
+            height={75}
+            width={75}
+            className="z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover cursor-pointer"
+            onClick={handlePlayClick}
+          />
+        )}
       </div>
     </section>
   );

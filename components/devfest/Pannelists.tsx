@@ -112,7 +112,7 @@ const Pannelists: React.FC = () => {
   return (
     <section className="w-full bg-[#D9D9D9] bg-opacity-20 py-8 md:py-20">
       <div className="container mx-auto flex flex-col gap-10">
-        <h1 className="text-3xl md:text-[40px] mb-10 font-semibold font-inter text-textDark text-center leading-[44px]">
+        <h1 className="text-3xl md:text-[40px] md:mb-10 font-semibold font-inter text-textDark text-center leading-[44px]">
           Meet Our Panelists
         </h1>
         <div className="w-full relative">

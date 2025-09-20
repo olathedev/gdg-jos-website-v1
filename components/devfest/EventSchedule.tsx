@@ -5,12 +5,12 @@ import Link from "next/link";
 
 const EventSchedule = () => {
   return (
-    <section className="md:container md:mx-auto  md:px-10 md:mt-10 mt-6 py-6 flex flex-col items-center gap-4 md:gap-10">
+    <section className="md:container md:mx-auto  md:px-10 md:mt-10 py-6 flex flex-col items-center gap-4 md:gap-10">
       <header className="mt-8 w-full flex flex-col items-center md:gap-4">
         <h1 className="text-2xl md:text-[40px] font-semibold font-inter text-textDark">
           Explore Our Event Schedule
         </h1>
-        <p className="text-textDark md:text-lg text-center md:w-2/3">
+        <p className="text-textDark md:text-lg mt-2 text-center md:w-2/3">
           From inspiring keynotes to interactive workshops and panel
           discussions, our carefully curated program offers something for every
           developer and tech enthusiast.

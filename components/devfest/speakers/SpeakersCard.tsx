@@ -11,6 +11,7 @@ type Props = {
   isSpeaker?: boolean;
   unit?: string;
   height?: number;
+  isCentered?: boolean;
 };
 
 const SpeakersCard = ({
@@ -21,10 +22,14 @@ const SpeakersCard = ({
   isSpeaker = true,
   unit,
   height,
+  isCentered = false,
 }: Props) => {
   return (
     <div className="flex flex-col">
-      <div className="relative w-full bg-gray-200 rounded-xl overflow-hidden" style={{ height: `${height ?? 266}px` }}>
+      <div
+        className="relative w-full bg-gray-200 rounded-xl overflow-hidden"
+        style={{ height: `${height ?? 266}px` }}
+      >
         <Image
           src={image}
           alt={name}
@@ -44,7 +49,11 @@ const SpeakersCard = ({
           ></div>
         )}
       </div>
-      <div className=" grow mt-2 flex flex-col gap-1">
+      <div
+        className={`" grow mt-2 flex flex-col gap-1 ${
+          isCentered ? "items-center text-center" : "items-start"
+        }`}
+      >
         <h3 className=" md:text-lg font-bold">{name}</h3>
         <p className="text-sm text-[#3C3C3C]">{role}</p>
       </div>
@@ -59,7 +68,9 @@ const SpeakersCard = ({
           </div> */}
         </div>
       ) : (
-        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-[#3C3C3C] text-sm">{unit}</div>
+        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-[#3C3C3C] text-sm">
+          {unit}
+        </div>
       )}
     </div>
   );

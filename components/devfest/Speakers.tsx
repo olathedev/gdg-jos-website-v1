@@ -137,7 +137,7 @@ const Speakers = () => {
         ))}
       </div>
 
-      <div className="mt-6 md:mt-12 ">
+      <div className=" md:mt-12 ">
         <h1 className="text-2xl text-center font-inter md:text-[40px] font-semibold text-textDark">
           Meet Our Mentors
         </h1>
@@ -150,6 +150,7 @@ const Speakers = () => {
                 name={speaker.name}
                 role={speaker.role}
                 image={speaker.image}
+                isCentered
               />
             </div>
           ))}

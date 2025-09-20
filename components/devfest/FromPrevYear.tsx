@@ -27,7 +27,7 @@ const FromPrevYear: React.FC = () => {
         From <span className="text-[#FFA800]">Devfest</span> Jos 2024
       </h1>
 
-      <div className="w-full md:w-[840px] h-[475px] bg-slate-400 rounded-lg relative flex items-center justify-center">
+      <div className="w-full md:w-[840px] h-[250px] bg-slate-400 rounded-lg relative flex items-center justify-center">
         <video
           ref={videoRef}
           className="w-full h-full object-cover rounded-lg"

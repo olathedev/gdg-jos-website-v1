@@ -35,7 +35,7 @@ const moderators = [
 const Moderators = () => {
   return (
     <section className="w-full mt-10 px-5 py-8 md:py-20 flex flex-col gap-10 items-center">
-      <h1 className="text-2xl md:text-[40px] font-inter mb-10 font-semibold text-textDark text-center leading-[44px]">
+      <h1 className="text-2xl md:text-[40px] font-inter md:mb-10 font-semibold text-textDark text-center leading-[44px]">
         Meet Our Moderators
       </h1>
       <div className="w-full flex flex-col md:flex-row  justify-center items-center gap-x-6">
@@ -46,24 +46,26 @@ const Moderators = () => {
               name={mod.name}
               role={mod.role}
               image={mod.image}
+              isCentered
             />
           </div>
         ))}
       </div>
 
-      <h1 className="text-2xl md:text-[40px] font-inter  mt-8 mb-6 font-semibold text-textDark text-center leading-[44px]">
+      <h1 className="text-2xl md:text-[40px] font-inter  md:mt-8 md:mb-6 font-semibold text-textDark text-center leading-[44px]">
         Meet Our Host
       </h1>
 
       <div className="w-[230px] break-words whitespace-normal">
         <SpeakersCard
+          isCentered
           name="Loreta Katok Tohomdet"
           role="C.E.O Double Diverge Consult"
           image="https://res.cloudinary.com/dxssytv0p/image/upload/v1758318012/Rectangle_176_xxtkaw.png"
         />
       </div>
 
-      <h1 className="text-2xl md:text-[40px] font-inter  mt-10 mb-5 font-semibold text-textDark text-center leading-[44px]">
+      <h1 className="text-2xl md:text-[40px] font-inter  md:mt-10 md:mb-5 font-semibold text-textDark text-center leading-[44px]">
         Meet Our Organisers
       </h1>
 
@@ -75,6 +77,7 @@ const Moderators = () => {
               name={org.name}
               role={org.role}
               image={org.image}
+              isCentered
             />
           </div>
         ))}

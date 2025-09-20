@@ -1,6 +1,7 @@
 import React from "react";
 import AppGradientButton from "../ui/AppGradientButton";
 import SpiralIconWhite from "../shared/icons/SpiralIconWhite";
+import Link from "next/link";
 
 const PhotoGallery = () => {
   return (
@@ -10,22 +11,28 @@ const PhotoGallery = () => {
       </h1>
 
       <div className="w-full flex justify-center gap-2">
-        <AppGradientButton className="w-1/3 md:w-[200px]">
-          <SpiralIconWhite />
-          DevFest 2021
-        </AppGradientButton>
+        <a target="_blank" href="https://drive.google.com/drive/u/0/folders/1HtgoxI8vq9mBRhIHVp31Sj78wy0SdcCH">
+          <AppGradientButton className="w-1/3 md:w-[200px]">
+            <SpiralIconWhite />
+            DevFest 2023
+          </AppGradientButton>
+        </a>
 
-        <AppGradientButton className="w-1/3 md:w-[200px]">
-          <SpiralIconWhite />
-          DevFest 2022
-        </AppGradientButton>
+        <a target="_blank" href="https://drive.google.com/drive/u/0/folders/1E2ENoV1H2HFAlgLDxoyi0FOtZ3IlyLeB">
+          <AppGradientButton className="w-1/3 md:w-[200px]">
+            <SpiralIconWhite />
+            DevFest 2024
+          </AppGradientButton>
+        </a>
 
-        <AppGradientButton className="w-1/3 md:w-[200px]">
-          <SpiralIconWhite />
-          DevFest 2023
-        </AppGradientButton>
+        <a href="#">
+          <AppGradientButton className="w-1/3 md:w-[200px]">
+            <SpiralIconWhite />
+            DevFest 2025
+          </AppGradientButton>
+        </a>
       </div>
-
+    
       {/* <div className="h-28"></div> */}
     </section>
   );

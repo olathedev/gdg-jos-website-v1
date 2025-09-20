@@ -1,6 +1,7 @@
 import AwaitsYou from "@/components/devfest/AwaitsYou";
 import Community from "@/components/devfest/Community";
 import DevFestInfo from "@/components/devfest/DevFestInfo";
+import EventSchedule from "@/components/devfest/EventSchedule";
 import Facilitators from "@/components/devfest/Facilitators";
 import FromPrevYear from "@/components/devfest/FromPrevYear";
 import Header from "@/components/devfest/Header";
@@ -38,7 +39,7 @@ const DevFest = () => {
       <FromPrevYear />
 
       <PhotoGallery />
-
+      <EventSchedule />
       <Speakers />
 
       <Facilitators />

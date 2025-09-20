@@ -162,7 +162,7 @@ const Header = () => {
                   Sarau Event Center, Jos, Plateau State
                 </p>
               </div>
-            </div>
+            </div> 
           </div>
         </div>
       </div>

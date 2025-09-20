@@ -37,7 +37,7 @@ const DevFestInfo = () => {
         <div className="w-full flex justify-between px-3 md:px-0 md:gap-20 mt-4">
           <div className="flex flex-col text-center">
             <h1 className="text-3xl md:text-6xl font-medium text-textDark">
-              <CountUp end={13} start={inView ? 0 : 0} duration={2} redraw={false} preserveValue={true} enableScrollSpy={false} useEasing={true} separator="," delay={0} {...(!inView && { end: 0 })} />
+              <CountUp end={17} start={inView ? 0 : 0} duration={2} redraw={false} preserveValue={true} enableScrollSpy={false} useEasing={true} separator="," delay={0} {...(!inView && { end: 0 })} />
             </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
             <p className="text-textDark">Speakers</p>

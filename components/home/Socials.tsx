@@ -1,41 +1,57 @@
-import React from 'react'
-import Twittericon from '../shared/icons/Twittericon'
+import React from "react";
+import Twittericon from "../shared/icons/Twittericon";
+import Image from "next/image";
 
 const Socials = () => {
-    return (
-        <div className="flex flex-col md:flex-row gap-2 items-center">
-            <p>Follow us on</p>
+  return (
+    <div className="flex flex-col md:flex-row gap-2 items-center">
+      <p>Follow us on</p>
 
-            <div className="inline-flex gap-1">
-                <a href='https://x.com/gdgjos2' className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-[#F9AB00]">
-                    <Twittericon />
-                </a>
+      <div className="inline-flex gap-1">
+        <a
+          href="https://x.com/gdgjos2"
+          className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-[#F9AB00]"
+        >
+          <Twittericon />
+        </a>
 
-                <a href='https://www.linkedin.com/company/google-developer-groups-jos-gdg/' target='_blank' className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-[#F9AB00]">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14.7144 2.92015C14.5764 2.54616 14.3562 2.20764 14.0701 1.92978C13.7923 1.64368 13.454 1.42349 13.0797 1.28548C12.7762 1.1676 12.3203 1.0273 11.4805 0.989075C10.5721 0.947647 10.2997 0.938721 7.99994 0.938721C5.69991 0.938721 5.42754 0.947418 4.51933 0.988846C3.67957 1.0273 3.2234 1.1676 2.92014 1.28548C2.54591 1.42349 2.2074 1.64368 1.92976 1.92978C1.64366 2.20764 1.42348 2.54593 1.28523 2.92015C1.16736 3.22365 1.02705 3.67981 0.988831 4.51958C0.947403 5.42778 0.938477 5.70015 0.938477 8.00018C0.938477 10.3 0.947403 10.5724 0.988831 11.4808C1.02705 12.3206 1.16736 12.7765 1.28523 13.08C1.42348 13.4542 1.64343 13.7925 1.92953 14.0704C2.2074 14.3565 2.54568 14.5766 2.91991 14.7147C3.2234 14.8328 3.67957 14.9731 4.51933 15.0113C5.42754 15.0527 5.69968 15.0614 7.99971 15.0614C10.3 15.0614 10.5723 15.0527 11.4803 15.0113C12.3201 14.9731 12.7762 14.8328 13.0797 14.7147C13.8309 14.4249 14.4247 13.8312 14.7144 13.08C14.8323 12.7765 14.9726 12.3206 15.011 11.4808C15.0525 10.5724 15.0612 10.3 15.0612 8.00018C15.0612 5.70015 15.0525 5.42778 15.011 4.51958C14.9728 3.67981 14.8325 3.22365 14.7144 2.92015ZM7.99994 12.4229C5.55708 12.4229 3.5768 10.4428 3.5768 7.99995C3.5768 5.5571 5.55708 3.57704 7.99994 3.57704C10.4426 3.57704 12.4229 5.5571 12.4229 7.99995C12.4229 10.4428 10.4426 12.4229 7.99994 12.4229ZM12.5977 4.43581C12.0269 4.43581 11.5641 3.97301 11.5641 3.40218C11.5641 2.83134 12.0269 2.36855 12.5977 2.36855C13.1685 2.36855 13.6313 2.83134 13.6313 3.40218C13.6311 3.97301 13.1685 4.43581 12.5977 4.43581Z" fill="#F9AB00" />
-                    </svg>
+        <a
+          href="https://www.instagram.com/gdg_jos?igsh=Z3Fhd3hiMWZtOThw
+"
+          target="_blank"
+          className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-white"
+        >
+          <Image src="/images/ig.png" alt="" height={30} width={30} />
+        </a>
+         <a
+          href="https://www.linkedin.com/company/google-developer-groups-jos-gdg/"
+          target="_blank"
+          className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-white"
+        >
+          <Image src="/images/linkedin.png" alt="" height={30} width={30} />
+        </a>
+        <a
+          href="https://www.Facebook.com/gdgjos
+"
+          target="_blank"
+          className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-[#F9AB00]"
+        >
+          <svg
+            width="10"
+            height="21"
+            viewBox="0 0 10 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.77106 10.5871H6.0945V20.3928H2.03927V10.5871H0.110596V7.14097H2.03927V4.91095C2.03927 3.31624 2.79679 0.819092 6.1306 0.819092L9.13444 0.831659V4.1767H6.95496C6.59746 4.1767 6.09477 4.35531 6.09477 5.11604V7.14418H9.12535L8.77106 10.5871Z"
+              fill="white"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+  );
+};
 
-
-                </a>
-                <a href='https://www.Facebook.com/gdgjos
-' target='_blank' className="h-[30px] w-[30px] rounded-full flex items-center justify-center bg-[#F9AB00]">
-                    <svg
-                        width="10"
-                        height="21"
-                        viewBox="0 0 10 21"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M8.77106 10.5871H6.0945V20.3928H2.03927V10.5871H0.110596V7.14097H2.03927V4.91095C2.03927 3.31624 2.79679 0.819092 6.1306 0.819092L9.13444 0.831659V4.1767H6.95496C6.59746 4.1767 6.09477 4.35531 6.09477 5.11604V7.14418H9.12535L8.77106 10.5871Z"
-                            fill="white"
-                        />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    )
-}
-
-export default Socials
+export default Socials;

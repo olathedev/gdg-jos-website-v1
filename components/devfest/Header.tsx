@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion as m } from "framer-motion";
 import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
 import CollapsedNav from "./CollpasedNav2";
+import Link from "next/link";
 
 const Header = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -68,6 +69,8 @@ const Header = () => {
         <div className="absolute w-full h-full bg-black bg-opacity-85 z-0"></div>
         <nav className="relative z-10 container mx-auto px-4 md:px-10 py-10">
           <div className="flex justify-between items-center">
+            <Link href={"/"}>
+            
             <div className="flex items-center gap-2">
               <Image
                 src="/images/gdglogo.png"
@@ -80,6 +83,7 @@ const Header = () => {
                 <span className="font-bold">GDG</span> Jos
               </h3>
             </div>
+            </Link>
 
             <div
               className="cursor-pointer z-20"

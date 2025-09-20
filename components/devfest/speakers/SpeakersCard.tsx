@@ -51,12 +51,12 @@ const SpeakersCard = ({
 
       {isSpeaker ? (
         <div className="mt-auto flex gap-2 py-4">
-          <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
+          {/* <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
             <LinkedInIcon />
           </div>
           <div className="size-9 rounded-full bg-[#F9AB00] flex items-center justify-center">
             <Twittericon />
-          </div>
+          </div> */}
         </div>
       ) : (
         <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-[#3C3C3C] text-sm">{unit}</div>

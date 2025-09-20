@@ -22,6 +22,20 @@ body {
   }
 }
 
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
 /* Webkit browsers (Chrome, Safari, newer Edge) */
 ::-webkit-scrollbar {
   width: 8px;

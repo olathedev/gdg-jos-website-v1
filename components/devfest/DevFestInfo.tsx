@@ -24,7 +24,7 @@ const DevFestInfo = () => {
           <h1 className="text-4xl md:text-5xl text-[#FFA800] font-medium">Jos</h1>
         </div>
 
-        <p className="text-lg text-textDark">
+        <p className="md:text-lg text-textDark">
           Experience the latest in technology and connect with like-minded
           professionals at GDG Devfest Jos. This annual tech conference, hosted
           by the Google Developer Groups Jos community, brings together
@@ -36,7 +36,7 @@ const DevFestInfo = () => {
 
         <div className="w-full flex justify-between px-3 md:px-0 md:gap-20 mt-4">
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+            <h1 className="text-3xl md:text-6xl font-medium text-textDark">
               <CountUp end={13} start={inView ? 0 : 0} duration={2} redraw={false} preserveValue={true} enableScrollSpy={false} useEasing={true} separator="," delay={0} {...(!inView && { end: 0 })} />
             </h1>
             <span className="border-b w-full my-2 md:my-4 border-[#F6BE2C]"></span>
@@ -44,7 +44,7 @@ const DevFestInfo = () => {
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+            <h1 className="text-3xl md:text-6xl font-medium text-textDark">
               <CountUp
                 end={inView ? 8 : 0}
                 start={0}
@@ -62,7 +62,7 @@ const DevFestInfo = () => {
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+            <h1 className="text-3xl md:text-6xl font-medium text-textDark">
               <CountUp
                 end={inView ? 5 : 0}
                 start={0}
@@ -80,7 +80,7 @@ const DevFestInfo = () => {
           </div>
 
           <div className="flex flex-col text-center">
-            <h1 className="text-4xl md:text-6xl font-medium text-textDark">
+            <h1 className="text-3xl md:text-6xl font-medium text-textDark">
               <CountUp
                 start={0}
                 end={inView ? 500 : 0}
@@ -100,7 +100,7 @@ const DevFestInfo = () => {
         </div>
 
 
-        <div className="w-full flex justify-center md:justify-start">
+        <div className="w-full flex justify-start">
 
 
           <a href="https://bit.ly/devfestjos2025" target="_blank">

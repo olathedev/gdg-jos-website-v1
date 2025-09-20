@@ -17,7 +17,7 @@ const Header = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, 
+        staggerChildren: 0.1,
         delayChildren: 0.2,
       },
     },
@@ -31,7 +31,7 @@ const Header = () => {
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.4, 
+        duration: 0.4,
         ease: [0.3, 0, 0.1, 1],
       },
     },
@@ -81,7 +81,10 @@ const Header = () => {
               </h3>
             </div>
 
-            <div className="cursor-pointer z-20" onClick={() => setIsNavOpen(true)}>
+            <div
+              className="cursor-pointer z-20"
+              onClick={() => setIsNavOpen(true)}
+            >
               <HamburgerwhiteIcon />
             </div>
           </div>
@@ -99,13 +102,13 @@ const Header = () => {
                 alt=""
                 height={300}
                 width={150}
-                className="h-[150px] w-[400px] md:w-[700px] md:h-[200px]"
+                className="h-[90px] w-[300px] md:w-[600px] md:h-[200px]"
               />
             </m.div>
 
             <m.h3
               variants={childVariants}
-              className="text-white text-center text-lg md:text-[22px] font-medium"
+              className="text-white text-center md:text-[22px] font-medium"
             >
               The most anticipated tech event
               <br /> in Jos, Plateau State
@@ -127,6 +130,7 @@ const Header = () => {
                     alt=""
                     width={29}
                     height={29}
+                    sizes="(max-width: 768px) 24px, 29px"
                   />
                   Become a Partner
                 </AppGradientButton>
@@ -139,7 +143,13 @@ const Header = () => {
                 className="w-1/2 md:w-[200px]"
               >
                 <AppGradientButton className="w-full">
-                  <Image src="/svgs/mic.svg" alt="" width={29} height={29} />
+                  <Image
+                    src="/svgs/mic.svg"
+                    alt=""
+                    width={25}
+                    height={25}
+                    sizes="(max-width: 768px) 24px, 29px"
+                  />
                   Become a Speaker
                 </AppGradientButton>
               </m.a>

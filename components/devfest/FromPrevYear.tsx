@@ -4,7 +4,7 @@ import React from "react";
 const FromPrevYear = () => {
   return (
     <section className="w-full px-4 mt-10 md:mt-20 py-6 flex flex-col items-center gap-6">
-      <h1 className="text-3xl md:text-[45px] font-medium text-textDark mb-6">
+      <h1 className="text-2xl md:text-[45px] font-inter font-semibold text-textDark mb-4">
         From <span className="text-[#FFA800]">Devfest</span> Jos 2024
       </h1>
 

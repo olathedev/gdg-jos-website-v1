@@ -90,13 +90,11 @@ const Header = () => {
           </div>
         </nav>
         <div className="relative z-10 w-full flex-1 flex items-center  justify-center px-4 h-full">
-          <m.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+          <div
+            
             className="w-full flex flex-col h-full grow items-center justify-center"
           >
-            <m.div variants={childVariants}>
+            <div >
               <Image
                 src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758344210/DF_23_Logo_White_e80db058e6_1_lk9eqq.svg"
                 alt=""
@@ -104,22 +102,19 @@ const Header = () => {
                 width={150}
                 className="h-[90px] w-[300px] md:w-[600px] md:h-[200px]"
               />
-            </m.div>
+            </div>
 
-            <m.h3
-              variants={childVariants}
+            <h3
               className="text-white text-center md:text-[22px] font-medium"
             >
               The most anticipated tech event
               <br /> in Jos, Plateau State
-            </m.h3>
+            </h3>
 
-            <m.div
-              variants={containerVariants}
+            <div
               className="w-full md:w-auto flex gap-4 md:gap-6 mt-8"
             >
-              <m.a
-                variants={buttonVariants}
+              <a
                 href="https://bit.ly/devfestjos2025"
                 target="_blank"
                 className="w-1/2 md:w-[200px]"
@@ -134,10 +129,9 @@ const Header = () => {
                   />
                   Become a Partner
                 </AppGradientButton>
-              </m.a>
+              </a>
 
-              <m.a
-                variants={buttonVariants}
+              <a
                 href="https://bit.ly/DevfestJos_Speakers"
                 target="_blank"
                 className="w-1/2 md:w-[200px]"
@@ -152,11 +146,10 @@ const Header = () => {
                   />
                   Become a Speaker
                 </AppGradientButton>
-              </m.a>
-            </m.div>
+              </a>
+            </div>
 
-            <m.div
-              variants={childVariants}
+            <div
               className="border-2 border-white rounded-lg py-2 px-8 flex flex-col gap-2 md:flex-row md:gap-10 items-center justify-between mt-8 text-white"
             >
               <div className="flex items-center gap-1">
@@ -169,8 +162,8 @@ const Header = () => {
                   Sarau Event Center, Jos, Plateau State
                 </p>
               </div>
-            </m.div>
-          </m.div>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -114,7 +114,7 @@ const Hero = () => {
   return (
     <div className="w-full flex grow">
       <div className="flex flex-col md:flex-row md:items-center gap-5 md:gap-16 h-grow">
-        <div className="md:w-1/2 pt-6 md:pt-20 h-[500px] flex flex-col justify-between">
+        <div className="md:w-1/2 pt-6 md:pt-20 md:h-[500px] h-[420px] flex flex-col justify-between">
           <m.div
             initial="hidden"
             animate="visible"
@@ -154,7 +154,7 @@ const Hero = () => {
               }}
             >
               <a
-                href="https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a"
+                href="https://gdg.community.dev/gdg-jos/"
                 target="_blank"
                 className="w-1/2"
               >

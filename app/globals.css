@@ -7,6 +7,15 @@
   --foreground: #171717;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -53,37 +62,43 @@
 }
 
 .container {
-    width: 100%;
+  width: 100%;
 }
+
 @media (min-width: 640px) {
-    .container {
-        max-width: 640px;
-    }
+  .container {
+    max-width: 640px;
+  }
 }
+
 @media (min-width: 768px) {
-    .container {
-        max-width: 768px;
-    }
+  .container {
+    max-width: 768px;
+  }
 }
+
 @media (min-width: 1024px) {
-    .container {
-        max-width: 1024px;
-    }
+  .container {
+    max-width: 1024px;
+  }
 }
+
 @media (min-width: 1280px) {
-    .container {
-        max-width: 1280px;
-    }
+  .container {
+    max-width: 1280px;
+  }
 }
+
 @media (min-width: 1536px) {
-    .container {
-        max-width: 1296px;
-    }
+  .container {
+    max-width: 1296px;
+  }
 }
+
 /* A typical 28-inch monitor has a resolution of 3840x2160 (4K UHD).
   The min-width for targeting such screens can be set to 3840px. */
 @media (min-width: 2000px) {
-   .container {
-      max-width: 1620px; 
-   }
+  .container {
+    max-width: 1620px;
+  }
 }

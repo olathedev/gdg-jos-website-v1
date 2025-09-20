@@ -137,12 +137,12 @@ const Speakers = () => {
         ))}
       </div>
 
-      <div className="mt-12 ">
+      <div className="mt-6 md:mt-12 ">
         <h1 className="text-2xl text-center font-inter md:text-[40px] font-semibold text-textDark">
           Meet Our Mentors
         </h1>
 
-        <div className="w-full flex flex-col md:flex-row justify-center gap-x-6 mt-16">
+        <div className="w-full flex flex-col md:flex-row justify-center gap-x-6 mt-6 md:mt-16">
           {mentors.map((speaker, index) => (
             <div className=" w-full md:w-[230px]" key={index}>
               <SpeakersCard

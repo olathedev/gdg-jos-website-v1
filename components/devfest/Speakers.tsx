@@ -192,7 +192,7 @@ export const mentors = [
 const Speakers = () => {
   return (
     <section className="container mx-auto px-4 md:px-10 mt-10 py-6 flex flex-col items-center gap-4 md:gap-10">
-      <h1 className="text-2xl md:text-[40px] font-medium text-textDark">
+      <h1 className="text-2xl md:text-[40px] font-semibold font-inter text-textDark">
         Meet Our Speakers
       </h1>
 
@@ -221,7 +221,7 @@ const Speakers = () => {
       </div>
 
       <div className="mt-12 ">
-        <h1 className="text-2xl text-center  md:text-[40px] font-medium text-textDark">
+        <h1 className="text-2xl text-center font-inter md:text-[40px] font-semibold text-textDark">
           Meet Our Mentors
         </h1>
 

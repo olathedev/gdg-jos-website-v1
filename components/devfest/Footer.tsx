@@ -6,8 +6,8 @@ const Footer = () => {
     return (
         <footer className="w-full mt-20">
             <div className="h-[300px] bg-[#FFFAEB] flex flex-col gap-4 justify-center items-center text-textDark px-6">
-                <h1 className="text-[28px] md:text-[38px] font-bold font-inter">Devfest Jos 2024</h1>
-                <p className="text-sm md:text-lg text-center">We are looking forward to seeing you at DevFest Jos 2024! Get ready for an exciting day of <br /> tech, innovation, and community. Don’t miss out on this incredible event!</p>
+                <h1 className="text-[28px] md:text-[38px] font-bold font-inter">Devfest Jos 2025</h1>
+                <p className="text-sm md:text-lg text-center">We are looking forward to seeing you at DevFest Jos 2025! Get ready for an exciting day of <br /> tech, innovation, and community. Don’t miss out on this incredible event!</p>
             </div>
 
             <div className="w-full pt-16 pb-8 bg-[#011433] md:px-24 px-4 flex flex-col gap-10">

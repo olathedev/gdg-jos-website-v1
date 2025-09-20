@@ -1,5 +1,10 @@
+"use client";
+import FromPrevYear from "@/components/devfest/FromPrevYear";
+import Moderators, { moderators } from "@/components/devfest/Moderators";
+import PhotoGallery from "@/components/devfest/PhotoGallery";
+import { mentors } from "@/components/devfest/Speakers";
 import SpeakersCard from "@/components/devfest/speakers/SpeakersCard";
-import { speakers } from "@/data/data";
+import { organisers, speakers } from "@/data/data";
 import DevfestLayout from "@/layouts/DevfestLayout";
 import React from "react";
 
@@ -58,6 +63,65 @@ const Speakers = () => {
               image={speaker.image}
             />
           ))}
+        </div>
+
+        <div className="mt-6 md:mt-20">
+          <h1 className="text-2xl text-center font-inter md:text-[40px] font-semibold text-textDark">
+            Meet Our Mentors
+          </h1>
+
+          <div className="w-full flex flex-col md:flex-row justify-center gap-x-6 mt-6 md:mt-16">
+            {mentors.map((speaker, index) => (
+              <div className=" w-full md:w-[230px]" key={index}>
+                <SpeakersCard
+                  color=""
+                  name={speaker.name}
+                  role={speaker.role}
+                  image={speaker.image}
+                  isCentered
+                />
+              </div>
+            ))}
+          </div>
+
+          <section className="w-full mt-10 px-5 py-8 flex flex-col gap-10 items-center">
+            <h1 className="text-2xl md:text-[40px] font-inter md:mb-10 font-semibold text-textDark text-center leading-[44px]">
+              Meet Our Moderators
+            </h1>
+            <div className="w-full flex flex-col md:flex-row  justify-center items-center gap-x-6">
+              {moderators.map((mod, idx) => (
+                <div
+                  className="w-[230px] break-words whitespace-normal"
+                  key={idx}
+                >
+                  <SpeakersCard
+                    color={mod.color}
+                    name={mod.name}
+                    role={mod.role}
+                    image={mod.image}
+                    isCentered
+                  />
+                </div>
+              ))}
+            </div>
+
+            <h1 className="text-2xl md:text-[40px] font-inter  md:mt-8 md:mb-6 font-semibold text-textDark text-center leading-[44px]">
+              Meet Our Host
+            </h1>
+
+            <div className="w-[230px] break-words whitespace-normal">
+              <SpeakersCard
+                isCentered
+                name="Loreta Katok Tohomdet"
+                role="C.E.O Double Diverge Consult"
+                image="https://res.cloudinary.com/dxssytv0p/image/upload/v1758318012/Rectangle_176_xxtkaw.png"
+              />
+            </div>
+
+           
+
+        
+          </section>
         </div>
       </div>
     </DevfestLayout>

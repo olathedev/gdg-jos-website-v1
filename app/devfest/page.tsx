@@ -222,10 +222,16 @@ const DevFest = () => {
         </div>
 
         <div>
-          <AppGradientButton className="px-8 mt-10">
-            <Image src="/svgs/handshake.svg" alt="" width={29} height={29} />
-            Become a Partner
-          </AppGradientButton>
+          <a
+            target="_blank"
+            href="Join community link:
+https://gdg.community.dev/gdg-jos/"
+          >
+            <AppGradientButton className="px-8 mt-10">
+              <Image src="/svgs/handshake.svg" alt="" width={29} height={29} />
+              Become a Partner
+            </AppGradientButton>
+          </a>
         </div>
       </section>
     </div>

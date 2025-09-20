@@ -2,7 +2,7 @@ import React from "react";
 import SpeakersCard from "./speakers/SpeakersCard";
 import { organisers } from "@/data/data";
 
-const moderators = [
+export const moderators = [
   {
     name: "Nana Timothy",
     role: "IT Edge News",

@@ -1,5 +1,4 @@
-
-'use client'
+"use client";
 import Link from "next/link";
 import React, { useRef } from "react";
 import SpeakersCard from "./speakers/SpeakersCard";
@@ -115,7 +114,7 @@ const Speakers = () => {
         <div className="hidden container mx-auto justify-center items-center  md:grid md:grid-cols-5 gap-x-6 gap-y-8">
           {speakers.map((speaker, index) => (
             <SpeakersCard
-              key={index} 
+              key={index}
               color={speaker.color}
               name={speaker.name}
               role={speaker.role}

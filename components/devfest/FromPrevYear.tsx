@@ -27,7 +27,7 @@ const FromPrevYear: React.FC = () => {
         From <span className="text-[#FFA800]">Devfest</span> Jos 2024
       </h1>
 
-      <div className="w-full md:w-[840px] h-[250px] bg-slate-400 rounded-lg relative flex items-center justify-center">
+      <div className="w-full md:w-[840px] md:h-[500px] h-[250px] bg-slate-400 rounded-lg relative flex items-center justify-center">
         <video
           ref={videoRef}
           className="w-full h-full object-cover rounded-lg"
@@ -42,16 +42,7 @@ const FromPrevYear: React.FC = () => {
           />
           Your browser does not support the video tag.
         </video>
-        {!isPlaying && (
-          <Image
-            src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758292937/Group_10_msdbfe.svg"
-            alt="Play button"
-            height={75}
-            width={75}
-            className="z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover cursor-pointer"
-            onClick={handlePlayClick}
-          />
-        )}
+        
       </div>
     </section>
   );

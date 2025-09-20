@@ -46,7 +46,7 @@ const Footer = () => {
                 </div>
 
                 <div className="w-full text-white flex justify-between text-xs">
-                    <p>All rights reserved. (c) GDG Jos 2024</p>
+                    <p>All rights reserved. (c) GDG Jos 2025</p>
                     <p>Privacy Policy</p>
                 </div>
             </div>

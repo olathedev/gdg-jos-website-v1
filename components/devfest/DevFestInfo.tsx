@@ -103,7 +103,7 @@ const DevFestInfo = () => {
         <div className="w-full flex justify-center md:justify-start">
 
 
-          <a href="https://bit.ly/devfestjos2024" target="_blank">
+          <a href="https://bit.ly/devfestjos2025" target="_blank">
             <AppGradientButton className="mt-4 w-[200px]">
               <Image src="/svgs/ticket.svg" alt="" width={29} height={29} />
               Book a Ticket

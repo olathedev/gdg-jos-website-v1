@@ -1,5 +1,6 @@
 import React from "react";
 import SpeakersCard from "./speakers/SpeakersCard";
+import { organisers } from "@/data/data";
 
 const moderators = [
   {
@@ -31,44 +32,7 @@ const moderators = [
   },
 ];
 
-const organisers = [
-  {
-    name: "Loreta Katok Tohomdet",
-    role: "C.E.O, Double Diverge Consult\nOrganiser",
-    image:
-      "https://res.cloudinary.com/dxssytv0p/image/upload/v1758318012/Rectangle_176_xxtkaw.png",
-    color: "",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "John Ebuga Saduna",
-    role: "Jesanija Media Enterprise\nCo-Organizer",
-    image:
-      "https://res.cloudinary.com/dxssytv0p/image/upload/v1758319631/Rectangle_220_1_pinbde.png",
-    color: "",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Stephen Nwoye",
-    role: "NACOS NOUN\nCo-Organizer",
-    image:
-      "https://res.cloudinary.com/dxssytv0p/image/upload/v1758319621/Rectangle_221_xehq7h.png",
-    color: "",
-    linkedin: "#",
-    twitter: "#",
-  },
-  {
-    name: "Robert John",
-    role: "Chapter Community Mentor",
-    image:
-      "https://res.cloudinary.com/dxssytv0p/image/upload/v1758316704/Rectangle_187_nb2b5f.png",
-    color: "",
-    linkedin: "#",
-    twitter: "#",
-  },
-];
+
 const Moderators = () => {
   return (
     <section className="w-full mt-10 py-8 md:py-20 flex flex-col gap-10 items-center">

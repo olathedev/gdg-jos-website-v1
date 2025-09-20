@@ -50,6 +50,11 @@ const CollapsedNav = ({ closeNav }: Props) => {
                     <BigSpiral />
                 </span>
                 <div className="flex flex-col gap-4 cursor-pointer">
+                     <Link href='/devfest'>
+                        <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
+                            Home
+                        </div>
+                    </Link>
                     <a href=''>
                         <span className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">
                             Get Your Swag
@@ -57,7 +62,7 @@ const CollapsedNav = ({ closeNav }: Props) => {
                     </a>
                     <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Become a Partner</div>
 
-                    <a href="https://gdg.community.dev/events/details/google-gdg-jos-presents-devfest-2024/" target="_blank" className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Book a Ticket</a>
+                    <a href="https://gdg.community.dev/events/details/google-gdg-jos-presents-devfest-2025/" target="_blank" className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">Book a Ticket</a>
 
                     <Link href='/devfest/speakers'>
                         <div className="text-2xl md:text-3xl font-bold text-textDark hover:translate-x-2 transition-transform duration-300">

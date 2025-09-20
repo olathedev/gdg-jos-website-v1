@@ -10,6 +10,7 @@ type Props = {
   image: string;
   isSpeaker?: boolean;
   unit?: string;
+  height?: number;
 };
 
 const SpeakersCard = ({
@@ -18,11 +19,12 @@ const SpeakersCard = ({
   role,
   image,
   isSpeaker = true,
-  unit
+  unit,
+  height,
 }: Props) => {
   return (
     <div className="flex flex-col">
-      <div className="relative w-full h-[266px] bg-gray-200 rounded-xl overflow-hidden">
+      <div className="relative w-full bg-gray-200 rounded-xl overflow-hidden" style={{ height: `${height ?? 266}px` }}>
         <Image
           src={image}
           alt={name}
@@ -57,7 +59,7 @@ const SpeakersCard = ({
           </div>
         </div>
       ) : (
-        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-sm">{unit}</div>
+        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-[#3C3C3C] text-sm">{unit}</div>
       )}
     </div>
   );

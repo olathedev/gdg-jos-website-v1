@@ -6,7 +6,7 @@ const Swags = () => {
     return (
         <section className="w-full py-10 md:py-2 md:h-[890px] bg-[#F5FCFF] flex flex-col gap-4 md:gap-10 items-center justify-center">
             <h1 className="text-3xl md:text-[40px]  font-medium text-textDark text-center leading-[44px]">
-                Get Your Devfest 2024
+                Get Your Devfest 2025
                 <br /> Swags
             </h1>
 

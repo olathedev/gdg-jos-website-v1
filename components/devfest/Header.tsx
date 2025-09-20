@@ -17,8 +17,8 @@ const Header = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Stagger child animations by 0.2s
-        delayChildren: 0.3,
+        staggerChildren: 0.1, 
+        delayChildren: 0.2,
       },
     },
   };
@@ -31,8 +31,8 @@ const Header = () => {
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.6, // Slightly faster for snappier feel
-        ease: [0.4, 0, 0.2, 1], // Custom easing for smooth, modern motion
+        duration: 0.4, 
+        ease: [0.3, 0, 0.1, 1],
       },
     },
   };
@@ -72,16 +72,16 @@ const Header = () => {
               <Image
                 src="/images/gdglogo.png"
                 alt=""
-                height={38}
-                width={80}
-                className="h-[35px] w-[60px] md:w-[85] md:h-[38]"
+                height={30}
+                width={70}
+                className="h-[30px] w-[60px] md:w-[75] md:h-[30]"
               />
               <h3 className="text-xl font-light text-white">
                 <span className="font-bold">GDG</span> Jos
               </h3>
             </div>
 
-            <div className="cursor-pointer" onClick={() => setIsNavOpen(true)}>
+            <div className="cursor-pointer z-20" onClick={() => setIsNavOpen(true)}>
               <HamburgerwhiteIcon />
             </div>
           </div>
@@ -95,10 +95,10 @@ const Header = () => {
           >
             <m.div variants={childVariants}>
               <Image
-                src="/svgs/devfesttext.svg"
+                src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758344210/DF_23_Logo_White_e80db058e6_1_lk9eqq.svg"
                 alt=""
-                height={550}
-                width={200}
+                height={300}
+                width={150}
                 className="h-[150px] w-[400px] md:w-[700px] md:h-[200px]"
               />
             </m.div>
@@ -117,7 +117,7 @@ const Header = () => {
             >
               <m.a
                 variants={buttonVariants}
-                href="https://bit.ly/devfestjos2024"
+                href="https://bit.ly/devfestjos2025"
                 target="_blank"
                 className="w-1/2 md:w-[200px]"
               >

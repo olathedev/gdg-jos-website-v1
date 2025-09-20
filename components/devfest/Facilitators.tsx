@@ -29,7 +29,7 @@ const Facilitators = () => {
         Meet Our Facilitators
       </h1>
 
-      <div className="w-full flex flex-col md:flex-row justify-center gap-x-6">
+      <div className="w-full flex flex-col md:flex-row items-center justify-center gap-x-6">
         {mentors.map((speaker, index) => (
           <div className="w-[230px] break-words whitespace-normal" key={index}>
             <SpeakersCard

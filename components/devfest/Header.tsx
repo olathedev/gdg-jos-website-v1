@@ -55,13 +55,16 @@ const Header = () => {
   return (
     <>
       {isNavOpen && <CollapsedNav closeNav={() => setIsNavOpen(false)} />}
-      <div
-        className="relative w-full bg-center bg-cover min-h-[85vh] md:min-h-[98vh] flex flex-col"
-        style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/dxssytv0p/image/upload/v1758289190/devfestbanner_v12utp.jpg')",
-        }}
-      >
+      {/* Use a normal <Image> for the background to improve loading performance */}
+      <div className="relative w-full min-h-[85vh] md:min-h-[98vh] flex flex-col bg-black">
+        <Image
+          src="https://res.cloudinary.com/dxssytv0p/image/upload/v1758289190/devfestbanner_v12utp.jpg"
+          alt="DevFest Banner"
+          fill
+          priority
+          className="object-cover object-center z-0"
+          style={{ opacity: 0.85 }}
+        />
         <div className="absolute w-full h-full bg-black bg-opacity-85 z-0"></div>
         <nav className="relative z-10 container mx-auto px-4 md:px-10 py-10">
           <div className="flex justify-between items-center">

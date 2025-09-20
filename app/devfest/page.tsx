@@ -55,7 +55,7 @@ const DevFest = () => {
 
       <Community />
 
-      <section className="my-20 container mx-auto px-10 flex flex-col g justify-center items-center text-textDark">
+      <section className="my-20 hidden container mx-auto px-10 md:flex flex-col g justify-center items-center text-textDark">
         <h1 className="text-3xl md:text-[40px] mb-10  font-medium text-textDark">
           Sponsors/Partners
         </h1>

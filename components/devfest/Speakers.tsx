@@ -112,7 +112,7 @@ const Speakers = () => {
           <ChevronRight className="text-[#4285F4] text-sm" />
         </button>
         {/* Desktop grid */}
-        <div className="hidden  md:grid md:grid-cols-5 gap-x-6 gap-y-8">
+        <div className="hidden container mx-auto justify-center items-center  md:grid md:grid-cols-5 gap-x-6 gap-y-8">
           {speakers.map((speaker, index) => (
             <SpeakersCard
               key={index} 

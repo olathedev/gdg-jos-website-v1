@@ -32,16 +32,15 @@ const moderators = [
   },
 ];
 
-
 const Moderators = () => {
   return (
     <section className="w-full mt-10 px-5 py-8 md:py-20 flex flex-col gap-10 items-center">
       <h1 className="text-2xl md:text-[40px] font-inter mb-10 font-semibold text-textDark text-center leading-[44px]">
         Meet Our Moderators
       </h1>
-      <div className="w-full flex flex-col md:flex-row  justify-center gap-x-6">
+      <div className="w-full flex flex-col md:flex-row  justify-center items-center gap-x-6">
         {moderators.map((mod, idx) => (
-          <div className="md:w-[230px] break-words whitespace-normal" key={idx}>
+          <div className="w-[230px] break-words whitespace-normal" key={idx}>
             <SpeakersCard
               color={mod.color}
               name={mod.name}
@@ -68,9 +67,9 @@ const Moderators = () => {
         Meet Our Organisers
       </h1>
 
-      <div className="w-full  flex flex-col md:flex-row justify-center gap-x-6">
+      <div className="w-full  flex flex-col md:flex-row justify-center items-center gap-x-6">
         {organisers.map((org, idx) => (
-          <div className="md:w-[230px] break-words whitespace-normal" key={idx}>
+          <div className="w-[230px] break-words whitespace-normal" key={idx}>
             <SpeakersCard
               color={org.color}
               name={org.name}

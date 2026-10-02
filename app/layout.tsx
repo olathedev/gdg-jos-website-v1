@@ -34,6 +34,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://gdgjos.com"),
   title: "DevFest Jos 2026 · GDG Jos",
   description:
     "DevFest Jos 2026: talks, workshops and community for developers, designers and builders in Jos, Plateau State. Hosted by Google Developer Groups Jos.",

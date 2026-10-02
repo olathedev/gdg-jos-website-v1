@@ -23,7 +23,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           <PhotoBackdrop src={gallery.audience} priority position="center 40%" />
           <div className="mx-auto max-w-6xl px-4 sm:px-8">
             <Link
-              href="/#tickets"
+              href="/tickets"
               className="inline-flex items-center gap-1.5 rounded-full text-sm text-white/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue"
             >
               <ArrowLeft aria-hidden className="size-4" /> Tickets

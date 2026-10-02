@@ -34,7 +34,7 @@ export const mapsHref = event.venue
     )}`
   : null;
 
-export const ticketHref = "/#tickets";
+export const ticketHref = "/tickets";
 export const ticketLabel = "Get tickets";
 
 // Absolute ("/#…") so the nav also works from the ticket pages.
@@ -42,7 +42,7 @@ export const navLinks = [
   { label: "About", href: "/#about" },
   { label: "Tracks", href: "/#tracks" },
   { label: "Speakers", href: "/#speakers" },
-  { label: "Tickets", href: "/#tickets" },
+  { label: "Tickets", href: "/tickets" },
   { label: "FAQ", href: "/#faq" },
 ];
 
@@ -184,7 +184,7 @@ export const faqs = [
   },
   {
     q: "How do I get a ticket?",
-    a: "Pick a ticket in the Tickets section above. Regular is free, VIP is ₦8,000 and My Padi gets you and a friend in with VIP perks for ₦15,000. Your ticket arrives by email with a QR code to show at the door.",
+    a: "Tap Get tickets and pick one. Regular is free, VIP is ₦8,000 and My Padi gets you and a friend in with VIP perks for ₦15,000. Your ticket arrives by email with a QR code to show at the door.",
   },
   {
     q: "I'm not a developer. Can I still come?",

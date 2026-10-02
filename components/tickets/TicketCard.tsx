@@ -1,58 +1,88 @@
-/* eslint-disable @next/next/no-img-element -- the QR is a small generated PNG; next/image adds nothing here */
+/* eslint-disable @next/next/no-img-element -- small generated QR / logo PNGs; next/image adds nothing here */
 import { event } from "@/data/devfest26";
 import type { Ticket } from "@/lib/tickets/orders";
-import { tiers } from "@/lib/tickets/tiers";
+import { tierColor, tiers } from "@/lib/tickets/tiers";
 
-const accent = {
-  regular: { band: "bg-g-green", chip: "bg-p-green" },
-  vip: { band: "bg-g-blue", chip: "bg-p-blue" },
-  padi: { band: "bg-g-yellow", chip: "bg-p-yellow" },
-} as const;
+const venueLine = [event.venue, event.address, event.city].filter(Boolean).join(", ");
 
-/** A single ticket stub: details on the left, QR on the right, perforated divider. */
+/** Ticket laid out like the DevFest Jos ticket guide: details left, QR + logos right. */
 export default function TicketCard({ ticket }: { ticket: Ticket }) {
-  const a = accent[ticket.tier];
+  const fill = { backgroundColor: tierColor[ticket.tier] };
+
   return (
-    <article className="ticket relative overflow-hidden rounded-[1.75rem] bg-white text-ink ring-1 ring-ink/10 print:break-inside-avoid print:shadow-none">
-      <div className={`h-2 ${a.band}`} />
-      <div className="grid sm:grid-cols-[1fr_auto]">
-        <div className="p-6 sm:p-7">
-          <div className="flex items-center gap-2">
-            <span className="font-display text-lg font-bold" style={{ fontVariationSettings: '"ROND" 100' }}>
-              <span className="text-g-blue">{"{"}</span> DevFest <span className="text-g-yellow">{"}"}</span>
-            </span>
-            <span className={`rounded-full px-2.5 py-0.5 font-mono text-[11px] font-semibold tracking-wider uppercase ${a.chip}`}>
-              {tiers[ticket.tier].name}
-            </span>
+    <article
+      className="ticket relative overflow-hidden rounded-[1.75rem] bg-white text-ink ring-2 ring-ink print:break-inside-avoid"
+      style={{
+        // faint grid, like the printed ticket
+        backgroundImage:
+          "linear-gradient(rgba(30,30,30,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(30,30,30,.05) 1px, transparent 1px)",
+        backgroundSize: "44px 44px",
+      }}
+    >
+      <div className="grid gap-8 p-6 sm:p-10 md:grid-cols-[1fr_auto] md:items-center md:gap-10">
+        {/* Details */}
+        <div className="flex flex-col items-center text-center">
+          <p className="text-3xl font-bold tracking-tight sm:text-4xl">DevFest Jos 2026</p>
+          <p
+            className="mt-3 rounded-2xl px-6 py-1.5 text-3xl font-bold tracking-tight ring-2 ring-ink shadow-[0_6px_0_0_var(--color-ink)] sm:px-10 sm:text-4xl"
+            style={fill}
+          >
+            {tiers[ticket.tier].name} Ticket
+          </p>
+
+          <div className="mt-8 w-full px-4 py-5 ring-2 ring-ink sm:py-6" style={fill}>
+            <p className="text-sm font-semibold sm:text-base">Name:</p>
+            <p className="mt-1 text-3xl leading-tight font-semibold tracking-tight break-words sm:text-4xl">{ticket.holder_name}</p>
+            <p className="mt-4 text-sm font-semibold sm:text-base">Email:</p>
+            <p className="mt-1 text-lg font-semibold break-all sm:text-xl">{ticket.holder_email}</p>
           </div>
-          <p className="type-heading mt-5 text-2xl sm:text-3xl">{ticket.holder_name}</p>
-          <p className="mt-1 text-sm break-all text-ink/60">{ticket.holder_email}</p>
-          <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
+
+          <div aria-hidden className="mt-5 w-2/3 border-t-2 border-dashed border-ink/80" />
+
+          <dl className="mt-5 text-sm leading-relaxed font-semibold uppercase sm:text-base">
             <div>
-              <dt className="font-mono text-[11px] tracking-widest text-ink/50 uppercase">Date</dt>
-              <dd className="mt-1 font-semibold">{event.dateLabel}</dd>
+              <dt className="inline">Date/Time: </dt>
+              <dd className="inline">{event.dateTimeLabel}</dd>
             </div>
             <div>
-              <dt className="font-mono text-[11px] tracking-widest text-ink/50 uppercase">Venue</dt>
-              <dd className="mt-1 font-semibold">
-                {event.venue}, {event.city}
-              </dd>
+              <dt className="inline">Venue: </dt>
+              <dd className="inline">{venueLine}</dd>
             </div>
           </dl>
         </div>
 
-        {/* Perforation + QR */}
-        <div className="relative flex flex-col items-center justify-center gap-3 border-t-2 border-dashed border-ink/15 p-6 sm:border-t-0 sm:border-l-2 sm:p-7">
-          <span aria-hidden className="absolute -top-3 -left-3 hidden size-6 rounded-full bg-paper sm:block" />
-          <span aria-hidden className="absolute -bottom-3 -left-3 hidden size-6 rounded-full bg-paper sm:block" />
-          <img
-            src={`/api/tickets/${encodeURIComponent(ticket.code)}/qr`}
-            alt={`QR code for ticket ${ticket.code}`}
-            width={160}
-            height={160}
-            className="size-40 rounded-lg"
-          />
-          <p className="font-mono text-lg font-bold tracking-[0.2em]">{ticket.code}</p>
+        {/* QR + logos */}
+        <div className="flex flex-col items-center">
+          <div className="rounded-[1.75rem] bg-white p-3 ring-[3px] ring-ink sm:p-4">
+            <img
+              src={`/api/tickets/${encodeURIComponent(ticket.code)}/qr`}
+              alt={`QR code for ticket ${ticket.code}`}
+              width={220}
+              height={220}
+              className="size-48 sm:size-56"
+            />
+          </div>
+          <p className="mt-3 font-mono text-sm font-bold tracking-[0.25em]">{ticket.code}</p>
+          <div className="mt-4 flex items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <img src="/images/gdglogo.png" alt="" width={46} height={22} className="h-5 w-auto" />
+              <span className="text-[9px] leading-[1.1] font-medium">
+                Google
+                <br />
+                Developer
+                <br />
+                Group Jos
+              </span>
+            </span>
+            <span className="flex items-center font-display text-lg leading-none font-bold" style={{ fontVariationSettings: '"ROND" 100' }}>
+              <span className="text-g-blue">{"{"}</span>
+              <span className="flex flex-col items-center px-0.5">
+                DevFest
+                <span className="mt-0.5 rounded-full px-2 text-[8px] ring-1 ring-ink">Jos</span>
+              </span>
+              <span className="text-g-yellow">{"}"}</span>
+            </span>
+          </div>
         </div>
       </div>
     </article>

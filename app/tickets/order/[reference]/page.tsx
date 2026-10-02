@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarPlus, CircleAlert } from "lucide-react";
 import Nav from "@/components/df26/Nav";
+import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
+import { gallery } from "@/data/devfest26";
 import PendingVerifier from "@/components/tickets/PendingVerifier";
 import PrintButton from "@/components/tickets/PrintButton";
 import TicketCard from "@/components/tickets/TicketCard";
@@ -73,7 +75,7 @@ export default async function OrderPage({ params }: { params: Promise<{ referenc
           <PrintButton className={`${btn} bg-paper text-ink hover:bg-ink hover:text-white`} />
         </div>
       </div>
-      <div className="mt-6 grid gap-5 lg:grid-cols-2">
+      <div className="mt-6 grid gap-6">
         {tickets.map((t) => (
           <TicketCard key={t.id} ticket={t} />
         ))}
@@ -92,12 +94,13 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
         <Nav />
       </div>
       <main className="min-h-svh bg-paper pb-24">
-        <div className="bg-ink pt-32 pb-28 text-white sm:pt-36 print:hidden">
+        <div className="relative isolate overflow-hidden bg-ink pt-32 pb-28 text-white sm:pt-36 print:hidden">
+          <PhotoBackdrop src={gallery.audience} priority position="center 40%" />
           <div className="mx-auto max-w-5xl px-4 sm:px-8">
             <h1 className="type-condensed text-[clamp(3.5rem,9vw,7rem)]">{title}</h1>
           </div>
         </div>
-        <div className="mx-auto -mt-16 max-w-5xl px-4 sm:px-8 print:mt-0">{children}</div>
+        <div className="relative z-10 mx-auto -mt-16 max-w-5xl px-4 sm:px-8 print:mt-0">{children}</div>
       </main>
     </>
   );

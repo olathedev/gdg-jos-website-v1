@@ -12,14 +12,16 @@ export const event = {
   name: "DevFest Jos 2026",
   city: "Jos",
   region: "Plateau State, Nigeria",
-  /** ISO date-time of doors opening (WAT). Enables the countdown. Start time not confirmed yet: 9am assumed. */
+  /** ISO date-time of doors opening (WAT). Enables the countdown. */
   startsAt: "2026-10-17T09:00:00+01:00" as string | null,
   /** Human label shown in the hero. */
   dateLabel: "Sat, 17 Oct 2026" as string | null,
+  /** Long form used on tickets. */
+  dateTimeLabel: "Oct 17, 2026, 9:00 AM (WAT)",
   /** Short venue name for the hero. */
-  venue: "Odillins Event Center" as string | null,
+  venue: "Odilin's Event Center" as string | null,
   /** Full street address (FAQ, maps link). */
-  address: "5/6 Nunku Street, off Akila" as string | null,
+  address: "5/6 Nunku Street, off Akila Machunga Road, behind National Library" as string | null,
   /** Call for speakers link. */
   speakerUrl: null as string | null,
   sponsorUrl: COMMUNITY_URL,

@@ -1,8 +1,9 @@
 "use client";
 
 import { motion as m } from "framer-motion";
-import { event, heroPills, mapsHref, ticketHref, ticketLabel } from "@/data/devfest26";
+import { event, gallery, heroPills, mapsHref, ticketHref, ticketLabel } from "@/data/devfest26";
 import Countdown from "./Countdown";
+import PhotoBackdrop from "./PhotoBackdrop";
 import PhysicsPills from "./PhysicsPills";
 import { Eyebrow, PillLink } from "./ui";
 
@@ -22,6 +23,7 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative isolate h-svh min-h-[680px] overflow-hidden bg-ink text-white">
+      <PhotoBackdrop src={gallery.stage} priority position="center 35%" />
       <PhysicsPills pills={heroPills} />
 
       {/* Content sits above the pills but lets drags pass through everywhere except the buttons. */}

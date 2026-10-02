@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import CheckoutForm from "@/components/tickets/CheckoutForm";
 import Nav from "@/components/df26/Nav";
-import { event } from "@/data/devfest26";
+import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
+import { event, gallery } from "@/data/devfest26";
 import { isTierId } from "@/lib/tickets/tiers";
 
 export const metadata: Metadata = {
@@ -18,7 +19,8 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
     <>
       <Nav />
       <main className="min-h-svh bg-paper pb-40 lg:pb-24">
-        <div className="bg-ink pt-32 pb-28 text-white sm:pt-36">
+        <div className="relative isolate overflow-hidden bg-ink pt-32 pb-28 text-white sm:pt-36">
+          <PhotoBackdrop src={gallery.audience} priority position="center 40%" />
           <div className="mx-auto max-w-6xl px-4 sm:px-8">
             <Link
               href="/#tickets"
@@ -33,7 +35,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
             </p>
           </div>
         </div>
-        <div className="mx-auto -mt-16 max-w-6xl px-4 sm:px-8">
+        <div className="relative z-10 mx-auto -mt-16 max-w-6xl px-4 sm:px-8">
           <CheckoutForm initialTier={isTierId(tier) ? tier : "vip"} />
         </div>
       </main>

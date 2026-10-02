@@ -4,32 +4,45 @@ import path from "node:path";
 import { Resend } from "resend";
 import { event } from "@/data/devfest26";
 import type { Order, Ticket } from "./orders";
-import { tiers } from "./tiers";
+import { tierColor, tiers } from "./tiers";
 import { calendarUrl } from "./calendar";
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 function ticketCard(t: Ticket, site: string) {
-  const tier = tiers[t.tier];
-  const accent = t.tier === "regular" ? "#34a853" : t.tier === "vip" ? "#4285f4" : "#f9ab00";
+  const fill = tierColor[t.tier];
+  const venue = [event.venue, event.address, event.city].filter(Boolean).map((v) => esc(v!)).join(", ");
+  const font = "font-family:'Google Sans',Arial,Helvetica,sans-serif;color:#1e1e1e";
   return `
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;border-radius:20px;overflow:hidden;background:#ffffff;border:1px solid #e6e6e6">
-    <tr><td style="background:${accent};height:8px;font-size:0;line-height:0">&nbsp;</td></tr>
-    <tr><td style="padding:24px">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-        <td valign="top" style="font-family:Arial,Helvetica,sans-serif;color:#1e1e1e">
-          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#666">${esc(tier.name)} ticket</div>
-          <div style="font-size:22px;font-weight:bold;margin:6px 0 2px">${esc(t.holder_name)}</div>
-          <div style="font-size:13px;color:#666">${esc(t.holder_email)}</div>
-          <div style="font-size:13px;margin-top:16px;line-height:1.6">
-            <b>${esc(event.dateLabel ?? "")}</b><br>${esc(event.venue ?? "")}${event.address ? `, ${esc(event.address)}` : ""}, ${esc(event.city)}
-          </div>
-          <div style="font-family:'Courier New',monospace;font-size:18px;font-weight:bold;letter-spacing:3px;margin-top:16px">${esc(t.code)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;background:#ffffff;border:2px solid #1e1e1e;border-radius:24px">
+    <tr><td style="padding:24px 20px" align="center">
+      <div style="${font};font-size:26px;font-weight:bold">DevFest Jos 2026</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:10px auto 0"><tr>
+        <td style="${font};background:${fill};border:2px solid #1e1e1e;border-bottom-width:6px;border-radius:14px;padding:4px 22px;font-size:24px;font-weight:bold">${esc(tiers[t.tier].name)} Ticket</td>
+      </tr></table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px"><tr>
+        <td align="center" style="${font};background:${fill};border:2px solid #1e1e1e;padding:16px 12px">
+          <div style="font-size:13px;font-weight:bold">Name:</div>
+          <div style="font-size:24px;font-weight:bold;margin-top:2px">${esc(t.holder_name)}</div>
+          <div style="font-size:13px;font-weight:bold;margin-top:12px">Email:</div>
+          <div style="font-size:15px;font-weight:bold;margin-top:2px;word-break:break-all">${esc(t.holder_email)}</div>
         </td>
-        <td width="132" valign="top" align="right">
-          <img src="${site}/api/tickets/${encodeURIComponent(t.code)}/qr" width="120" height="120" alt="QR code for ticket ${esc(t.code)}" style="display:block;border:0">
+      </tr></table>
+      <div style="border-top:2px dashed #1e1e1e;width:60%;margin:16px auto 0;font-size:0;line-height:0">&nbsp;</div>
+      <div style="${font};font-size:12px;font-weight:bold;text-transform:uppercase;line-height:1.6;margin-top:12px">
+        Date/Time: ${esc(event.dateTimeLabel)}<br>Venue: ${venue}
+      </div>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:20px auto 0"><tr>
+        <td style="border:3px solid #1e1e1e;border-radius:20px;padding:10px;background:#ffffff">
+          <img src="${site}/api/tickets/${encodeURIComponent(t.code)}/qr" width="180" height="180" alt="QR code for ticket ${esc(t.code)}" style="display:block;border:0">
         </td>
+      </tr></table>
+      <div style="font-family:'Courier New',monospace;font-size:15px;font-weight:bold;letter-spacing:4px;margin-top:10px;color:#1e1e1e">${esc(t.code)}</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:14px auto 0"><tr>
+        <td valign="middle"><img src="${site}/images/gdglogo.png" width="40" height="20" alt="" style="display:block;border:0"></td>
+        <td valign="middle" style="${font};font-size:9px;line-height:1.1;padding:0 16px 0 6px">Google<br>Developer<br>Group Jos</td>
+        <td valign="middle" style="${font};font-size:16px;font-weight:bold"><span style="color:#4285f4">{</span>DevFest<span style="color:#f9ab00">}</span></td>
       </tr></table>
     </td></tr>
   </table>`;

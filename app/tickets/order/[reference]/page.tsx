@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarPlus, CircleAlert } from "lucide-react";
+import { CalendarPlus, CircleAlert, Download } from "lucide-react";
 import Nav from "@/components/df26/Nav";
 import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
 import { gallery } from "@/data/devfest26";
 import PendingVerifier from "@/components/tickets/PendingVerifier";
-import PrintButton from "@/components/tickets/PrintButton";
 import TicketCard from "@/components/tickets/TicketCard";
 import { calendarUrl } from "@/lib/tickets/calendar";
 import { ConfigError } from "@/lib/tickets/db";
@@ -72,7 +71,13 @@ export default async function OrderPage({ params }: { params: Promise<{ referenc
           <a href={calendarUrl()} target="_blank" rel="noopener noreferrer" className={`${btn} bg-ink text-white hover:bg-g-blue`}>
             <CalendarPlus aria-hidden className="size-4" /> Add to calendar
           </a>
-          <PrintButton className={`${btn} bg-paper text-ink hover:bg-ink hover:text-white`} />
+          <a
+            href={`/api/tickets/order/${encodeURIComponent(order.reference)}/pdf`}
+            download
+            className={`${btn} bg-h-yellow text-ink ring-2 ring-ink hover:bg-p-yellow`}
+          >
+            <Download aria-hidden className="size-4" /> Download PDF
+          </a>
         </div>
       </div>
       <div className="mt-6 grid gap-6">

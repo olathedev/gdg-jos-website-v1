@@ -1,32 +1,38 @@
-"use client";
-import Footer from "@/components/home/Footer";
-import BigSpiral from "@/components/shared/icons/BigSpiral";
-import { motion as m } from "framer-motion";
-import Nav from "@/components/home/Nav";
-import Hero from "@/components/home/Hero";
-import CollapsedNav from "@/components/home/CollapsedNav";
-import { useState } from "react";
+import About from "@/components/df26/About";
+import Faq from "@/components/df26/Faq";
+import Footer, { CtaBand } from "@/components/df26/Footer";
+import Gallery from "@/components/df26/Gallery";
+import Hero from "@/components/df26/Hero";
+import Marquee from "@/components/df26/Marquee";
+import Nav from "@/components/df26/Nav";
+import Partners from "@/components/df26/Partners";
+import Speakers from "@/components/df26/Speakers";
+import Team from "@/components/df26/Team";
+import Tracks from "@/components/df26/Tracks";
 
 export default function Home() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   return (
-    <main className="w-full  overflow-x-hidden">
-      <m.div
-        className="w-full flex flex-col relative min-h-screen container h-full  mx-auto px-4 md:px-10 "
-        initial="hidden"
-        animate="visible"
-        variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
+    <>
+      <a
+        href="#about"
+        className="sr-only z-[60] rounded-full bg-white px-4 py-2 text-ink focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
       >
-        <m.span className="absolute bottom-16 right-10">
-          <BigSpiral />
-        </m.span>
-        <Nav openNav={() => setIsNavOpen(true)} />
+        Skip to content
+      </a>
+      <Nav />
+      <main className="overflow-x-clip">
         <Hero />
-        <div className="py-6"></div>
-        <Footer />
-      </m.div>
-
-      {isNavOpen && <CollapsedNav closeNav={() => setIsNavOpen(false)} />}
-    </main>
+        <Marquee />
+        <About />
+        <Tracks />
+        <Speakers />
+        <Partners />
+        <Gallery />
+        <Team />
+        <Faq />
+        <CtaBand />
+      </main>
+      <Footer />
+    </>
   );
 }

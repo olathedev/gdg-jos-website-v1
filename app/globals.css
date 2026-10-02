@@ -6,11 +6,60 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-textDark: #3c3c3c;
+
+  /* DevFest / Google brand palette */
+  --color-ink: #1e1e1e;
+  --color-paper: #f0f0f0;
+  --color-cream: #fbf7ee;
+  --color-g-blue: #4285f4;
+  --color-g-red: #ea4335;
+  --color-g-yellow: #f9ab00;
+  --color-g-green: #34a853;
+  /* halftone */
+  --color-h-blue: #57caff;
+  --color-h-green: #5cdb6d;
+  --color-h-yellow: #ffd427;
+  --color-h-red: #ff7daf;
+  /* pastel */
+  --color-p-blue: #c3ecf6;
+  --color-p-green: #ccf6c5;
+  --color-p-yellow: #ffe7a5;
+  --color-p-red: #f8d8d8;
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-marquee-reverse: marquee var(--marquee-duration, 40s) linear infinite reverse;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 }
 
 @theme inline {
   --font-outfit: var(--font-outfit-sans), sans-serif;
   --font-inter: var(--font-inter-sans), sans-serif;
+  --font-sans: var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-google-sans-flex), var(--font-google-sans), sans-serif;
+  --font-mono: var(--font-google-sans-code), ui-monospace, monospace;
+}
+
+/* Tall, condensed headline cut of Google Sans Flex (hero, big numbers). */
+@utility type-condensed {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 55, "opsz" 144;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+}
+
+/* Wide, chunky cut for section headings. */
+@utility type-wide {
+  font-family: var(--font-display);
+  font-weight: 850;
+  font-variation-settings: "wdth" 120, "opsz" 72, "ROND" 30;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
 }
 
 /*
@@ -48,6 +97,8 @@
 }
 
 body {
+  background: var(--color-paper);
+  color: var(--color-ink);
   margin: 0;
   padding: 0;
   width: 100%;
@@ -55,12 +106,6 @@ body {
   scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 
 /* Hide scrollbar utility */
@@ -153,5 +198,14 @@ body {
 @media (min-width: 2000px) {
   .container {
     max-width: 1620px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation-play-state: paused;
   }
 }

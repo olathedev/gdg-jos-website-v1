@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Google_Sans, Google_Sans_Code, Google_Sans_Flex, Inter, Outfit } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import MotionProvider from "@/providers/MotionProvider";
 
@@ -24,6 +25,17 @@ const googleSansCode = Google_Sans_Code({
   variable: "--font-google-sans-code",
   display: "swap",
   adjustFontFallback: false,
+});
+
+// Clash Display (Fontshare, ITF Free Font License) for section headings.
+const clashDisplay = localFont({
+  src: [
+    { path: "./fonts/clash-display/ClashDisplay-500.woff2", weight: "500" },
+    { path: "./fonts/clash-display/ClashDisplay-600.woff2", weight: "600" },
+    { path: "./fonts/clash-display/ClashDisplay-700.woff2", weight: "700" },
+  ],
+  variable: "--font-clash-display",
+  display: "swap",
 });
 
 // Still used by the 2025 archive pages under /devfest/*.
@@ -61,7 +73,7 @@ export default function RootLayout({
     // Font variables live on <html> so theme tokens defined on :root can resolve them.
     <html
       lang="en"
-      className={`${googleSans.variable} ${googleSansFlex.variable} ${googleSansCode.variable} ${outfit.variable} ${inter.variable} scroll-smooth`}
+      className={`${googleSans.variable} ${googleSansFlex.variable} ${googleSansCode.variable} ${clashDisplay.variable} ${outfit.variable} ${inter.variable} scroll-smooth`}
     >
       <body className="font-sans antialiased">
         <MotionProvider>{children}</MotionProvider>

@@ -28,7 +28,7 @@ export default function Tracks() {
               <Eyebrow className="text-white/60">Content tracks</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-wide mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
                 Five tracks.
                 <br />
                 <span className="text-h-yellow">One big day.</span>

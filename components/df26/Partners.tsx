@@ -45,7 +45,7 @@ export default function Partners() {
           <Eyebrow className="text-ink">Partner with us</Eyebrow>
         </Reveal>
         <Reveal delay={0.05}>
-          <h2 className="type-wide mt-5 max-w-3xl text-[clamp(2.4rem,4.8vw,4.25rem)]">Want a piece of the action?</h2>
+          <h2 className="type-heading mt-5 max-w-3xl text-[clamp(2.4rem,4.8vw,4.25rem)]">Want a piece of the action?</h2>
         </Reveal>
 
         <div className="mt-14 grid gap-4 lg:grid-cols-2">

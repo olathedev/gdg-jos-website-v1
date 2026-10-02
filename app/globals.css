@@ -41,6 +41,7 @@
   --font-sans: var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-google-sans-flex), var(--font-google-sans), sans-serif;
   --font-mono: var(--font-google-sans-code), ui-monospace, monospace;
+  --font-heading: var(--font-clash-display), var(--font-google-sans), sans-serif;
 }
 
 /* Tall, condensed headline cut of Google Sans Flex (hero, big numbers). */
@@ -53,13 +54,13 @@
   line-height: 0.88;
 }
 
-/* Wide, chunky cut for section headings. */
-@utility type-wide {
-  font-family: var(--font-display);
-  font-weight: 850;
-  font-variation-settings: "wdth" 120, "opsz" 72, "ROND" 30;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+/* Section headings: Clash Display. */
+@utility type-heading {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  word-spacing: 0.06em; /* Clash's default word space is tight at display sizes */
+  line-height: 1;
 }
 
 /*

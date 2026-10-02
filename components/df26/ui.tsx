@@ -139,7 +139,7 @@ export function QuarterCircle({ className = "" }: { className?: string }) {
 
 export function Squiggle({ className = "" }: { className?: string }) {
   return (
-    <svg aria-hidden viewBox="0 0 120 40" className={className} fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round">
+    <svg aria-hidden viewBox="0 0 120 60" className={className} fill="none" stroke="currentColor" strokeWidth="9" strokeLinecap="round">
       <path d="M6 30c12-24 24-24 36 0s24 24 36 0 24-24 36 0" />
     </svg>
   );

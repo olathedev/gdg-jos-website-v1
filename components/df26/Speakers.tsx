@@ -25,7 +25,7 @@ export default function Speakers() {
               <Eyebrow className="text-ink/60">Speakers</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-wide mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
                 <span className="text-g-green">Real builders.</span> On our stage.
               </h2>
             </Reveal>

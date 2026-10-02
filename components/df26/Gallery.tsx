@@ -56,7 +56,7 @@ export default function Gallery() {
               <Eyebrow className="text-ink/60">Gallery</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-wide mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
                 We&apos;ve done this before.
                 <br />
                 <span className="text-g-red">2026 goes harder.</span>

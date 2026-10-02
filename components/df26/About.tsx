@@ -5,7 +5,7 @@ import { Mic, Presentation, Route, Users } from "lucide-react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { gallery, pastStats } from "@/data/devfest26";
-import { Braces, Eyebrow, QuarterCircle, Reveal, Squiggle, Star4 } from "./ui";
+import { Braces, Eyebrow, Reveal, Star4 } from "./ui";
 
 const statStyle = {
   blue: { card: "bg-g-blue text-white", icon: Users },
@@ -26,7 +26,7 @@ export default function About() {
               <Eyebrow className="text-ink/60">About DevFest</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)] text-balance">
+              <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)] text-balance">
                 <span className="text-g-blue">Made on the Plateau.</span>{" "}
                 <span className="text-ink">Built for builders.</span>
               </h2>
@@ -55,8 +55,6 @@ export default function About() {
               </div>
               <Braces className="absolute top-[6%] -right-2 w-24 text-g-green sm:w-28" />
               <Star4 className="absolute bottom-[38%] left-[64%] w-12 text-g-yellow" />
-              <QuarterCircle className="absolute -bottom-2 left-[6%] w-20 rotate-90 text-g-red" />
-              <Squiggle className="absolute -top-6 left-[38%] w-24 text-g-blue" />
             </div>
           </Reveal>
         </div>
@@ -64,15 +62,15 @@ export default function About() {
         {/* Stats */}
         <div ref={ref} className="mt-24">
           <Reveal>
-            <p className="font-mono text-xs font-medium tracking-[0.18em] text-ink/60 uppercase">DevFest Jos 2025, by the numbers</p>
+            <p className="text-xs font-medium tracking-[0.12em] text-ink/60 uppercase">DevFest Jos 2025, by the numbers</p>
           </Reveal>
           <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {pastStats.map((s, i) => {
               const { card, icon: Icon } = statStyle[s.tone];
               return (
                 <Reveal as="li" key={s.label} delay={i * 0.06} className={`group relative overflow-hidden rounded-[1.75rem] p-5 sm:p-7 ${card}`}>
-                  <Icon aria-hidden strokeWidth={1.25} className="absolute -right-6 -bottom-6 size-36 opacity-25 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 sm:size-44" />
-                  <p className="type-condensed relative text-[clamp(3.5rem,8vw,6.5rem)]">
+                  <Icon aria-hidden strokeWidth={1.25} className="absolute -right-8 -bottom-10 size-32 opacity-20 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 sm:size-36" />
+                  <p className="type-heading relative text-[clamp(2.5rem,5vw,3.75rem)]">
                     <CountUp end={inView ? s.value : 0} duration={2} preserveValue />
                     {s.suffix}
                   </p>

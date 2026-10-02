@@ -10,9 +10,8 @@ import TierArt from "./TierArt";
 type Holder = { self: boolean; name: string; email: string };
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "paying" } | { kind: "error"; message: string } | { kind: "cancelled" };
 
-// DevFest "sticker" button: yellow, ink outline, offset shadow that presses in.
 const primaryBtn =
-  "flex items-center justify-center gap-2 rounded-full bg-h-yellow font-bold tracking-wide text-ink uppercase ring-2 ring-ink shadow-[0_4px_0_0_var(--color-ink)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_var(--color-ink)] active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0";
+  "flex items-center justify-center gap-2 rounded-full bg-ink font-medium text-white transition-colors hover:bg-ink/85 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70";
 
 const emptyHolder = (self = false): Holder => ({ self, name: "", email: "" });
 
@@ -142,42 +141,52 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     }
   }
 
+  const others = holders.map((h, i) => ({ h, i })).filter(({ h, i }) => !(i === 0 && h.self));
+  const payLabel = total === 0 ? "Get my free ticket" : `Pay ${formatNaira(total)}`;
+
+  const statusBox = (
+    <div aria-live="polite">
+      {status.kind === "error" && <p className="mt-4 rounded-xl bg-p-red px-4 py-3 text-sm font-medium text-[#a50e0e]">{status.message}</p>}
+      {status.kind === "cancelled" && (
+        <p className="mt-4 rounded-xl bg-paper px-4 py-3 text-sm text-ink/80">Payment cancelled. Your details are still here, so you can try again.</p>
+      )}
+    </div>
+  );
+
   return (
-    <form onSubmit={submit} noValidate className="grid gap-6 lg:grid-cols-[1fr_24rem] lg:items-start lg:gap-8">
-      <div className="space-y-6">
-        {/* 1. Ticket */}
-        <Panel step="1" tone="bg-p-blue" title="Choose your ticket">
+    <form onSubmit={submit} noValidate className="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_22rem] lg:items-start lg:gap-8">
+      <div className="space-y-4 sm:space-y-5">
+        {/* Ticket */}
+        <Section title="Ticket">
           <fieldset>
             <legend className="sr-only">Ticket type</legend>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="space-y-2.5">
               {tierList.map((t) => {
                 const active = t.id === tierId;
                 return (
                   <label
                     key={t.id}
                     style={active ? { backgroundColor: tierColor[t.id] } : undefined}
-                    className={`relative isolate cursor-pointer overflow-hidden rounded-2xl p-4 transition-all duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-4 has-[:focus-visible]:outline-g-blue sm:p-5 ${
-                      active
-                        ? "-translate-y-1 ring-2 ring-ink shadow-[0_5px_0_0_var(--color-ink)]"
-                        : "bg-white ring-1 ring-ink/15 hover:-translate-y-0.5 hover:ring-ink/40"
+                    className={`relative isolate flex cursor-pointer items-center gap-3.5 overflow-hidden rounded-2xl px-4 py-3.5 transition-shadow has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-g-blue sm:px-5 sm:py-4 ${
+                      active ? "ring-2 ring-ink" : "bg-white ring-1 ring-ink/12 hover:ring-ink/30"
                     }`}
                   >
-                    {active && <TierArt tier={t.id} compact className="-z-10" />}
+                    {active && <TierArt tier={t.id} compact className="-z-10 opacity-50" />}
                     <input type="radio" name="tier" value={t.id} checked={active} onChange={() => chooseTier(t.id)} className="sr-only" />
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="font-bold">{t.name}</span>
-                      <span
-                        aria-hidden
-                        className={`grid size-6 place-items-center rounded-full transition-colors ${active ? "bg-ink text-white" : "ring-2 ring-ink/20"}`}
-                      >
-                        {active && <Check className="size-3.5" strokeWidth={3} />}
+                    <span aria-hidden className={`grid size-5 shrink-0 place-items-center rounded-full ${active ? "bg-ink text-white" : "ring-2 ring-ink/20"}`}>
+                      {active && <Check className="size-3" strokeWidth={3} />}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold">
+                        {t.name}
+                        {t.badge && <span className="rounded-full bg-ink/[0.07] px-2 py-0.5 text-[11px] font-semibold">{t.badge}</span>}
+                      </span>
+                      <span className="mt-0.5 line-clamp-2 block text-[13px] text-ink/65">
+                        {t.seatsPerUnit > 1 ? `${t.seatsPerUnit} people · ` : ""}
+                        {t.perks.slice(1).join(" · ") || t.perks[0]}
                       </span>
                     </span>
-                    <span className="type-condensed mt-3 block text-4xl">{priceLabel(t)}</span>
-                    <span className="mt-1 block max-w-[78%] text-xs text-ink/75">
-                      {t.seatsPerUnit > 1 ? `${t.seatsPerUnit} people · ` : ""}
-                      {t.perks.slice(1).join(" · ") || t.perks[0]}
-                    </span>
+                    <span className="type-heading shrink-0 text-xl sm:text-2xl">{priceLabel(t)}</span>
                   </label>
                 );
               })}
@@ -185,20 +194,20 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
           </fieldset>
 
           {tier.maxUnits > 1 && (
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl bg-paper px-5 py-4">
+            <div className="mt-4 flex items-center justify-between gap-4 border-t border-ink/10 pt-4">
               <div>
                 <p className="font-semibold" id="qty-label">
-                  {tier.seatsPerUnit > 1 ? "How many pairs?" : "How many tickets?"}
+                  {tier.seatsPerUnit > 1 ? "Pairs" : "Tickets"}
                 </p>
-                <p className="text-sm text-ink/60">
-                  {seats} {seats === 1 ? "person" : "people"} · up to {tier.maxUnits} per order
+                <p className="text-[13px] text-ink/60">
+                  {seats} {seats === 1 ? "person" : "people"} · max {tier.maxUnits}
                 </p>
               </div>
-              <div role="group" aria-labelledby="qty-label" className="flex items-center gap-1 rounded-full bg-white p-1 ring-2 ring-ink">
+              <div role="group" aria-labelledby="qty-label" className="flex items-center rounded-full bg-paper p-1">
                 <StepButton label="Decrease" disabled={units <= 1 || busy} onClick={() => changeUnits(units - 1)}>
                   <Minus className="size-4" />
                 </StepButton>
-                <output aria-live="polite" className="w-8 text-center text-lg font-bold tabular-nums">
+                <output aria-live="polite" className="w-8 text-center text-base font-semibold tabular-nums">
                   {units}
                 </output>
                 <StepButton label="Increase" disabled={units >= tier.maxUnits || busy} onClick={() => changeUnits(units + 1)}>
@@ -207,10 +216,10 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
               </div>
             </div>
           )}
-        </Panel>
+        </Section>
 
-        {/* 2. Buyer */}
-        <Panel step="2" tone="bg-p-red" title="Your details" hint="We'll send the order confirmation here.">
+        {/* Buyer */}
+        <Section title="Your details" hint="Your ticket and receipt go to this email.">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Full name" error={errors["buyer.name"]} className="sm:col-span-2">
               {(p) => <input {...p} autoComplete="name" value={buyer.name} onChange={(e) => setBuyerField("name", e.target.value)} />}
@@ -222,6 +231,15 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
               {(p) => <input {...p} type="tel" inputMode="tel" autoComplete="tel" placeholder="080…" value={buyer.phone} onChange={(e) => setBuyerField("phone", e.target.value)} />}
             </Field>
           </div>
+          <label className="mt-5 flex cursor-pointer items-center gap-3 text-sm">
+            <input
+              type="checkbox"
+              checked={!holders[0]?.self}
+              onChange={(e) => updateHolder(0, { self: !e.target.checked })}
+              className="size-5 shrink-0 rounded accent-ink"
+            />
+            {seats === 1 ? "I'm buying this ticket for someone else" : "I'm not attending myself"}
+          </label>
           {/* Honeypot: hidden from people and assistive tech. */}
           <div aria-hidden className="absolute -left-[9999px] h-0 overflow-hidden">
             <label>
@@ -229,34 +247,17 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
               <input tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
             </label>
           </div>
-        </Panel>
+        </Section>
 
-        {/* 3. Holders */}
-        <Panel step="3" tone="bg-p-green" title={seats > 1 ? "Who's coming?" : "Who's this ticket for?"} hint="Each person gets their own ticket and QR code by email.">
-          {errors.attendees && <p className="mb-4 text-sm font-medium text-g-red">{errors.attendees}</p>}
-          <ol className="space-y-4">
-            {holders.map((h, i) => (
-              <li key={i} className="rounded-2xl bg-paper p-4 sm:p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="font-semibold">
-                    {holderLabel(tier.id, units, i)}
-                  </p>
-                  {i === 0 && (
-                    <label className="flex cursor-pointer items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={h.self}
-                        onChange={(e) => updateHolder(0, { self: e.target.checked })}
-                        className="size-5 rounded accent-ink"
-                      />
-                      This one&apos;s for me
-                    </label>
-                  )}
-                </div>
-                {h.self ? (
-                  <p className="mt-2 text-sm text-ink/60">{buyer.name || buyer.email ? `${buyer.name}${buyer.email ? ` · ${buyer.email}` : ""}` : "Uses your details above."}</p>
-                ) : (
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {/* Other attendees: only when needed */}
+        {others.length > 0 && (
+          <Section title={others.length > 1 ? "Attendees" : "Attendee"} hint="Each person gets their own ticket by email.">
+            {errors.attendees && <p className="mb-4 text-sm font-medium text-[#a50e0e]">{errors.attendees}</p>}
+            <ol className="divide-y divide-ink/10">
+              {others.map(({ h, i }) => (
+                <li key={i} className="py-4 first:pt-0 last:pb-0">
+                  <p className="mb-3 text-sm font-semibold text-ink/70">{holderLabel(tier.id, units, i, holders[0].self)}</p>
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="Full name" error={errors[`attendees.${i}.name`]}>
                       {(p) => <input {...p} autoComplete="off" value={h.name} onChange={(e) => updateHolder(i, { name: e.target.value })} />}
                     </Field>
@@ -264,83 +265,79 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                       {(p) => <input {...p} type="email" inputMode="email" autoComplete="off" value={h.email} onChange={(e) => updateHolder(i, { email: e.target.value })} />}
                     </Field>
                   </div>
-                )}
-              </li>
-            ))}
-          </ol>
-        </Panel>
+                </li>
+              ))}
+            </ol>
+          </Section>
+        )}
+
+        {/* Mobile status (desktop shows it in the summary) */}
+        <div className="lg:hidden">{statusBox}</div>
+        {total > 0 && (
+          <p className="flex items-center justify-center gap-2 text-xs text-ink/55 lg:hidden">
+            <ShieldCheck aria-hidden className="size-4 text-g-green" /> Payments secured by Paystack
+          </p>
+        )}
       </div>
 
       {/* Mobile: total + pay always in reach */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.15)] backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-xl items-center justify-between gap-4">
-          <div>
-            <p className="text-xs text-ink/60">
+          <div className="min-w-0">
+            <p className="truncate text-xs text-ink/60">
               {tier.name} × {units}
+              {tier.seatsPerUnit > 1 && ` · ${seats} people`}
             </p>
-            <p className="type-condensed text-3xl">{total === 0 ? "Free" : formatNaira(total)}</p>
+            <p className="type-heading text-2xl">{total === 0 ? "Free" : formatNaira(total)}</p>
           </div>
-          <button type="submit" disabled={busy} className={`h-12 px-6 text-sm ${primaryBtn}`}>
+          <button type="submit" disabled={busy} className={`h-12 shrink-0 px-6 text-[15px] ${primaryBtn}`}>
             {busy ? <Loader2 aria-hidden className="size-4 animate-spin" /> : total > 0 && <Lock aria-hidden className="size-4" />}
             {total === 0 ? "Get ticket" : "Pay now"}
           </button>
         </div>
       </div>
 
-      {/* Summary */}
-      <aside className="lg:sticky lg:top-28">
-        <div className="overflow-hidden rounded-[2rem] bg-white ring-2 ring-ink shadow-[6px_6px_0_0_var(--color-ink)]">
-          <div className="relative isolate border-b-2 border-ink p-6 sm:p-7" style={{ backgroundColor: tierColor[tier.id] }}>
+      {/* Desktop summary */}
+      <aside className="hidden lg:sticky lg:top-28 lg:block">
+        <div className="overflow-hidden rounded-3xl bg-white ring-1 ring-ink/10">
+          <div className="relative isolate p-6" style={{ backgroundColor: tierColor[tier.id] }}>
             <TierArt tier={tier.id} className="-z-10" />
-            <h2 className="font-mono text-xs font-semibold tracking-[0.18em] uppercase">Order summary</h2>
-            <p className="type-heading mt-4 text-3xl">{tier.name}</p>
-            <p className="mt-1 text-sm text-ink/75">
+            <p className="text-xs font-semibold tracking-[0.1em] uppercase text-ink/70">Order summary</p>
+            <p className="type-heading mt-3 text-2xl">{tier.name}</p>
+            <p className="mt-1 text-sm text-ink/70">
               {units} × {priceLabel(tier)}
               {tier.seatsPerUnit > 1 && ` · ${seats} people`}
             </p>
           </div>
-
-          <div className="p-6 sm:p-7">
+          <div className="p-6">
             <ul className="space-y-2.5 text-sm">
               {tier.perks.map((p) => (
                 <li key={p} className="flex items-center gap-2.5">
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-p-green ring-1 ring-ink/20">
-                    <Check aria-hidden className="size-3" strokeWidth={3} />
-                  </span>
+                  <Check aria-hidden className="size-4 shrink-0 text-g-green" strokeWidth={2.5} />
                   {p}
                 </li>
               ))}
             </ul>
-            <div className="mt-6 flex items-baseline justify-between border-t-2 border-dashed border-ink/20 pt-5">
-              <span className="font-semibold">Total</span>
-              <span className="type-condensed text-5xl">{total === 0 ? "Free" : formatNaira(total)}</span>
+            <div className="mt-6 flex items-baseline justify-between border-t border-ink/10 pt-5">
+              <span className="text-sm font-medium text-ink/70">Total</span>
+              <span className="type-heading text-3xl">{total === 0 ? "Free" : formatNaira(total)}</span>
             </div>
-
-            <button type="submit" disabled={busy} className={`mt-6 h-14 w-full text-sm ${primaryBtn}`}>
+            <button type="submit" disabled={busy} className={`mt-5 h-12 w-full text-[15px] ${primaryBtn}`}>
               {busy ? (
                 <>
                   <Loader2 aria-hidden className="size-4 animate-spin" />
                   {status.kind === "paying" ? "Opening secure checkout…" : "Processing…"}
                 </>
-              ) : total === 0 ? (
-                "Get my free ticket"
               ) : (
                 <>
-                  <Lock aria-hidden className="size-4" /> Pay {formatNaira(total)}
+                  {total > 0 && <Lock aria-hidden className="size-4" />} {payLabel}
                 </>
               )}
             </button>
-
-            <div aria-live="polite">
-              {status.kind === "error" && <p className="mt-4 rounded-xl bg-p-red px-4 py-3 text-sm font-medium text-[#a50e0e]">{status.message}</p>}
-              {status.kind === "cancelled" && (
-                <p className="mt-4 rounded-xl bg-paper px-4 py-3 text-sm text-ink/80">Payment cancelled. Your details are still here, so you can try again.</p>
-              )}
-            </div>
-
+            {statusBox}
             {total > 0 && (
-              <p className="mt-5 flex items-center justify-center gap-2 text-xs text-ink/60">
-                <ShieldCheck aria-hidden className="size-4 text-g-green" /> Secured by Paystack
+              <p className="mt-4 flex items-center justify-center gap-2 text-xs text-ink/55">
+                <ShieldCheck aria-hidden className="size-4 text-g-green" /> Payments secured by Paystack
               </p>
             )}
           </div>
@@ -350,23 +347,20 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
   );
 }
 
-function holderLabel(tier: TierId, units: number, i: number) {
-  if (tier !== "padi") return `Ticket ${i + 1}`;
-  if (units === 1) return i === 0 ? "You" : "Your padi";
-  return `Pair ${Math.floor(i / 2) + 1} · Person ${(i % 2) + 1}`;
+function holderLabel(tier: TierId, units: number, i: number, buyerAttends: boolean) {
+  if (tier === "padi") {
+    if (units === 1) return i === 0 ? "Person 1" : buyerAttends ? "Your padi" : "Person 2";
+    return `Pair ${Math.floor(i / 2) + 1} · Person ${(i % 2) + 1}`;
+  }
+  return `Ticket ${i + 1}`;
 }
 
-function Panel({ step, tone, title, hint, children }: { step: string; tone: string; title: string; hint?: string; children: ReactNode }) {
+function Section({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
   return (
-    <section className="relative rounded-[2rem] bg-white p-5 ring-1 ring-ink/10 sm:p-8">
-      <div className="mb-6 flex items-start gap-4">
-        <span aria-hidden className={`grid size-10 shrink-0 place-items-center rounded-full font-mono text-sm font-bold text-ink ring-2 ring-ink ${tone}`}>
-          {step}
-        </span>
-        <div>
-          <h2 className="type-heading text-2xl">{title}</h2>
-          {hint && <p className="mt-1 text-sm text-ink/60">{hint}</p>}
-        </div>
+    <section className="relative rounded-3xl bg-white p-5 ring-1 ring-ink/[0.08] sm:p-7">
+      <div className="mb-5">
+        <h2 className="type-heading text-xl sm:text-2xl">{title}</h2>
+        {hint && <p className="mt-1 text-sm text-ink/60">{hint}</p>}
       </div>
       {children}
     </section>
@@ -379,7 +373,7 @@ function Field({ label, error, className = "", children }: { label: string; erro
   const id = useId();
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-ink/80">
         {label}
       </label>
       {children({
@@ -388,8 +382,8 @@ function Field({ label, error, className = "", children }: { label: string; erro
         required: true,
         "aria-invalid": Boolean(error),
         "aria-describedby": error ? `${id}-err` : undefined,
-        className: `h-12 w-full rounded-xl bg-white px-4 text-base text-ink ring-1 ring-inset transition-shadow outline-none placeholder:text-ink/40 focus:ring-2 focus:ring-g-blue ${
-          error ? "ring-g-red" : "ring-ink/15"
+        className: `h-12 w-full rounded-xl bg-paper/60 px-4 text-base text-ink ring-1 ring-inset transition-shadow outline-none placeholder:text-ink/40 focus:bg-white focus:ring-2 focus:ring-g-blue ${
+          error ? "ring-g-red" : "ring-ink/10"
         }`,
       })}
       {error && (
@@ -408,7 +402,7 @@ function StepButton({ label, disabled, onClick, children }: { label: string; dis
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid size-10 place-items-center rounded-full transition-colors hover:bg-paper focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-30"
+      className="grid size-9 place-items-center rounded-full transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-30"
     >
       {children}
     </button>

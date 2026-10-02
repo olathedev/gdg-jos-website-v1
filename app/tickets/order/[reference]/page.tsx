@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const btn =
-  "inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold tracking-wide uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue";
+  "inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue";
 
 export default async function OrderPage({ params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params;
@@ -58,7 +58,7 @@ export default async function OrderPage({ params }: { params: Promise<{ referenc
   const many = tickets.length > 1;
   return (
     <Shell title={many ? "You're all in!" : "You're in!"}>
-      <div className="flex flex-col justify-between gap-5 rounded-[2rem] bg-white p-6 ring-1 ring-ink/10 md:flex-row md:items-center sm:p-8 print:hidden">
+      <div className="flex flex-col justify-between gap-5 rounded-3xl bg-white p-5 ring-1 ring-ink/[0.08] sm:p-7 md:flex-row md:items-center sm:p-8 print:hidden">
         <div className="min-w-0">
           <p className="font-semibold">
             {tier.name} × {order.units} · {order.amount_kobo === 0 ? "Free" : formatNaira(order.amount_kobo)}
@@ -74,7 +74,7 @@ export default async function OrderPage({ params }: { params: Promise<{ referenc
           <a
             href={`/api/tickets/order/${encodeURIComponent(order.reference)}/pdf`}
             download
-            className={`${btn} bg-h-yellow text-ink ring-2 ring-ink hover:bg-p-yellow`}
+            className={`${btn} bg-paper text-ink ring-1 ring-ink/15 hover:bg-ink/5`}
           >
             <Download aria-hidden className="size-4" /> Download PDF
           </a>
@@ -99,13 +99,13 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
         <Nav />
       </div>
       <main className="min-h-svh bg-paper pb-24">
-        <div className="relative isolate overflow-hidden bg-ink pt-32 pb-28 text-white sm:pt-36 print:hidden">
+        <div className="relative isolate overflow-hidden bg-ink pt-24 pb-20 text-white sm:pt-32 sm:pb-24 print:hidden">
           <PhotoBackdrop src={gallery.audience} priority position="center 40%" />
           <div className="mx-auto max-w-5xl px-4 sm:px-8">
-            <h1 className="type-condensed text-[clamp(3.5rem,9vw,7rem)]">{title}</h1>
+            <h1 className="type-heading text-[clamp(2rem,5vw,3.5rem)]">{title}</h1>
           </div>
         </div>
-        <div className="relative z-10 mx-auto -mt-16 max-w-5xl px-4 sm:px-8 print:mt-0">{children}</div>
+        <div className="relative z-10 mx-auto -mt-10 max-w-5xl px-3 sm:-mt-12 sm:px-8 print:mt-0">{children}</div>
       </main>
     </>
   );

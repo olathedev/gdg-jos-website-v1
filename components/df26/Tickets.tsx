@@ -37,7 +37,7 @@ export default function Tickets() {
             <Eyebrow className="justify-center text-ink/60">Tickets</Eyebrow>
           </Reveal>
           <Reveal delay={0.05}>
-            <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+            <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
               Grab your <span className="text-g-blue">spot.</span>
             </h2>
           </Reveal>
@@ -57,7 +57,7 @@ export default function Tickets() {
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="type-heading text-3xl">{t.name}</h3>
                   {t.badge && (
-                    <span className={`rounded-full px-3 py-1 font-mono text-[11px] font-semibold tracking-wider whitespace-nowrap uppercase ${s.badge}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap ${s.badge}`}>
                       {t.badge}
                     </span>
                   )}
@@ -65,7 +65,7 @@ export default function Tickets() {
                 <p className={`mt-2 ${s.muted}`}>{t.tagline}</p>
 
                 <p className="mt-8 flex items-baseline gap-2">
-                  <span className="type-condensed text-7xl">{priceLabel(t)}</span>
+                  <span className="type-heading text-5xl">{priceLabel(t)}</span>
                   {t.seatsPerUnit > 1 && <span className={`text-sm font-semibold ${s.muted}`}>for {t.seatsPerUnit} people</span>}
                 </p>
 
@@ -83,7 +83,7 @@ export default function Tickets() {
                 <div className="mt-auto pt-10">
                   <Link
                     href={`/tickets/checkout?tier=${t.id}`}
-                    className={`flex h-14 items-center justify-center rounded-full text-sm font-semibold tracking-wide uppercase transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${s.cta}`}
+                    className={`flex h-12 items-center justify-center rounded-full text-[15px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${s.cta}`}
                   >
                     {t.priceKobo === 0 ? "Register free" : `Get ${t.name}`}
                   </Link>

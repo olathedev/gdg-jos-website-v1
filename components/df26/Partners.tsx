@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { event, partners } from "@/data/devfest26";
-import { Eyebrow, PillLink, Reveal, Ring, Star4 } from "./ui";
+import { Eyebrow, PillLink, Reveal, Ring } from "./ui";
 
 const offers = [
   {
@@ -38,20 +38,19 @@ export default function Partners() {
     <section id="partners" className="relative isolate scroll-mt-24 overflow-hidden bg-g-blue py-24 text-ink sm:py-32">
       <Ring className="absolute -top-40 -right-40 -z-10 w-[34rem] text-h-blue/40" />
       <Ring className="absolute -bottom-56 -left-48 -z-10 w-[30rem] text-white/10" />
-      <Star4 className="absolute top-24 left-[46%] -z-10 hidden w-16 text-h-yellow lg:block" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <Reveal>
           <Eyebrow className="text-ink">Partner with us</Eyebrow>
         </Reveal>
         <Reveal delay={0.05}>
-          <h2 className="type-heading mt-5 max-w-3xl text-[clamp(2.4rem,4.8vw,4.25rem)]">Want a piece of the action?</h2>
+          <h2 className="type-heading mt-5 max-w-3xl text-[clamp(2rem,3.6vw,3.25rem)]">Want a piece of the action?</h2>
         </Reveal>
 
         <div className="mt-14 grid gap-4 lg:grid-cols-2">
           {offers.map((o, i) => (
             <Reveal key={o.title} delay={i * 0.08} className={`flex flex-col rounded-[2rem] p-7 sm:p-10 ${o.card}`}>
-              <h3 className="type-condensed text-6xl sm:text-7xl">{o.title}</h3>
+              <h3 className="type-heading text-4xl sm:text-5xl">{o.title}</h3>
               <p className="mt-4 max-w-md text-lg opacity-80">{o.pitch}</p>
               <ul className="mt-7 space-y-3">
                 {o.points.map((p) => (
@@ -71,7 +70,7 @@ export default function Partners() {
 
       {/* Past partners */}
       <div className="mt-20">
-        <p className="px-4 text-center font-mono text-xs tracking-[0.18em] text-ink uppercase">
+        <p className="px-4 text-center text-xs tracking-[0.12em] text-ink uppercase">
           Backed in 2025 by
         </p>
         <div className="mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">

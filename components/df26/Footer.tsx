@@ -1,17 +1,16 @@
 import { COMMUNITY_URL, WHATSAPP_URL, navLinks, socials, ticketHref, ticketLabel } from "@/data/devfest26";
-import { Braces, Logo, PillLink, Reveal, Star4 } from "./ui";
+import { Braces, Logo, PillLink, Reveal } from "./ui";
 
 export function CtaBand() {
   return (
     <section className="relative isolate overflow-hidden bg-h-yellow py-24 text-center text-ink sm:py-28">
       <Braces className="absolute top-1/2 -left-10 -z-10 w-56 -translate-y-1/2 text-g-yellow sm:w-72" />
-      <Star4 className="absolute top-12 right-[10%] -z-10 w-16 text-g-blue sm:w-20" />
       <div className="mx-auto max-w-3xl px-4">
         <Reveal>
-          <p className="font-mono text-xs font-semibold tracking-[0.18em] uppercase">Don&apos;t sleep on it</p>
+          <p className="text-xs font-semibold tracking-[0.12em] uppercase">Don&apos;t sleep on it</p>
         </Reveal>
         <Reveal delay={0.05}>
-          <h2 className="type-condensed mt-4 text-[clamp(3.5rem,10vw,8rem)]">Be first in line</h2>
+          <h2 className="type-heading mt-4 text-[clamp(2.5rem,6vw,4.5rem)]">Be first in line</h2>
         </Reveal>
         <Reveal delay={0.1}>
           <p className="mx-auto mt-5 max-w-lg text-lg">
@@ -50,7 +49,7 @@ export default function Footer() {
             </PillLink>
           </div>
           <nav aria-label="Footer">
-            <p className="font-mono text-xs tracking-[0.18em] text-white/60 uppercase">Explore</p>
+            <p className="text-xs tracking-[0.12em] text-white/60 uppercase">Explore</p>
             <ul className="mt-5 space-y-3">
               {navLinks.map((l) => (
                 <li key={l.href}>
@@ -67,7 +66,7 @@ export default function Footer() {
             </ul>
           </nav>
           <div>
-            <p className="font-mono text-xs tracking-[0.18em] text-white/60 uppercase">Follow</p>
+            <p className="text-xs tracking-[0.12em] text-white/60 uppercase">Follow</p>
             <ul className="mt-5 space-y-3">
               {socials.map((s) => (
                 <li key={s.href}>
@@ -89,7 +88,7 @@ export default function Footer() {
       {/* Oversized wordmark */}
       <p
         aria-hidden
-        className="type-condensed -mb-[0.16em] text-center text-[19vw] leading-none whitespace-nowrap select-none"
+        className="type-heading -mb-[0.2em] text-center text-[15.5vw] leading-none whitespace-nowrap select-none"
       >
         <span className="text-g-blue">D</span>
         <span className="text-g-red">e</span>

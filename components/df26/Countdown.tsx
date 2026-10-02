@@ -37,9 +37,9 @@ export default function Countdown({ to }: { to: string }) {
     <div role="timer" aria-label="Time until DevFest Jos 2026" className="flex gap-2">
       {split(target - now).map(({ label, v }) => {
         return (
-          <div key={label} className="flex w-16 flex-col items-center rounded-2xl bg-white/10 py-2 ring-1 ring-white/15 backdrop-blur-sm sm:w-20">
-            <span className="type-condensed text-3xl tabular-nums sm:text-4xl">{String(v).padStart(2, "0")}</span>
-            <span className="mt-1 font-mono text-[10px] tracking-widest text-white/70 uppercase">{label}</span>
+          <div key={label} className="flex w-16 flex-col items-center rounded-2xl bg-white/[0.07] py-2.5 ring-1 ring-white/10 backdrop-blur-sm">
+            <span className="type-heading text-2xl tabular-nums">{String(v).padStart(2, "0")}</span>
+            <span className="mt-1 text-[10px] font-medium tracking-wider text-white/55 uppercase">{label}</span>
           </div>
         );
       })}

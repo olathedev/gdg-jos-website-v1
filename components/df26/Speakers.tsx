@@ -26,7 +26,7 @@ export default function Speakers() {
               <Eyebrow className="text-ink/60">Speakers</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
                 <span className="text-g-green">Real builders.</span> On our stage.
               </h2>
             </Reveal>
@@ -42,7 +42,7 @@ export default function Speakers() {
             </PillLink>
             <Link
               href="/devfest/speakers"
-              className="inline-flex h-14 items-center rounded-full px-5 text-sm font-semibold tracking-wide text-ink uppercase underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
+              className="inline-flex h-12 items-center rounded-full px-4 text-[15px] font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
             >
               All 2025 speakers
             </Link>
@@ -87,7 +87,7 @@ export default function Speakers() {
                 {/* Collapsed: vertical name */}
                 <p
                   aria-hidden
-                  className={`type-condensed absolute bottom-6 left-1/2 hidden origin-center -translate-x-1/2 text-3xl whitespace-nowrap text-white transition-opacity duration-300 [writing-mode:vertical-rl] rotate-180 lg:block ${
+                  className={`type-heading absolute bottom-6 left-1/2 hidden origin-center -translate-x-1/2 text-2xl whitespace-nowrap text-white transition-opacity duration-300 [writing-mode:vertical-rl] rotate-180 lg:block ${
                     isActive ? "opacity-0" : "opacity-100"
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function Speakers() {
                     isActive ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-4 lg:opacity-0"
                   }`}
                 >
-                  <p className="type-condensed text-3xl lg:text-5xl">{s.name}</p>
+                  <p className="type-heading text-2xl lg:text-4xl">{s.name}</p>
                   <p className="mt-2 line-clamp-2 max-w-sm text-sm text-white/80">{s.role}</p>
                 </div>
               </li>

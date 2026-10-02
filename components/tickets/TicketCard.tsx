@@ -62,7 +62,7 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
               className="size-48 sm:size-56"
             />
           </div>
-          <p className="mt-3 font-mono text-sm font-bold tracking-[0.25em]">{ticket.code}</p>
+          <p className="mt-3 text-sm font-bold tracking-[0.14em]">{ticket.code}</p>
           <div className="mt-4 flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <img src="/images/gdglogo.png" alt="" width={46} height={22} className="h-5 w-auto" />
@@ -74,7 +74,7 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
                 Group Jos
               </span>
             </span>
-            <span className="flex items-center font-display text-lg leading-none font-bold" style={{ fontVariationSettings: '"ROND" 100' }}>
+            <span className="flex items-center text-lg leading-none font-bold" style={{ fontVariationSettings: '"ROND" 100' }}>
               <span className="text-g-blue">{"{"}</span>
               <span className="flex flex-col items-center px-0.5">
                 DevFest

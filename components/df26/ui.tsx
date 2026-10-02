@@ -5,11 +5,11 @@ import { ArrowUpRight } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
 const variants = {
-  light: "bg-white text-ink hover:bg-p-yellow",
-  dark: "bg-ink text-white hover:bg-g-blue",
-  ghost: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
-  outline: "bg-transparent text-ink ring-1 ring-inset ring-ink/20 hover:bg-ink hover:text-white",
-  blue: "bg-g-blue text-white hover:bg-ink",
+  light: "bg-white text-ink hover:bg-white/85",
+  dark: "bg-ink text-white hover:bg-ink/85",
+  ghost: "bg-white/10 text-white ring-1 ring-inset ring-white/20 backdrop-blur-sm hover:bg-white/15",
+  outline: "bg-transparent text-ink ring-1 ring-inset ring-ink/20 hover:bg-ink/5",
+  blue: "bg-g-blue text-white hover:bg-g-blue/90",
 } as const;
 
 type PillLinkProps = ComponentProps<"a"> & {
@@ -33,8 +33,8 @@ export function PillLink({
     <a
       href={href}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-      className={`group inline-flex items-center justify-center gap-2 rounded-full font-semibold uppercase tracking-wide transition-colors duration-200 ${
-        size === "lg" ? "h-14 px-7 text-sm" : "h-11 px-5 text-xs"
+      className={`group inline-flex items-center justify-center gap-1.5 rounded-full font-medium whitespace-nowrap transition-colors duration-200 ${
+        size === "lg" ? "h-12 px-6 text-[15px]" : "h-10 px-4 text-sm"
       } ${variants[variant]} focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${className}`}
       {...rest}
     >
@@ -51,7 +51,7 @@ export function PillLink({
 
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-[0.18em] ${className}`}>
+    <p className={`inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] ${className}`}>
       <GoogleDots />
       {children}
     </p>
@@ -86,10 +86,10 @@ export function Reveal({
   return (
     <Comp
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </Comp>
@@ -100,22 +100,29 @@ export function Reveal({
 export function Logo({ className = "", tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
-      <span
-        className={`font-display text-2xl leading-none font-bold tracking-tight ${tone === "light" ? "text-white" : "text-ink"}`}
-        style={{ fontVariationSettings: '"wdth" 100, "ROND" 100' }}
-      >
+      <span className={`text-xl leading-none font-bold tracking-tight ${tone === "light" ? "text-white" : "text-ink"}`}>
         <span className="text-g-blue">{"{"}</span>
         <span className="px-0.5">DevFest</span>
         <span className="text-g-yellow">{"}"}</span>
       </span>
       <span
-        className={`rounded-full px-2 py-0.5 font-mono text-[11px] whitespace-nowrap font-semibold uppercase tracking-wider ${
+        className={`rounded-full px-2 py-0.5 text-[11px] whitespace-nowrap font-semibold uppercase tracking-wider ${
           tone === "light" ? "bg-white text-ink" : "bg-ink text-white"
         }`}
       >
         Jos &apos;26
       </span>
     </span>
+  );
+}
+
+/** The DevFest shapes strip (public/divider.svg) used between sections. */
+export function Divider({ className = "" }: { className?: string }) {
+  return (
+    <div
+      aria-hidden
+      className={`h-14 w-full bg-[#0a2914] bg-[url(/divider.svg)] bg-center bg-repeat-x [background-size:auto_100%] sm:h-[82px] ${className}`}
+    />
   );
 }
 

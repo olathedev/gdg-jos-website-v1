@@ -17,7 +17,7 @@ export default function Team() {
               <Eyebrow className="text-ink/60">The crew</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
                 Run by the community, <span className="text-g-blue">for the community.</span>
               </h2>
             </Reveal>
@@ -28,7 +28,7 @@ export default function Team() {
             </PillLink>
             <Link
               href="/devfest/team"
-              className="inline-flex h-14 items-center rounded-full px-5 text-sm font-semibold tracking-wide text-ink uppercase underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
+              className="inline-flex h-12 items-center rounded-full px-4 text-[15px] font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
             >
               Meet the 2025 team
             </Link>

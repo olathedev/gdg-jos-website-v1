@@ -1,33 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Google_Sans, Google_Sans_Code, Google_Sans_Flex, Inter, Outfit } from "next/font/google";
+import { Google_Sans, Inter, Outfit } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import MotionProvider from "@/providers/MotionProvider";
 
-// DevFest brand type: Google Sans for text, Google Sans Flex (variable width)
-// for display headlines, Google Sans Code for labels.
+// Two typefaces: Google Sans (DevFest brand) for text and UI, Clash Display for headings.
 const googleSans = Google_Sans({
   subsets: ["latin"],
   variable: "--font-google-sans",
   display: "swap",
 });
 
-const googleSansFlex = Google_Sans_Flex({
-  subsets: ["latin"],
-  axes: ["wdth", "opsz", "ROND"],
-  variable: "--font-google-sans-flex",
-  display: "swap",
-  adjustFontFallback: false, // no metric overrides published for this font yet
-});
-
-const googleSansCode = Google_Sans_Code({
-  subsets: ["latin"],
-  variable: "--font-google-sans-code",
-  display: "swap",
-  adjustFontFallback: false,
-});
-
-// Clash Display (Fontshare, ITF Free Font License) for section headings.
+// Clash Display (Fontshare, ITF Free Font License) for headings and big numbers.
 const clashDisplay = localFont({
   src: [
     { path: "./fonts/clash-display/ClashDisplay-500.woff2", weight: "500" },
@@ -73,7 +57,7 @@ export default function RootLayout({
     // Font variables live on <html> so theme tokens defined on :root can resolve them.
     <html
       lang="en"
-      className={`${googleSans.variable} ${googleSansFlex.variable} ${googleSansCode.variable} ${clashDisplay.variable} ${outfit.variable} ${inter.variable} scroll-smooth`}
+      className={`${googleSans.variable} ${clashDisplay.variable} ${outfit.variable} ${inter.variable} scroll-smooth`}
     >
       <body className="font-sans antialiased">
         <MotionProvider>{children}</MotionProvider>

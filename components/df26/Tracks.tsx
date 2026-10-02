@@ -28,7 +28,7 @@ export default function Tracks() {
               <Eyebrow className="text-white/60">Content tracks</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
                 Five tracks.
                 <br />
                 <span className="text-h-yellow">One big day.</span>
@@ -48,16 +48,16 @@ export default function Tracks() {
               <div
                 className={`group relative isolate grid gap-4 overflow-hidden border-b border-white/15 px-2 py-8 transition-colors duration-300 before:absolute before:inset-0 before:-z-10 before:origin-bottom before:scale-y-0 before:transition-transform before:duration-500 before:ease-[cubic-bezier(.22,1,.36,1)] hover:text-ink hover:before:scale-y-100 sm:px-6 md:grid-cols-[5rem_1.2fr_1fr_auto] md:items-center ${fill[t.tone]}`}
               >
-                <span className="flex items-center gap-3 font-mono text-sm text-white/50 transition-colors group-hover:text-ink/70">
+                <span className="flex items-center gap-3 text-sm text-white/50 transition-colors group-hover:text-ink/70">
                   <span aria-hidden className={`size-2.5 rounded-full ${dot[t.tone]} group-hover:bg-ink`} />
                   {t.no}
                 </span>
-                <h3 className="type-condensed text-[clamp(2.75rem,6vw,5rem)]">{t.title}</h3>
+                <h3 className="type-heading text-[clamp(1.75rem,3vw,2.5rem)]">{t.title}</h3>
                 <div>
                   <p className="text-white/75 transition-colors group-hover:text-ink/80">{t.blurb}</p>
                   <ul className="mt-3 flex flex-wrap gap-2" aria-label={`${t.title} topics`}>
                     {t.tags.map((tag) => (
-                      <li key={tag} className="rounded-full border border-white/20 px-3 py-1 font-mono text-xs uppercase transition-colors group-hover:border-ink/30">
+                      <li key={tag} className="rounded-full border border-white/20 px-3 py-1 text-xs uppercase transition-colors group-hover:border-ink/30">
                         {tag}
                       </li>
                     ))}

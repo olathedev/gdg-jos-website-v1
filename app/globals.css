@@ -39,28 +39,17 @@
   --font-outfit: var(--font-outfit-sans), sans-serif;
   --font-inter: var(--font-inter-sans), sans-serif;
   --font-sans: var(--font-google-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-google-sans-flex), var(--font-google-sans), sans-serif;
-  --font-mono: var(--font-google-sans-code), ui-monospace, monospace;
   --font-heading: var(--font-clash-display), var(--font-google-sans), sans-serif;
 }
 
-/* Tall, condensed headline cut of Google Sans Flex (hero, big numbers). */
-@utility type-condensed {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-variation-settings: "wdth" 55, "opsz" 144;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.88;
-}
-
-/* Section headings: Clash Display. */
+/* Display type (headings, prices, big numbers): Clash Display. Everything else is Google Sans. */
 @utility type-heading {
   font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: -0.02em;
   word-spacing: 0.06em; /* Clash's default word space is tight at display sizes */
-  line-height: 1;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
 }
 
 /*

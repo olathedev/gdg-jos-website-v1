@@ -202,9 +202,9 @@ export default function PhysicsPills({ pills }: { pills: { label: string; tone: 
           ref={(el) => {
             pillRefs.current[i] = el;
           }}
-          className={`${toneClass[p.tone]} pointer-events-auto pointer-coarse:pointer-events-none absolute top-0 left-0 inline-flex cursor-grab touch-none items-center rounded-full px-3.5 py-2 text-ink whitespace-nowrap opacity-0 select-none will-change-transform active:cursor-grabbing sm:px-5 sm:py-2.5`}
+          className={`${toneClass[p.tone]} pointer-events-auto pointer-coarse:pointer-events-none absolute top-0 left-0 inline-flex cursor-grab touch-none items-center rounded-full px-3.5 py-2.5 text-ink whitespace-nowrap opacity-0 select-none will-change-transform active:cursor-grabbing sm:px-5 sm:py-3`}
         >
-          <span className="type-condensed text-base leading-none sm:text-xl">{p.label}</span>
+          <span className="text-[13px] leading-none font-bold tracking-wide uppercase sm:text-base">{p.label}</span>
         </span>
       ))}
     </div>

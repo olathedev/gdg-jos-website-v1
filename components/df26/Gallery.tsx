@@ -39,7 +39,7 @@ function RecapVideo({ className = "" }: { className?: string }) {
         aria-label="Highlights from DevFest Jos 2024"
         className="absolute inset-0 size-full object-cover"
       />
-      <span className="absolute top-4 left-4 rounded-full bg-g-red px-3 py-1 font-mono text-[11px] font-semibold tracking-wider text-white uppercase">
+      <span className="absolute top-4 left-4 rounded-full bg-g-red px-3 py-1 text-[11px] font-semibold tracking-wider text-white uppercase">
         ● 2024 recap
       </span>
     </div>
@@ -56,7 +56,7 @@ export default function Gallery() {
               <Eyebrow className="text-ink/60">Gallery</Eyebrow>
             </Reveal>
             <Reveal delay={0.05}>
-              <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+              <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
                 We&apos;ve done this before.
                 <br />
                 <span className="text-g-red">2026 goes harder.</span>
@@ -83,8 +83,8 @@ export default function Gallery() {
           <RecapVideo className="row-span-2" />
           <div className="relative flex flex-col justify-between overflow-hidden rounded-[1.75rem] bg-h-yellow p-5 text-ink">
             <Braces className="absolute -right-4 -bottom-6 w-28 text-g-yellow" />
-            <p className="font-mono text-xs font-semibold tracking-wider uppercase">Next up</p>
-            <p className="type-condensed relative text-6xl sm:text-7xl">
+            <p className="text-xs font-semibold tracking-wider uppercase">Next up</p>
+            <p className="type-heading relative text-4xl sm:text-5xl">
               Jos
               <br />
               &apos;26

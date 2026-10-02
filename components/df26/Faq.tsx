@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Plus } from "lucide-react";
 import { useId, useState } from "react";
 import { COMMUNITY_URL, faqs, gallery } from "@/data/devfest26";
-import { Eyebrow, QuarterCircle, Reveal, Star4 } from "./ui";
+import { Eyebrow, Reveal } from "./ui";
 
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
@@ -18,7 +18,7 @@ export default function Faq() {
             <Eyebrow className="text-ink/60">FAQ</Eyebrow>
           </Reveal>
           <Reveal delay={0.05}>
-            <h2 className="type-heading mt-5 text-[clamp(2.4rem,4.8vw,4.25rem)]">
+            <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
               Got <span className="text-g-green">questions?</span>
             </h2>
           </Reveal>
@@ -26,8 +26,6 @@ export default function Faq() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] rounded-tr-[6rem]">
               <Image src={gallery.keynote} alt="A speaker addressing the DevFest Jos audience" fill sizes="28rem" className="object-cover" />
             </div>
-            <Star4 className="absolute -top-5 -left-5 w-14 text-g-blue" />
-            <QuarterCircle className="absolute -right-4 -bottom-4 w-16 -rotate-90 text-g-yellow" />
           </Reveal>
           <Reveal delay={0.1}>
             <p className="mt-8 text-ink/70">

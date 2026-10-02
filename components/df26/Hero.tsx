@@ -1,7 +1,7 @@
 "use client";
 
 import { motion as m } from "framer-motion";
-import { event, heroPills, ticketHref, ticketLabel } from "@/data/devfest26";
+import { event, heroPills, mapsHref, ticketHref, ticketLabel } from "@/data/devfest26";
 import Countdown from "./Countdown";
 import PhysicsPills from "./PhysicsPills";
 import { Eyebrow, PillLink } from "./ui";
@@ -68,7 +68,19 @@ export default function Hero() {
           </div>
           {event.startsAt && <Countdown to={event.startsAt} />}
           <p className="font-mono text-xs tracking-[0.14em] text-balance text-white/60 uppercase">
-            {when} <span aria-hidden className="mx-2 text-g-yellow">✦</span> {where}
+            {when} <span aria-hidden className="mx-2 text-g-yellow">✦</span>{" "}
+            {mapsHref ? (
+              <a
+                href={mapsHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto underline decoration-white/30 underline-offset-4 hover:text-white hover:decoration-white focus-visible:outline-2 focus-visible:outline-g-blue"
+              >
+                {where}
+              </a>
+            ) : (
+              where
+            )}
           </p>
         </m.div>
       </div>

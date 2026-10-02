@@ -12,11 +12,14 @@ export const event = {
   name: "DevFest Jos 2026",
   city: "Jos",
   region: "Plateau State, Nigeria",
-  /** ISO date-time of doors opening, e.g. "2026-11-28T09:00:00+01:00". Enables the countdown. */
-  startsAt: null as string | null,
-  /** Human label shown in the hero, e.g. "Sat, 28 Nov 2026". */
-  dateLabel: null as string | null,
-  venue: null as string | null,
+  /** ISO date-time of doors opening (WAT). Enables the countdown. Start time not confirmed yet: 9am assumed. */
+  startsAt: "2026-10-17T09:00:00+01:00" as string | null,
+  /** Human label shown in the hero. */
+  dateLabel: "Sat, 17 Oct 2026" as string | null,
+  /** Short venue name for the hero. */
+  venue: "Odillins Event Center" as string | null,
+  /** Full street address (FAQ, maps link). */
+  address: "5/6 Nunku Street, off Akila" as string | null,
   /** Ticket / registration link. Until set, ticket CTAs point to the community page. */
   ticketUrl: null as string | null,
   /** Call for speakers link. */
@@ -24,6 +27,12 @@ export const event = {
   sponsorUrl: COMMUNITY_URL,
   volunteerUrl: COMMUNITY_URL,
 };
+
+export const mapsHref = event.venue
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      [event.venue, event.address, event.city, "Plateau State"].filter(Boolean).join(", "),
+    )}`
+  : null;
 
 export const ticketHref = event.ticketUrl ?? COMMUNITY_URL;
 export const ticketLabel = event.ticketUrl ? "Get your ticket" : "Get notified";
@@ -169,7 +178,7 @@ export const faqs = [
   {
     q: "When and where is it happening?",
     a: event.dateLabel && event.venue
-      ? `${event.dateLabel} at ${event.venue}, ${event.city}.`
+      ? `Saturday, 17 October 2026 at ${event.venue}, ${event.address ? `${event.address}, ` : ""}${event.city}.`
       : "In Jos, Plateau State. We'll announce the date and venue soon. Join the GDG Jos community to hear first.",
   },
   {

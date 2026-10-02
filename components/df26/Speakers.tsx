@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { upscaled } from "@/lib/cloudinary-loader";
 import Link from "next/link";
 import { useState } from "react";
 import { speakers } from "@/data/data";
@@ -72,7 +73,7 @@ export default function Speakers() {
                 />
                 <div className="relative aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto">
                   <Image
-                    src={s.image}
+                    src={upscaled(s.image)}
                     alt={s.name}
                     fill
                     sizes="(min-width: 1024px) 36rem, 16rem"

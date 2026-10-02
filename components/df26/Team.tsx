@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { upscaled } from "@/lib/cloudinary-loader";
 import Link from "next/link";
 import { organisers } from "@/data/data";
 import { event } from "@/data/devfest26";
@@ -40,7 +41,7 @@ export default function Team() {
             return (
               <Reveal as="li" key={o.name} delay={i * 0.06} className={`group overflow-hidden rounded-[1.75rem] p-2 ${tones[i % tones.length]}`}>
                 <div className="relative aspect-square overflow-hidden rounded-[1.4rem]">
-                  <Image src={o.image} alt={o.name} fill sizes="(min-width: 1024px) 18rem, 45vw" className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={upscaled(o.image)} alt={o.name} fill sizes="(min-width: 1024px) 18rem, 45vw" className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <div className="px-3 pt-4 pb-3">
                   <p className="text-lg leading-tight font-bold text-ink">{o.name}</p>

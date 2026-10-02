@@ -16,6 +16,15 @@ export function upscaled(src: string) {
   return src.includes(UPLOAD) ? src.replace(UPLOAD, `${UPLOAD}e_upscale/`) : src;
 }
 
+/**
+ * Sharp transparent cut-out of a portrait: AI-upscale first (the source
+ * photos are small), then remove the background. Order matters: upscaling
+ * after removal flattens the transparency.
+ */
+export function cutout(src: string) {
+  return src.includes(UPLOAD) ? src.replace(UPLOAD, `${UPLOAD}e_upscale/e_background_removal/`) : src;
+}
+
 export default function cloudinaryLoader({
   src,
   width,
@@ -31,7 +40,11 @@ export default function cloudinaryLoader({
     // Keep any existing transformations first (e.g. upscale), then resize.
     let i = 0;
     while (i < segs.length - 1 && isTransformation(segs[i])) i++;
-    const params = `f_auto,c_limit,w_${width},q_${quality ?? "auto"}`;
+    // AI transforms (upscale / background removal) cost a job per distinct URL,
+    // so collapse their sizes into two buckets instead of next/image's ~8.
+    const ai = /e_(upscale|background_removal)/.test(rest);
+    const w = ai ? (width <= 480 ? 480 : 920) : width;
+    const params = `f_auto,c_limit,w_${w},q_${quality ?? "auto"}`;
     return `${base}${UPLOAD}${[...segs.slice(0, i), params, ...segs.slice(i)].join("/")}`;
   }
   // Local assets are served as-is.

@@ -1,16 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { upscaled } from "@/lib/cloudinary-loader";
+import { cutout } from "@/lib/cloudinary-loader";
 import Link from "next/link";
 import { useState } from "react";
 import { speakers } from "@/data/data";
 import { COMMUNITY_URL, event } from "@/data/devfest26";
-import { Eyebrow, PillLink, Reveal } from "./ui";
+import { Braces, Eyebrow, PillLink, QuarterCircle, Reveal, Ring, Squiggle } from "./ui";
 
-// Map the legacy hex values in data.ts onto the brand palette.
-const toneFor = (hex: string) =>
-  ({ "#4286F2": "bg-g-blue", "#FF0000": "bg-g-red", "#FFA800": "bg-g-yellow", "#34A853": "bg-g-green" })[hex] ?? "bg-g-blue";
+// Each speaker gets a Google colour (rotating), a big soft shape behind the
+// cut-out, and a pastel name panel. Role text uses Google's darker tones (AA on pastel).
+const tones = [
+  { bg: "bg-g-blue", panel: "bg-p-blue", role: "text-[#1967d2]", Shape: Ring, shape: "-top-16 -right-20 w-[26rem]" },
+  { bg: "bg-g-red", panel: "bg-p-red", role: "text-[#c5221f]", Shape: Squiggle, shape: "top-10 -left-24 w-[34rem] rotate-[-20deg]" },
+  { bg: "bg-g-yellow", panel: "bg-p-yellow", role: "text-[#b06000]", Shape: QuarterCircle, shape: "-top-6 -right-6 w-80 rotate-90" },
+  { bg: "bg-g-green", panel: "bg-p-green", role: "text-[#188038]", Shape: Braces, shape: "top-6 -right-16 w-96 rotate-12" },
+] as const;
 
 const featured = speakers.slice(0, 9);
 
@@ -50,18 +55,20 @@ export default function Speakers() {
         </div>
       </div>
 
-      {/* Desktop: expanding strip. Mobile: swipeable cards. */}
-      <Reveal delay={0.1} className="mx-auto mt-14 max-w-7xl px-4 sm:px-8">
-        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 scrollbar-hide lg:mx-0 lg:h-[32rem] lg:overflow-visible lg:px-0 lg:pb-0">
+      {/* Desktop: expanding strip. Mobile: swipeable cards (always shown expanded). */}
+      <Reveal delay={0.1} className="mx-auto mt-12 max-w-7xl px-4 sm:px-8">
+        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 scrollbar-hide lg:mx-0 lg:h-[34rem] lg:overflow-visible lg:px-0 lg:pb-0">
           {featured.map((s, i) => {
             const isActive = i === active;
+            const t = tones[i % tones.length];
+            const collapsed = (cls: string) => (isActive ? "" : cls); // desktop-only collapsed state
             return (
               <li
                 key={s.name}
                 onMouseEnter={() => setActive(i)}
-                className={`relative w-64 shrink-0 snap-start overflow-hidden rounded-[1.75rem] transition-[flex-grow] duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:w-auto lg:min-w-0 lg:shrink ${
+                className={`relative isolate h-[27rem] w-72 shrink-0 snap-start overflow-hidden rounded-[1.75rem] transition-[flex-grow,background-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:h-auto lg:w-auto lg:min-w-0 lg:shrink ${
                   isActive ? "lg:grow-[6]" : "lg:grow"
-                } ${toneFor(s.color)}`}
+                } ${t.bg} ${collapsed("lg:bg-[#2a2a2a]")}`}
               >
                 <button
                   type="button"
@@ -69,39 +76,38 @@ export default function Speakers() {
                   onClick={() => setActive(i)}
                   aria-label={`${s.name}, ${s.role}`}
                   aria-pressed={isActive}
-                  className="absolute inset-0 z-20 hidden rounded-[1.75rem] focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-ink lg:block"
+                  className="absolute inset-0 z-30 hidden rounded-[1.75rem] focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-ink lg:block"
                 />
-                <div className="relative aspect-[4/5] lg:absolute lg:inset-0 lg:aspect-auto">
+
+                {/* Big soft brand shape */}
+                <t.Shape className={`absolute -z-10 text-white/25 transition-opacity duration-500 ${t.shape} ${collapsed("lg:opacity-0")}`} />
+
+                {/* Cut-out portrait */}
+                <div className={`absolute inset-x-0 top-0 bottom-28 transition-[bottom] duration-500 ${collapsed("lg:bottom-0")}`}>
                   <Image
-                    src={upscaled(s.image)}
+                    src={cutout(s.image)}
                     alt={s.name}
                     fill
-                    sizes="(min-width: 1024px) 36rem, 16rem"
-                    className={`object-cover object-top transition-[filter,transform] duration-700 ${
-                      isActive ? "lg:scale-100 lg:grayscale-0" : "lg:scale-105 lg:grayscale"
-                    }`}
+                    sizes="(min-width: 1024px) 34rem, 18rem"
+                    className={`object-cover object-top transition-[filter,transform] duration-700 ${collapsed("lg:scale-105 lg:grayscale")}`}
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-ink/85 via-ink/10 to-transparent" />
+                  <div className={`absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 ${collapsed("lg:opacity-100")}`} />
                 </div>
 
-                {/* Collapsed: vertical name */}
+                {/* Collapsed: vertical first name */}
                 <p
                   aria-hidden
-                  className={`type-heading absolute bottom-6 left-1/2 hidden origin-center -translate-x-1/2 text-2xl whitespace-nowrap text-white transition-opacity duration-300 [writing-mode:vertical-rl] rotate-180 lg:block ${
-                    isActive ? "opacity-0" : "opacity-100"
-                  }`}
+                  className={`type-heading absolute bottom-6 left-1/2 hidden -translate-x-1/2 rotate-180 text-2xl whitespace-nowrap text-white [writing-mode:vertical-rl] ${collapsed("lg:block")}`}
                 >
                   {s.name.split(" ")[0]}
                 </p>
 
-                {/* Expanded: full name + role */}
+                {/* Name panel */}
                 <div
-                  className={`absolute inset-x-0 bottom-0 p-5 text-white transition-all duration-500 lg:p-7 ${
-                    isActive ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-4 lg:opacity-0"
-                  }`}
+                  className={`absolute inset-x-0 bottom-0 flex h-28 flex-col justify-center px-5 transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:px-7 ${t.panel} ${collapsed("lg:translate-y-full")}`}
                 >
-                  <p className="type-heading text-2xl lg:text-4xl">{s.name}</p>
-                  <p className="mt-2 line-clamp-2 max-w-sm text-sm text-white/80">{s.role}</p>
+                  <p className="type-heading truncate text-2xl text-ink">{s.name}</p>
+                  <p className={`mt-1 line-clamp-2 text-sm font-medium ${t.role}`}>{s.role}</p>
                 </div>
               </li>
             );

@@ -41,3 +41,9 @@ create index if not exists tickets_order_idx on tickets (order_id);
 -- One free (Regular) ticket per email address.
 create unique index if not exists tickets_one_regular_per_email
   on tickets (lower(holder_email)) where tier = 'regular';
+
+-- Supabase exposes the public schema through its REST API. RLS with no policies
+-- blocks that API completely; the server connects as the table owner, which RLS
+-- does not restrict, so ticketing keeps working.
+alter table orders enable row level security;
+alter table tickets enable row level security;

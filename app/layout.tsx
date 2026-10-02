@@ -8,12 +8,12 @@ import MotionProvider from "@/providers/MotionProvider";
 
 const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-outfit-sans",
 });
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-inter-sans",
 })
 
 

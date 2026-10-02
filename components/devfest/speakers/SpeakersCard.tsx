@@ -55,7 +55,7 @@ const SpeakersCard = ({
         }`}
       >
         <h3 className=" md:text-lg font-bold">{name}</h3>
-        <p className="text-sm text-[#3C3C3C]">{role}</p>
+        <p className="text-sm text-textDark">{role}</p>
       </div>
 
       {isSpeaker ? (
@@ -68,7 +68,7 @@ const SpeakersCard = ({
           </div> */}
         </div>
       ) : (
-        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-[#3C3C3C] text-sm">
+        <div className="my-3 w-full h-8 flex items-center justify-center  bg-[#E4EEFF] rounded-full text-textDark text-sm">
           {unit}
         </div>
       )}

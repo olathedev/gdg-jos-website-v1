@@ -54,7 +54,7 @@ const Facilitators = () => {
           ref={scrollRef}
         >
           {mentors.map((speaker, index) => (
-            <div className="w-[230px] flex-shrink-0 break-words whitespace-normal" key={index}>
+            <div className="w-[230px] shrink-0 wrap-break-word whitespace-normal" key={index}>
               <SpeakersCard
                 color=""
                 name={speaker.name}
@@ -85,7 +85,7 @@ const Facilitators = () => {
         {/* Desktop: flex row */}
         <div className="hidden md:flex w-full justify-center gap-x-6">
           {mentors.map((speaker, index) => (
-            <div className="w-[230px] break-words whitespace-normal" key={index}>
+            <div className="w-[230px] wrap-break-word whitespace-normal" key={index}>
               <SpeakersCard
                 color=""
                 name={speaker.name}

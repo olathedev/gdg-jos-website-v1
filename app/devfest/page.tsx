@@ -29,7 +29,7 @@ const DevFest = () => {
           alt=""
           height={180}
           width={260}
-          className="absolute -bottom-[4rem] md:-bottom-14 right-[10rem] md:right-[30rem] z-20"
+          className="absolute -bottom-16 md:-bottom-14 right-40 md:right-120 z-20"
         />
         <Header />
       </div>

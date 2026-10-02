@@ -122,7 +122,7 @@ const Pannelists: React.FC = () => {
             ref={scrollRef}
           >
             {pannelists.map((p, i) => (
-              <div className="w-[230px] flex-shrink-0" key={i}>
+              <div className="w-[230px] shrink-0" key={i}>
                 <SpeakersCard
                   color={p.color}
                   name={p.name}

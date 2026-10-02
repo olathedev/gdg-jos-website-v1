@@ -40,7 +40,7 @@ const Moderators = () => {
       </h1>
       <div className="w-full flex flex-col md:flex-row  justify-center items-center gap-x-6">
         {moderators.map((mod, idx) => (
-          <div className="w-[230px] break-words whitespace-normal" key={idx}>
+          <div className="w-[230px] wrap-break-word whitespace-normal" key={idx}>
             <SpeakersCard
               color={mod.color}
               name={mod.name}
@@ -56,7 +56,7 @@ const Moderators = () => {
         Meet Our Host
       </h1>
 
-      <div className="w-[230px] break-words whitespace-normal">
+      <div className="w-[230px] wrap-break-word whitespace-normal">
         <SpeakersCard
           isCentered
           name="Loreta Katok Tohomdet"
@@ -71,7 +71,7 @@ const Moderators = () => {
 
       <div className="w-full  flex flex-col md:flex-row justify-center items-center gap-x-6">
         {organisers.map((org, idx) => (
-          <div className="w-[230px] break-words whitespace-normal" key={idx}>
+          <div className="w-[230px] wrap-break-word whitespace-normal" key={idx}>
             <SpeakersCard
               color={org.color}
               name={org.name}

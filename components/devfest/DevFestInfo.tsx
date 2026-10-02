@@ -126,7 +126,7 @@ const DevFestInfo = () => {
         alt=""
         height={180}
         width={180}
-        className="absolute -bottom-4 right-[40rem] -rotate-[25deg] opacity-50"
+        className="absolute -bottom-4 right-160 rotate-[-25deg] opacity-50"
       />
     </section>
   );

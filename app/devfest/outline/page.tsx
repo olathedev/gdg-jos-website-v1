@@ -205,7 +205,7 @@ const Outline = () => {
             placeholder="Search activities or speakers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full max-w-md px-4 py-2.5 rounded-xl border border-[#F6BE2C] text-textDark focus:outline-none focus:ring-1 focus:ring-[#F6BE2C] bg-white"
+            className="w-full max-w-md px-4 py-2.5 rounded-xl border border-[#F6BE2C] text-textDark focus:outline-hidden focus:ring-1 focus:ring-[#F6BE2C] bg-white"
           />
         </div>
 
@@ -214,7 +214,7 @@ const Outline = () => {
           {filteredSchedule.map((event, idx) => (
             <div
               key={idx}
-              className={`rounded-lg ${bgVariants[idx % bgVariants.length]} p-4 flex flex-col gap-2 shadow-sm`}
+              className={`rounded-lg ${bgVariants[idx % bgVariants.length]} p-4 flex flex-col gap-2 shadow-xs`}
             >
               <div className="flex items-center gap-2 text-xs font-normal">
                 <span className="inline-block w-2 h-2 rounded-full bg-[#F6BE2C]" />
@@ -283,7 +283,7 @@ const Outline = () => {
                       {event.time}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-semibold text-gray-800 text-[15px] break-words max-w-xs md:max-w-md whitespace-pre-line">
+                  <td className="px-4 py-3 font-semibold text-gray-800 text-[15px] wrap-break-word max-w-xs md:max-w-md whitespace-pre-line">
                     {event.activity}
                   </td>
                   <td className="px-4 py-3 font-medium align-top">

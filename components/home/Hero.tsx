@@ -123,14 +123,14 @@ const Hero = () => {
           >
             <m.h1
               variants={textVariants}
-              className="md:w-1/2 text-center md:text-start font-extrabold text-3xl text-[#3C3C3C] font-inter"
+              className="md:w-1/2 text-center md:text-start font-extrabold text-3xl text-textDark font-inter"
             >
               Connect With Local Developers
             </m.h1>
 
             <m.p
               variants={textVariants}
-              className="text-[#3C3C3C] text-lg text-center md:text-start"
+              className="text-textDark text-lg text-center md:text-start"
             >
               Google Developer Group (GDG) Jos is a <br />
               Google-supported community where developers and tech enthusiasts
@@ -167,7 +167,7 @@ const Hero = () => {
                       transition: { duration: 0.5 },
                     },
                   }}
-                  className="py-2.5 w-full bg-gradient-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold"
+                  className="py-2.5 w-full bg-linear-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold"
                 >
                   <Image
                     src="/svgs/userGroup.svg"
@@ -263,7 +263,7 @@ const Hero = () => {
                   }`}
                 />
               ))}
-              <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-[#FF0000] to-[#D9D9D900] z-20"></div>
+              <div className="absolute bottom-0 left-0 w-full h-2/3 bg-linear-to-t from-[#FF0000] to-[#D9D9D900] z-20"></div>
               <div className="absolute bottom-0 left-0 w-full z-30 p-6 flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                   <span className="text-white text-4xl font-semibold italic font-inter lowercase tracking-wide">

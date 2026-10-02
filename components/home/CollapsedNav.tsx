@@ -48,7 +48,7 @@ const CollapsedNav = ({ closeNav }: Props) => {
           width={450}
           className="md:w-full md:h-full w-[200px] h-[150px] absolute md:right-0 md:top-0 bottom-32 right-9 -z-10"
         />
-        <span className="absolute left-[24rem] bottom-20">
+        <span className="absolute left-96 bottom-20">
           <BigSpiral />
         </span>
         <div className="flex flex-col gap-4 cursor-pointer">

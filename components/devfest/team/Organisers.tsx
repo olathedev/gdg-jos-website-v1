@@ -13,7 +13,7 @@ const Organisers = () => {
 
       <div className="w-full grid grid-cols-4 justify-center gap-x-6">
         {organisers.map((org, idx) => (
-          <div className="w-full break-words whitespace-normal" key={idx}>
+          <div className="w-full wrap-break-word whitespace-normal" key={idx}>
             <SpeakersCard
               color={org.color}
               name={org.name}

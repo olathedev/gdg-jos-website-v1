@@ -18,7 +18,7 @@ const AppGradientButton = ({ className, children }: Props) => {
           transition: { duration: 0.5 },
         },
       }}
-      className={`${className} py-2.5 bg-gradient-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold`}
+      className={`${className} py-2.5 bg-linear-to-r from-[#34A853] to-[#264E8C] flex gap-2 items-center justify-center text-white rounded-md font-semibold`}
     >
       {children}
     </m.button>

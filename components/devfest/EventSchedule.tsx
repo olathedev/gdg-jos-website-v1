@@ -23,7 +23,7 @@ const EventSchedule = () => {
           <h2 className="text-lg mb-2 font-semibold md:text-xl mt-4 font-inter text-[#0051FF]">
             Keynote & Talks
           </h2>
-          <p className="text-sm text-center md:text-base text-[#3C3C3C]">
+          <p className="text-sm text-center md:text-base text-textDark">
             Hear from industry leaders and Google experts
           </p>
         </div>
@@ -33,7 +33,7 @@ const EventSchedule = () => {
           <h2 className="text-lg mb-2 font-semibold md:text-xl mt-4 font-inter text-[#0051FF]">
             Keynote & Talks
           </h2>
-          <p className="text-sm text-center md:text-base text-[#3C3C3C]">
+          <p className="text-sm text-center md:text-base text-textDark">
             Hear from industry leaders and Google experts
           </p>
         </div>
@@ -43,7 +43,7 @@ const EventSchedule = () => {
           <h2 className="text-lg mb-2 font-semibold md:text-xl mt-4 font-inter text-[#0051FF]">
             Keynote & Talks
           </h2>
-          <p className="text-sm text-center md:text-base text-[#3C3C3C]">
+          <p className="text-sm text-center md:text-base text-textDark">
             Hear from industry leaders and Google experts
           </p>
         </div>

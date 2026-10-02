@@ -82,7 +82,7 @@ const Speakers = () => {
           ref={scrollRef}
         >
           {speakers.map((speaker, index) => (
-            <div className="w-[220px] flex-shrink-0" key={index}>
+            <div className="w-[220px] shrink-0" key={index}>
               <SpeakersCard
                 color={speaker.color}
                 name={speaker.name}

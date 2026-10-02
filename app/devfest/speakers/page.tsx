@@ -91,7 +91,7 @@ const Speakers = () => {
             <div className="w-full flex flex-col md:flex-row  justify-center items-center gap-x-6">
               {moderators.map((mod, idx) => (
                 <div
-                  className="w-[230px] break-words whitespace-normal"
+                  className="w-[230px] wrap-break-word whitespace-normal"
                   key={idx}
                 >
                   <SpeakersCard
@@ -109,7 +109,7 @@ const Speakers = () => {
               Meet Our Host
             </h1>
 
-            <div className="w-[230px] break-words whitespace-normal">
+            <div className="w-[230px] wrap-break-word whitespace-normal">
               <SpeakersCard
                 isCentered
                 name="Loreta Katok Tohomdet"

@@ -4,7 +4,7 @@ import CalendarIcon from "@/components/shared/icons/CalendarIcon";
 import Locationicon from "@/components/shared/icons/Locationicon";
 import AppGradientButton from "@/components/ui/AppGradientButton";
 import Image from "next/image";
-import { motion as m } from "framer-motion";
+import { motion as m, type Variants } from "framer-motion";
 import HamburgerwhiteIcon from "../shared/icons/HamburgerwhiteIcon";
 import CollapsedNav from "./CollpasedNav2";
 import Link from "next/link";
@@ -13,7 +13,7 @@ const Header = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   // Parent container animation variants for staggering children
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -25,7 +25,7 @@ const Header = () => {
   };
 
   // Child animation variants
-  const childVariants = {
+  const childVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: {
       opacity: 1,
@@ -39,7 +39,7 @@ const Header = () => {
   };
 
   // Button-specific animation with spring effect
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
       opacity: 1,

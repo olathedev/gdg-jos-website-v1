@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion as m } from "framer-motion";
+import { motion as m, type Variants } from "framer-motion";
 import SpiralIcon from "../shared/icons/SpiralIcon";
 import Link from "next/link";
 
@@ -39,7 +39,7 @@ const eventSlides = [
 ];
 
 const Hero = () => {
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { opacity: 0, y: 20 }, // Start hidden and slightly below
     visible: {
       opacity: 1,
@@ -52,7 +52,7 @@ const Hero = () => {
   };
 
   // Variants for image animation
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
       opacity: 1,
@@ -65,7 +65,7 @@ const Hero = () => {
   };
 
   // Scroll-triggered animation
-  const scrollVariants = {
+  const scrollVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
@@ -77,7 +77,7 @@ const Hero = () => {
     },
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -88,7 +88,7 @@ const Hero = () => {
     },
   };
 
-  const iconVariants = {
+  const iconVariants: Variants = {
     hidden: {
       y: -100, // Start off-screen above the viewport
       opacity: 0,

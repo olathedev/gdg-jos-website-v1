@@ -20,8 +20,6 @@ export const event = {
   venue: "Odillins Event Center" as string | null,
   /** Full street address (FAQ, maps link). */
   address: "5/6 Nunku Street, off Akila" as string | null,
-  /** Ticket / registration link. Until set, ticket CTAs point to the community page. */
-  ticketUrl: null as string | null,
   /** Call for speakers link. */
   speakerUrl: null as string | null,
   sponsorUrl: COMMUNITY_URL,
@@ -34,15 +32,16 @@ export const mapsHref = event.venue
     )}`
   : null;
 
-export const ticketHref = event.ticketUrl ?? COMMUNITY_URL;
-export const ticketLabel = event.ticketUrl ? "Get your ticket" : "Get notified";
+export const ticketHref = "/#tickets";
+export const ticketLabel = "Get tickets";
 
+// Absolute ("/#…") so the nav also works from the ticket pages.
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Tracks", href: "#tracks" },
-  { label: "Speakers", href: "#speakers" },
-  { label: "Partners", href: "#partners" },
-  { label: "FAQ", href: "#faq" },
+  { label: "About", href: "/#about" },
+  { label: "Tracks", href: "/#tracks" },
+  { label: "Speakers", href: "/#speakers" },
+  { label: "Tickets", href: "/#tickets" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export type PillTone = "blue" | "red" | "yellow" | "green" | "sky" | "mint" | "sun" | "pink" | "white";
@@ -183,9 +182,7 @@ export const faqs = [
   },
   {
     q: "How do I get a ticket?",
-    a: event.ticketUrl
-      ? "Use the \"Get your ticket\" button anywhere on this page to register."
-      : "Registration opens soon. Join the GDG Jos community and you'll be notified the moment tickets drop.",
+    a: "Pick a ticket in the Tickets section above. Regular is free, VIP is ₦8,000 and My Padi gets you and a friend in with VIP perks for ₦15,000. Your ticket arrives by email with a QR code to show at the door.",
   },
   {
     q: "I'm not a developer. Can I still come?",

@@ -15,7 +15,7 @@ export function CtaBand() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="mx-auto mt-5 max-w-lg text-lg">
-            Tickets, speaker drops and giveaways go to the community first. Join GDG Jos and you won&apos;t miss a thing.
+            Grab your ticket now, then join the community for speaker drops, schedule updates and giveaways.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <PillLink href={ticketHref} variant="dark" size="lg">

@@ -8,6 +8,7 @@ import Nav from "@/components/df26/Nav";
 import Partners from "@/components/df26/Partners";
 import Speakers from "@/components/df26/Speakers";
 import Team from "@/components/df26/Team";
+import Tickets from "@/components/df26/Tickets";
 import Tracks from "@/components/df26/Tracks";
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
         <About />
         <Tracks />
         <Speakers />
+        <Tickets />
         <Partners />
         <Gallery />
         <Team />

@@ -4,10 +4,15 @@ import { Check, Loader2, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { checkoutSchema, fieldErrors, type CheckoutInput } from "@/lib/tickets/schema";
-import { formatNaira, priceLabel, tierList, tiers, type TierId } from "@/lib/tickets/tiers";
+import { formatNaira, priceLabel, tierColor, tierList, tiers, type TierId } from "@/lib/tickets/tiers";
+import TierArt from "./TierArt";
 
 type Holder = { self: boolean; name: string; email: string };
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "paying" } | { kind: "error"; message: string } | { kind: "cancelled" };
+
+// DevFest "sticker" button: yellow, ink outline, offset shadow that presses in.
+const primaryBtn =
+  "flex items-center justify-center gap-2 rounded-full bg-h-yellow font-bold tracking-wide text-ink uppercase ring-2 ring-ink shadow-[0_4px_0_0_var(--color-ink)] transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_var(--color-ink)] active:translate-y-1 active:shadow-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0";
 
 const emptyHolder = (self = false): Holder => ({ self, name: "", email: "" });
 
@@ -141,7 +146,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     <form onSubmit={submit} noValidate className="grid gap-6 lg:grid-cols-[1fr_24rem] lg:items-start lg:gap-8">
       <div className="space-y-6">
         {/* 1. Ticket */}
-        <Panel step="1" title="Choose your ticket">
+        <Panel step="1" tone="bg-p-blue" title="Choose your ticket">
           <fieldset>
             <legend className="sr-only">Ticket type</legend>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -150,19 +155,26 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                 return (
                   <label
                     key={t.id}
-                    className={`relative cursor-pointer rounded-2xl p-4 ring-2 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-g-blue ${
-                      active ? "bg-ink text-white ring-ink" : "bg-white ring-ink/10 hover:ring-ink/30"
+                    style={active ? { backgroundColor: tierColor[t.id] } : undefined}
+                    className={`relative isolate cursor-pointer overflow-hidden rounded-2xl p-4 transition-all duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-4 has-[:focus-visible]:outline-g-blue sm:p-5 ${
+                      active
+                        ? "-translate-y-1 ring-2 ring-ink shadow-[0_5px_0_0_var(--color-ink)]"
+                        : "bg-white ring-1 ring-ink/15 hover:-translate-y-0.5 hover:ring-ink/40"
                     }`}
                   >
+                    {active && <TierArt tier={t.id} compact className="-z-10" />}
                     <input type="radio" name="tier" value={t.id} checked={active} onChange={() => chooseTier(t.id)} className="sr-only" />
                     <span className="flex items-center justify-between gap-2">
-                      <span className="font-semibold">{t.name}</span>
-                      <span aria-hidden className={`grid size-5 place-items-center rounded-full ${active ? "bg-g-blue" : "ring-1 ring-ink/25"}`}>
-                        {active && <Check className="size-3" strokeWidth={3} />}
+                      <span className="font-bold">{t.name}</span>
+                      <span
+                        aria-hidden
+                        className={`grid size-6 place-items-center rounded-full transition-colors ${active ? "bg-ink text-white" : "ring-2 ring-ink/20"}`}
+                      >
+                        {active && <Check className="size-3.5" strokeWidth={3} />}
                       </span>
                     </span>
                     <span className="type-condensed mt-3 block text-4xl">{priceLabel(t)}</span>
-                    <span className={`mt-1 block text-xs ${active ? "text-white/70" : "text-ink/60"}`}>
+                    <span className="mt-1 block max-w-[78%] text-xs text-ink/75">
                       {t.seatsPerUnit > 1 ? `${t.seatsPerUnit} people · ` : ""}
                       {t.perks.slice(1).join(" · ") || t.perks[0]}
                     </span>
@@ -182,7 +194,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                   {seats} {seats === 1 ? "person" : "people"} · up to {tier.maxUnits} per order
                 </p>
               </div>
-              <div role="group" aria-labelledby="qty-label" className="flex items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink/10">
+              <div role="group" aria-labelledby="qty-label" className="flex items-center gap-1 rounded-full bg-white p-1 ring-2 ring-ink">
                 <StepButton label="Decrease" disabled={units <= 1 || busy} onClick={() => changeUnits(units - 1)}>
                   <Minus className="size-4" />
                 </StepButton>
@@ -198,7 +210,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
         </Panel>
 
         {/* 2. Buyer */}
-        <Panel step="2" title="Your details" hint="We'll send the order confirmation here.">
+        <Panel step="2" tone="bg-p-red" title="Your details" hint="We'll send the order confirmation here.">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Full name" error={errors["buyer.name"]} className="sm:col-span-2">
               {(p) => <input {...p} autoComplete="name" value={buyer.name} onChange={(e) => setBuyerField("name", e.target.value)} />}
@@ -220,7 +232,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
         </Panel>
 
         {/* 3. Holders */}
-        <Panel step="3" title={seats > 1 ? "Who's coming?" : "Who's this ticket for?"} hint="Each person gets their own ticket and QR code by email.">
+        <Panel step="3" tone="bg-p-green" title={seats > 1 ? "Who's coming?" : "Who's this ticket for?"} hint="Each person gets their own ticket and QR code by email.">
           {errors.attendees && <p className="mb-4 text-sm font-medium text-g-red">{errors.attendees}</p>}
           <ol className="space-y-4">
             {holders.map((h, i) => (
@@ -260,19 +272,15 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
       </div>
 
       {/* Mobile: total + pay always in reach */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-ink/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-white backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-xl items-center justify-between gap-4">
           <div>
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-ink/60">
               {tier.name} × {units}
             </p>
             <p className="type-condensed text-3xl">{total === 0 ? "Free" : formatNaira(total)}</p>
           </div>
-          <button
-            type="submit"
-            disabled={busy}
-            className="flex h-12 items-center gap-2 rounded-full bg-white px-6 text-sm font-semibold tracking-wide text-ink uppercase focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:opacity-70"
-          >
+          <button type="submit" disabled={busy} className={`h-12 px-6 text-sm ${primaryBtn}`}>
             {busy ? <Loader2 aria-hidden className="size-4 animate-spin" /> : total > 0 && <Lock aria-hidden className="size-4" />}
             {total === 0 ? "Get ticket" : "Pay now"}
           </button>
@@ -281,61 +289,61 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
 
       {/* Summary */}
       <aside className="lg:sticky lg:top-28">
-        <div className="rounded-[2rem] bg-ink p-6 text-white sm:p-8">
-          <h2 className="font-mono text-xs tracking-[0.18em] text-white/60 uppercase">Order summary</h2>
-          <div className="mt-5 flex items-start justify-between gap-4">
-            <div>
-              <p className="type-heading text-2xl">{tier.name}</p>
-              <p className="mt-1 text-sm text-white/70">
-                {units} × {priceLabel(tier)}
-                {tier.seatsPerUnit > 1 && ` · ${seats} people`}
-              </p>
-            </div>
-            <p className="type-condensed text-4xl">{total === 0 ? "Free" : formatNaira(total)}</p>
-          </div>
-          <ul className="mt-6 space-y-2 border-t border-white/15 pt-6 text-sm text-white/80">
-            {tier.perks.map((p) => (
-              <li key={p} className="flex items-center gap-2">
-                <Check aria-hidden className="size-4 text-h-green" /> {p}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 flex items-baseline justify-between border-t border-white/15 pt-6">
-            <span className="font-semibold">Total</span>
-            <span className="type-condensed text-5xl">{total === 0 ? "₦0" : formatNaira(total)}</span>
-          </div>
-
-          <button
-            type="submit"
-            disabled={busy}
-            className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-white text-sm font-semibold tracking-wide text-ink uppercase transition-colors hover:bg-h-yellow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70"
-          >
-            {busy ? (
-              <>
-                <Loader2 aria-hidden className="size-4 animate-spin" />
-                {status.kind === "paying" ? "Opening secure checkout…" : "Processing…"}
-              </>
-            ) : total === 0 ? (
-              "Get my free ticket"
-            ) : (
-              <>
-                <Lock aria-hidden className="size-4" /> Pay {formatNaira(total)}
-              </>
-            )}
-          </button>
-
-          <div aria-live="polite" className="min-h-0">
-            {status.kind === "error" && <p className="mt-4 rounded-xl bg-g-red/15 px-4 py-3 text-sm text-p-red">{status.message}</p>}
-            {status.kind === "cancelled" && (
-              <p className="mt-4 rounded-xl bg-white/10 px-4 py-3 text-sm text-white/85">Payment cancelled. Your details are still here, so you can try again.</p>
-            )}
-          </div>
-
-          {total > 0 && (
-            <p className="mt-5 flex items-center justify-center gap-2 text-xs text-white/60">
-              <ShieldCheck aria-hidden className="size-4 text-h-green" /> Secured by Paystack
+        <div className="overflow-hidden rounded-[2rem] bg-white ring-2 ring-ink shadow-[6px_6px_0_0_var(--color-ink)]">
+          <div className="relative isolate border-b-2 border-ink p-6 sm:p-7" style={{ backgroundColor: tierColor[tier.id] }}>
+            <TierArt tier={tier.id} className="-z-10" />
+            <h2 className="font-mono text-xs font-semibold tracking-[0.18em] uppercase">Order summary</h2>
+            <p className="type-heading mt-4 text-3xl">{tier.name}</p>
+            <p className="mt-1 text-sm text-ink/75">
+              {units} × {priceLabel(tier)}
+              {tier.seatsPerUnit > 1 && ` · ${seats} people`}
             </p>
-          )}
+          </div>
+
+          <div className="p-6 sm:p-7">
+            <ul className="space-y-2.5 text-sm">
+              {tier.perks.map((p) => (
+                <li key={p} className="flex items-center gap-2.5">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-p-green ring-1 ring-ink/20">
+                    <Check aria-hidden className="size-3" strokeWidth={3} />
+                  </span>
+                  {p}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex items-baseline justify-between border-t-2 border-dashed border-ink/20 pt-5">
+              <span className="font-semibold">Total</span>
+              <span className="type-condensed text-5xl">{total === 0 ? "Free" : formatNaira(total)}</span>
+            </div>
+
+            <button type="submit" disabled={busy} className={`mt-6 h-14 w-full text-sm ${primaryBtn}`}>
+              {busy ? (
+                <>
+                  <Loader2 aria-hidden className="size-4 animate-spin" />
+                  {status.kind === "paying" ? "Opening secure checkout…" : "Processing…"}
+                </>
+              ) : total === 0 ? (
+                "Get my free ticket"
+              ) : (
+                <>
+                  <Lock aria-hidden className="size-4" /> Pay {formatNaira(total)}
+                </>
+              )}
+            </button>
+
+            <div aria-live="polite">
+              {status.kind === "error" && <p className="mt-4 rounded-xl bg-p-red px-4 py-3 text-sm font-medium text-[#a50e0e]">{status.message}</p>}
+              {status.kind === "cancelled" && (
+                <p className="mt-4 rounded-xl bg-paper px-4 py-3 text-sm text-ink/80">Payment cancelled. Your details are still here, so you can try again.</p>
+              )}
+            </div>
+
+            {total > 0 && (
+              <p className="mt-5 flex items-center justify-center gap-2 text-xs text-ink/60">
+                <ShieldCheck aria-hidden className="size-4 text-g-green" /> Secured by Paystack
+              </p>
+            )}
+          </div>
         </div>
       </aside>
     </form>
@@ -348,11 +356,11 @@ function holderLabel(tier: TierId, units: number, i: number) {
   return `Pair ${Math.floor(i / 2) + 1} · Person ${(i % 2) + 1}`;
 }
 
-function Panel({ step, title, hint, children }: { step: string; title: string; hint?: string; children: ReactNode }) {
+function Panel({ step, tone, title, hint, children }: { step: string; tone: string; title: string; hint?: string; children: ReactNode }) {
   return (
     <section className="relative rounded-[2rem] bg-white p-5 ring-1 ring-ink/10 sm:p-8">
       <div className="mb-6 flex items-start gap-4">
-        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-full bg-ink font-mono text-sm font-semibold text-white">
+        <span aria-hidden className={`grid size-10 shrink-0 place-items-center rounded-full font-mono text-sm font-bold text-ink ring-2 ring-ink ${tone}`}>
           {step}
         </span>
         <div>

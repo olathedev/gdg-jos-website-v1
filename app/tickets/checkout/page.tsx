@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import CheckoutForm from "@/components/tickets/CheckoutForm";
 import Nav from "@/components/df26/Nav";
 import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
-import { event, gallery } from "@/data/devfest26";
+import { REGULAR_REGISTRATION_URL, event, gallery } from "@/data/devfest26";
 import { isTierId } from "@/lib/tickets/tiers";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ tier?: string }> }) {
   const { tier } = await searchParams;
+  if (tier === "regular") redirect(REGULAR_REGISTRATION_URL);
 
   return (
     <>
@@ -35,7 +37,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
           </div>
         </div>
         <div className="relative z-10 mx-auto -mt-10 max-w-6xl px-3 sm:-mt-12 sm:px-8">
-          <CheckoutForm initialTier={isTierId(tier) ? tier : "vip"} />
+          <CheckoutForm initialTier={isTierId(tier) && tier !== "regular" ? tier : "vip"} />
         </div>
       </main>
     </>

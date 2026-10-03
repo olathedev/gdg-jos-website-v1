@@ -5,8 +5,30 @@ import { tierColor, tiers } from "@/lib/tickets/tiers";
 
 const venueLine = [event.venue, event.address, event.city].filter(Boolean).join(", ");
 
-/** Ticket laid out like the DevFest Jos ticket guide: details left, QR + logos right. */
+/**
+ * VIP / My Padi: the designer's ticket artwork rendered server-side with the
+ * holder's name, email and QR. Regular (legacy free tickets) keeps the HTML layout.
+ */
 export default function TicketCard({ ticket }: { ticket: Ticket }) {
+  if (ticket.tier === "regular") return <LegacyTicketCard ticket={ticket} />;
+  return (
+    <figure className="ticket print:break-inside-avoid">
+      <img
+        src={`/api/tickets/${encodeURIComponent(ticket.code)}/image`}
+        alt={`${tiers[ticket.tier].name} ticket for ${ticket.holder_name}, DevFest Jos 2026, code ${ticket.code}`}
+        width={1969}
+        height={787}
+        className="h-auto w-full rounded-2xl bg-white shadow-sm ring-1 ring-ink/10"
+      />
+      <figcaption className="mt-2 flex justify-between px-1 text-xs text-ink/55">
+        <span>{ticket.holder_name}</span>
+        <span className="tracking-[0.14em]">{ticket.code}</span>
+      </figcaption>
+    </figure>
+  );
+}
+
+function LegacyTicketCard({ ticket }: { ticket: Ticket }) {
   const fill = { backgroundColor: tierColor[ticket.tier] };
 
   return (

@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { REGULAR_REGISTRATION_URL } from "@/data/devfest26";
 import { priceLabel, tierColor, tierList } from "@/lib/tickets/tiers";
 import TierArt from "./TierArt";
 
@@ -26,7 +27,7 @@ export default function TierCards() {
               <p className="mt-1.5 max-w-[16rem] text-sm text-ink/70">{t.tagline}</p>
               <p className="type-heading mt-6 text-5xl">{priceLabel(t)}</p>
               <p className="mt-1 text-sm text-ink/60">
-                {t.priceKobo === 0 ? "No payment needed" : t.seatsPerUnit > 1 ? `for ${t.seatsPerUnit} people` : "per person"}
+                {t.priceKobo === 0 ? "Register on GDG Community" : t.seatsPerUnit > 1 ? `for ${t.seatsPerUnit} people` : "per person"}
               </p>
             </div>
 
@@ -47,14 +48,27 @@ export default function TierCards() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href={`/tickets/checkout?tier=${t.id}`}
-                className={`mt-auto flex h-12 items-center justify-center rounded-full text-[15px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${
+              {t.priceKobo === 0 ? (
+                <a
+                  href={REGULAR_REGISTRATION_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`mt-auto flex h-12 items-center justify-center rounded-full text-[15px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${
                   featured ? "bg-ink text-white hover:bg-ink/85" : "bg-paper text-ink ring-1 ring-ink/10 hover:bg-ink hover:text-white"
                 }`}
-              >
-                {t.priceKobo === 0 ? "Register free" : `Get ${t.name}`}
-              </Link>
+                >
+                  Register free
+                </a>
+              ) : (
+                <Link
+                  href={`/tickets/checkout?tier=${t.id}`}
+                  className={`mt-auto flex h-12 items-center justify-center rounded-full text-[15px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue ${
+                  featured ? "bg-ink text-white hover:bg-ink/85" : "bg-paper text-ink ring-1 ring-ink/10 hover:bg-ink hover:text-white"
+                }`}
+                >
+                  Get {t.name}
+                </Link>
+              )}
             </div>
           </li>
         );

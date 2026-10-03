@@ -9,7 +9,7 @@ import Tickets from "@/components/df26/Tickets";
 import { Divider } from "@/components/df26/ui";
 import { event, gallery, mapsHref } from "@/data/devfest26";
 
-const description = `${event.dateLabel} at ${event.venue}, ${event.city}. Regular is free, VIP ₦8,000, My Padi ₦15,000 for two. Get your DevFest Jos 2026 ticket.`;
+const description = `${event.dateLabel} at ${event.venue}, ${event.city}. Free Regular registration, VIP ₦8,000, My Padi ₦15,000 for two. Get your DevFest Jos 2026 ticket.`;
 
 export const metadata: Metadata = {
   title: "Tickets · DevFest Jos 2026",

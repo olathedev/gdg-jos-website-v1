@@ -8,7 +8,8 @@ export const attendeeSchema = z.object({ name, email });
 
 export const checkoutSchema = z
   .object({
-    tier: z.enum(["regular", "vip", "padi"]),
+    // Regular registration is off-site; checkout only sells paid tiers.
+    tier: z.enum(["vip", "padi"]),
     units: z.number().int().min(1),
     buyer: z.object({
       name,

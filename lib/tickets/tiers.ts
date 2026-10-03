@@ -61,10 +61,13 @@ export const tierList = [tiers.regular, tiers.vip, tiers.padi];
 
 /** Ticket fill colours (VIP matches the ticket design guide). */
 export const tierColor: Record<TierId, string> = {
-  regular: "#ccf6c5",
-  vip: "#b8eef8",
-  padi: "#ffe7a5",
+  regular: "#ffe7a5",
+  vip: "#b8eef8", // ticket template
+  padi: "#ccf6cf", // ticket template
 };
+
+/** Tiers sold through our checkout (Regular registers on GDG Community). */
+export const paidTiers = tierList.filter((t) => t.priceKobo > 0);
 
 export const isTierId = (v: unknown): v is TierId => typeof v === "string" && v in tiers;
 

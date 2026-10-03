@@ -4,6 +4,7 @@ import { Document, Font, Image, Line, Page, Svg, Text, View, renderToBuffer, Sty
 import QRCode from "qrcode";
 import { event } from "@/data/devfest26";
 import type { Ticket } from "./orders";
+import { renderTicketPng } from "./ticket-image";
 import { tierColor, tiers } from "./tiers";
 
 const asset = (...p: string[]) => path.join(process.cwd(), ...p);
@@ -106,16 +107,28 @@ function TicketPage({ ticket, qr }: { ticket: Ticket; qr: string }) {
   );
 }
 
+/** Designed ticket artwork as a full-bleed page (same aspect ratio as the template). */
+function ImagePage({ png }: { png: Buffer }) {
+  return (
+    <Page size={[W, (W * 787) / 1969]} style={{ padding: 0 }}>
+      {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt */}
+      <Image src={png} style={{ width: "100%", height: "100%" }} />
+    </Page>
+  );
+}
+
 /** One ticket per page, ready to download. */
 export async function renderTicketsPdf(tickets: Ticket[]) {
-  const qrs = await Promise.all(
-    tickets.map((t) => QRCode.toDataURL(`DFJ26:${t.code}`, { width: 480, margin: 1, errorCorrectionLevel: "M", color: { dark: INK, light: "#ffffff" } })),
+  const pages = await Promise.all(
+    tickets.map(async (t) =>
+      t.tier === "regular"
+        ? { t, qr: await QRCode.toDataURL(`DFJ26:${t.code}`, { width: 480, margin: 1, errorCorrectionLevel: "M", color: { dark: INK, light: "#ffffff" } }) }
+        : { t, png: await renderTicketPng(t) },
+    ),
   );
   return renderToBuffer(
     <Document title="DevFest Jos 2026 tickets" author="GDG Jos" creator="DevFest Jos 2026">
-      {tickets.map((t, i) => (
-        <TicketPage key={t.id} ticket={t} qr={qrs[i]} />
-      ))}
+      {pages.map((p) => ("png" in p && p.png ? <ImagePage key={p.t.id} png={p.png} /> : <TicketPage key={p.t.id} ticket={p.t} qr={(p as { qr: string }).qr} />))}
     </Document>,
   );
 }

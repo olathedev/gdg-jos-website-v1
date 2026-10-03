@@ -6,6 +6,8 @@ const cld = (path: string) =>
   `https://res.cloudinary.com/dxssytv0p/image/upload/${path}`;
 
 export const COMMUNITY_URL = "https://gdg.community.dev/gdg-jos/";
+/** Free Regular registration happens on the GDG community platform, not our checkout. */
+export const REGULAR_REGISTRATION_URL = "https://gdg.community.dev/events/details/google-gdg-jos-presents-devfest-jos-2026/";
 export const WHATSAPP_URL = "https://chat.whatsapp.com/FZbv4sddTIgAiK9zZ9B7m3?mode=gi_t";
 
 export const event = {
@@ -224,7 +226,7 @@ export const faqs = [
   },
   {
     q: "How do I get a ticket?",
-    a: "Tap Get tickets and pick one. Regular is free, VIP is ₦8,000 and My Padi gets you and a friend in with VIP perks for ₦15,000. Your ticket arrives by email with a QR code to show at the door.",
+    a: "Tap Get tickets. Regular is free: register on the GDG community page. VIP is ₦8,000 and My Padi gets you and a friend in with VIP perks for ₦15,000; paid tickets arrive by email with a QR code to show at the door.",
   },
   {
     q: "I'm not a developer. Can I still come?",

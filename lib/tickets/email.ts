@@ -11,6 +11,16 @@ const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
 function ticketCard(t: Ticket, site: string) {
+  // VIP / My Padi: the designed ticket artwork, rendered with the holder's details.
+  if (t.tier !== "regular") {
+    return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px">
+    <tr><td>
+      <img src="${site}/api/tickets/${encodeURIComponent(t.code)}/image" width="520" alt="${esc(tiers[t.tier].name)} ticket for ${esc(t.holder_name)}, code ${esc(t.code)}" style="display:block;width:100%;max-width:520px;height:auto;border:0;border-radius:14px">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666;margin-top:6px">${esc(t.holder_name)} · <span style="letter-spacing:2px">${esc(t.code)}</span></div>
+    </td></tr>
+  </table>`;
+  }
   const fill = tierColor[t.tier];
   const venue = [event.venue, event.address, event.city].filter(Boolean).map((v) => esc(v!)).join(", ");
   const font = "font-family:'Google Sans',Arial,Helvetica,sans-serif;color:#1e1e1e";

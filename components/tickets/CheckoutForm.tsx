@@ -4,7 +4,7 @@ import { Check, Loader2, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { checkoutSchema, fieldErrors, type CheckoutInput } from "@/lib/tickets/schema";
-import { formatNaira, priceLabel, tierColor, tierList, tiers, type TierId } from "@/lib/tickets/tiers";
+import { formatNaira, paidTiers, priceLabel, tierColor, tiers, type TierId } from "@/lib/tickets/tiers";
 import TierArt from "./TierArt";
 
 type Holder = { self: boolean; name: string; email: string };
@@ -70,7 +70,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
 
   const payload = useMemo<CheckoutInput>(
     () => ({
-      tier: tierId,
+      tier: tierId as CheckoutInput["tier"], // the picker only offers paid tiers
       units,
       buyer,
       attendees: holders.map((h) => (h.self ? { name: buyer.name, email: buyer.email } : { name: h.name, email: h.email })),
@@ -161,7 +161,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
           <fieldset>
             <legend className="sr-only">Ticket type</legend>
             <div className="space-y-2.5">
-              {tierList.map((t) => {
+              {paidTiers.map((t) => {
                 const active = t.id === tierId;
                 return (
                   <label

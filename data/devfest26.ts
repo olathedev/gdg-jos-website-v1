@@ -149,7 +149,7 @@ export const returningVolunteers2025 = [
 export const shownAlumni2025 = ["Michael Olapade O.", "Ayam Samuel"];
 
 export const pastStats = [
-  { value: 500, suffix: "+", label: "Attendees", tone: "blue" },
+  { value: 1000, suffix: "+", label: "Attendees", tone: "blue" },
   { value: 17, suffix: "", label: "Speakers", tone: "green" },
   { value: 8, suffix: "", label: "Sessions", tone: "yellow" },
   { value: 5, suffix: "", label: "Tracks", tone: "red" },

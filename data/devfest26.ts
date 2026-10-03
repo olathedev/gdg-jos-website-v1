@@ -113,6 +113,9 @@ export const returningVolunteers2025 = [
   "Nshe Velnoe",
 ];
 
+/** 2025 volunteers still shown on /volunteers (exact names from data/data.ts). */
+export const shownAlumni2025 = ["Michael Olapade O.", "Ayam Samuel"];
+
 export const pastStats = [
   { value: 500, suffix: "+", label: "Attendees", tone: "blue" },
   { value: 17, suffix: "", label: "Speakers", tone: "green" },

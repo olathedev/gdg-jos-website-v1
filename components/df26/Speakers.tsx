@@ -1,11 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { cutout } from "@/lib/cloudinary-loader";
 import Link from "next/link";
 import { useState } from "react";
-import { speakers } from "@/data/data";
-import { COMMUNITY_URL, event } from "@/data/devfest26";
+import { COMMUNITY_URL, event, speakers2026 } from "@/data/devfest26";
 import { Braces, Eyebrow, PillLink, QuarterCircle, Reveal, Ring, Squiggle } from "./ui";
 
 // Each speaker gets a Google colour (rotating), a big soft shape behind the
@@ -17,7 +15,7 @@ const tones = [
   { bg: "bg-g-green", panel: "bg-p-green", role: "text-[#188038]", Shape: Braces, shape: "top-6 -right-16 w-96 rotate-12" },
 ] as const;
 
-const featured = speakers.slice(0, 9);
+const featured = speakers2026;
 
 export default function Speakers() {
   const [active, setActive] = useState(0);
@@ -32,12 +30,12 @@ export default function Speakers() {
             </Reveal>
             <Reveal delay={0.05}>
               <h2 className="type-heading mt-5 text-[clamp(2rem,3.6vw,3.25rem)]">
-                <span className="text-g-green">Real builders.</span> On our stage.
+                <span className="text-g-green">Meet the speakers.</span>
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-5 text-lg text-ink/70">
-                Some of the people who took the mic at DevFest Jos 2025. The 2026 lineup drops soon. Want to be on it?
+                The first voices on the DevFest Jos 2026 stage. More names drop soon. Want to be one of them?
               </p>
             </Reveal>
           </div>
@@ -85,7 +83,7 @@ export default function Speakers() {
                 {/* Cut-out portrait */}
                 <div className={`absolute inset-x-0 top-0 bottom-28 transition-[bottom] duration-500 ${collapsed("lg:bottom-0")}`}>
                   <Image
-                    src={cutout(s.image)}
+                    src={s.image}
                     alt={s.name}
                     fill
                     sizes="(min-width: 1024px) 34rem, 18rem"
@@ -107,7 +105,7 @@ export default function Speakers() {
                   className={`absolute inset-x-0 bottom-0 flex h-28 flex-col justify-center px-5 transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:px-7 ${t.panel} ${collapsed("lg:translate-y-full")}`}
                 >
                   <p className="type-heading truncate text-2xl text-ink">{s.name}</p>
-                  <p className={`mt-1 line-clamp-2 text-sm font-medium ${t.role}`}>{s.role}</p>
+                  {s.role && <p className={`mt-1 line-clamp-2 text-sm font-medium ${t.role}`}>{s.role}</p>}
                 </div>
               </li>
             );

@@ -78,6 +78,16 @@ export const heroPills: { label: string; tone: PillTone }[] = [
   { label: "Cloud Run", tone: "yellow" },
 ];
 
+/** DevFest Jos 2026 speakers. Photos are background-removed cut-outs in public/speakers. */
+export const speakers2026: { name: string; role: string; image: string }[] = [
+  // Order also sets each card's colour (blue, red, yellow, green, …), chosen to contrast with outfits.
+  { name: "Dev Longs", role: "Lead Engineer, Blockfuse Labs", image: "/speakers/dev-longs.webp" },
+  { name: "Christie Dasaro", role: "ICT Coordinator, ECWA", image: "/speakers/christie-dasaro.webp" },
+  { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp" },
+  { name: "Nnamdi Ibe", role: "", image: "/speakers/nnamdi-ibe.webp" }, // TODO: add role
+  { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp" },
+];
+
 export const pastStats = [
   { value: 500, suffix: "+", label: "Attendees", tone: "blue" },
   { value: 17, suffix: "", label: "Speakers", tone: "green" },

@@ -43,12 +43,6 @@ export default function Speakers() {
             <PillLink href={event.speakerUrl ?? COMMUNITY_URL} variant="dark" size="lg">
               Apply to speak
             </PillLink>
-            <Link
-              href="/devfest/speakers"
-              className="inline-flex h-12 items-center rounded-full px-4 text-[15px] font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
-            >
-              All 2025 speakers
-            </Link>
           </Reveal>
         </div>
       </div>
@@ -99,6 +93,15 @@ export default function Speakers() {
                 >
                   {s.name.split(" ")[0]}
                 </p>
+
+                {/* Panel badge (e.g. Panelist / Moderator) */}
+                {s.badge && (
+                  <span
+                    className={`absolute top-4 left-4 z-20 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-ink shadow-sm transition-opacity duration-300 ${collapsed("lg:opacity-0")}`}
+                  >
+                    {s.badge}
+                  </span>
+                )}
 
                 {/* Name panel */}
                 <div

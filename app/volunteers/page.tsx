@@ -3,7 +3,6 @@ import Footer from "@/components/df26/Footer";
 import Nav from "@/components/df26/Nav";
 import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
 import { Divider, PillLink } from "@/components/df26/ui";
-import { crewCount } from "@/components/volunteers/VolunteerCard";
 import VolunteerGrid from "@/components/volunteers/VolunteerGrid";
 import { event, gallery } from "@/data/devfest26";
 
@@ -21,8 +20,7 @@ export default function VolunteersPage() {
         <header className="relative isolate overflow-hidden bg-ink pt-28 pb-16 text-center text-white sm:pt-36 sm:pb-20">
           <PhotoBackdrop src={gallery.wtm} priority position="center 40%" dim="bg-ink/[0.86]" />
           <div className="mx-auto max-w-3xl px-5">
-            <p className="text-sm text-white/70">{crewCount} volunteers on the 2026 crew · GDG Jos</p>
-            <h1 className="type-heading mt-3 text-[clamp(2.5rem,6vw,4.5rem)]">
+            <h1 className="type-heading text-[clamp(2.5rem,6vw,4.5rem)]">
               Meet the <span className="text-h-yellow">volunteers</span>
             </h1>
             <p className="mx-auto mt-4 max-w-lg text-base text-white/70 sm:text-lg">

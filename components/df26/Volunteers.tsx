@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { VolunteerPreview, crewCount } from "@/components/volunteers/VolunteerCard";
+import { VolunteerPreview } from "@/components/volunteers/VolunteerCard";
 import { event } from "@/data/devfest26";
 import { Eyebrow, PillLink, Reveal } from "./ui";
 
@@ -20,7 +20,7 @@ export default function Volunteers() {
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-4 text-lg text-ink/70">
-                Meet the {crewCount}-strong 2026 crew behind registration, media, design, speakers and partnerships.
+                The 2026 crew behind registration, media, design, speakers and partnerships.
               </p>
             </Reveal>
           </div>

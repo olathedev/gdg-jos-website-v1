@@ -80,16 +80,48 @@ export const heroPills: { label: string; tone: PillTone }[] = [
   { label: "Cloud Run", tone: "yellow" },
 ];
 
-/** DevFest Jos 2026 speakers. Photos are background-removed cut-outs in public/speakers. */
-export const speakers2026: { name: string; role: string; image: string; badge?: string }[] = [
+/** DevFest Jos 2026 speakers (talks + keynotes). Photos are background-removed cut-outs in public/speakers. */
+export const speakers2026: { name: string; role: string; image: string; topic?: string; badge?: string }[] = [
   // Order also sets each card's colour (blue, red, yellow, green, …), chosen to contrast with outfits.
-  { name: "Dev Longs", role: "Lead Engineer, Blockfuse Labs", image: "/speakers/dev-longs.webp" },
-  { name: "Christie Dasaro", role: "ICT Coordinator, ECWA", image: "/speakers/christie-dasaro.webp", badge: "Panelist" },
-  { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp", badge: "Panelist" },
-  { name: "Nnamdi Ibe", role: "CEO, Axia Hub", image: "/speakers/nnamdi-ibe.webp", badge: "Panelist" },
-  { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp", badge: "Moderator" },
-  { name: "Murtala Abdullahi", role: "", image: "/speakers/murtala-abdullahi.webp" }, // TODO: role (and badge?)
+  { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp", badge: "Keynote" },
+  { name: "Murtala Abdullahi", role: "", image: "/speakers/murtala-abdullahi.webp", badge: "Keynote" }, // TODO: role
+  {
+    name: "Daniel Okoro",
+    role: "Lead Software Engineer",
+    image: "/speakers/daniel-okoro.webp",
+    topic: "API First or API Fast? Designing APIs That Scale from MVP to Production",
+  },
+  {
+    name: "Taiwo Famakinde",
+    role: "Senior Software Engineer",
+    image: "/speakers/taiwo-famakinde.webp",
+    topic: "Building Production Tool-Calling Pipelines with Gemini Enterprise Agent Platform",
+  },
+  {
+    name: "Tejas Pravinbhai Patel",
+    // Full title: IEEE Award-Winning Researcher | Best Keynote Speaker | Sr. Software Engineer at Amazon | AI Systems & Agent Architect
+    role: "Sr. Software Engineer at Amazon · IEEE Award-Winning Researcher",
+    image: "/speakers/tejas-patel.webp",
+    topic: "Building Gemini Agent Ecosystems with MCP & Google ADK",
+  },
+  {
+    name: "Umar Faruq Zubairu",
+    role: "Google Developer Expert",
+    image: "/speakers/umar-faruq-zubairu.webp",
+    topic: "Beyond 5G: Engineering Low-Latency USSD & Voice Workflows with FastAPI & Cloud Run",
+  },
 ];
+
+/** Panel session. `title` shows as the headline once announced. */
+export const panel2026: { title: string | null; members: { name: string; role: string; image: string; moderator?: boolean }[] } = {
+  title: null,
+  members: [
+    { name: "Christie Dasaro", role: "ICT Coordinator, ECWA", image: "/speakers/christie-dasaro.webp" },
+    { name: "Nnamdi Ibe", role: "CEO, Axia Hub", image: "/speakers/nnamdi-ibe.webp" },
+    { name: "Dev Longs", role: "Lead Engineer, Blockfuse Labs", image: "/speakers/dev-longs.webp" },
+    { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp", moderator: true },
+  ],
+};
 
 /** DevFest Jos 2026 volunteer crew. Local photos live in public/volunteers. */
 export const volunteers2026: { name: string; role: string; image: string }[] = [

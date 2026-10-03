@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { COMMUNITY_URL, event, speakers2026 } from "@/data/devfest26";
+import { COMMUNITY_URL, event, panel2026, speakers2026 } from "@/data/devfest26";
 import { Braces, Eyebrow, PillLink, QuarterCircle, Reveal, Ring, Squiggle } from "./ui";
 
 // Each speaker gets a Google colour (rotating), a big soft shape behind the
@@ -75,7 +75,7 @@ export default function Speakers() {
                 <t.Shape className={`absolute -z-10 text-white/25 transition-opacity duration-500 ${t.shape} ${collapsed("lg:opacity-0")}`} />
 
                 {/* Cut-out portrait */}
-                <div className={`absolute inset-x-0 top-0 bottom-28 transition-[bottom] duration-500 ${collapsed("lg:bottom-0")}`}>
+                <div className={`absolute inset-x-0 top-0 bottom-36 transition-[bottom] duration-500 ${collapsed("lg:bottom-0")}`}>
                   <Image
                     src={s.image}
                     alt={s.name}
@@ -105,8 +105,9 @@ export default function Speakers() {
 
                 {/* Name panel */}
                 <div
-                  className={`absolute inset-x-0 bottom-0 flex h-28 flex-col justify-center px-5 transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:px-7 ${t.panel} ${collapsed("lg:translate-y-full")}`}
+                  className={`absolute inset-x-0 bottom-0 flex h-36 flex-col justify-center px-5 transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] lg:px-7 ${t.panel} ${collapsed("lg:translate-y-full")}`}
                 >
+                  {s.topic && <p className="mb-2 line-clamp-2 text-[13px] leading-snug font-semibold text-ink/80">&ldquo;{s.topic}&rdquo;</p>}
                   <p className="type-heading truncate text-2xl text-ink">{s.name}</p>
                   {s.role && <p className={`mt-1 line-clamp-2 text-sm font-medium ${t.role}`}>{s.role}</p>}
                 </div>
@@ -115,6 +116,50 @@ export default function Speakers() {
           })}
         </ul>
       </Reveal>
+
+      <Panel />
     </section>
+  );
+}
+
+const panelTints = ["bg-p-red", "bg-p-green", "bg-p-blue", "bg-p-yellow"];
+
+/** Panel session: compact grid of cut-outs on pastel tiles. */
+function Panel() {
+  const { title, members } = panel2026;
+  return (
+    <div className="mx-auto mt-20 max-w-7xl px-4 sm:px-8">
+      <Reveal className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.1em] text-ink/55 uppercase">Panel session</p>
+          <h3 className="type-heading mt-2 max-w-3xl text-[clamp(1.5rem,2.6vw,2.25rem)]">{title ?? "The panel"}</h3>
+        </div>
+        {!title && <p className="text-sm text-ink/55">Topic announced soon</p>}
+      </Reveal>
+      <ul
+        className="mt-8 grid gap-2.5 sm:gap-5"
+        // Keep every panelist on one row, whatever the screen size.
+        style={{ gridTemplateColumns: `repeat(${members.length}, minmax(0, 1fr))` }}
+      >
+        {members.map((m, i) => (
+          <Reveal as="li" key={m.name} delay={i * 0.06} className="group">
+            <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl ${panelTints[i % panelTints.length]}`}>
+              <Image
+                src={m.image}
+                alt={m.name}
+                fill
+                sizes="(min-width: 640px) 30vw, 33vw"
+                className="object-contain object-bottom transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+              {m.moderator && (
+                <span className="absolute top-2 left-2 rounded-full bg-ink px-2 py-0.5 text-[10px] font-semibold text-white sm:top-3 sm:left-3 sm:px-3 sm:py-1 sm:text-xs">Moderator</span>
+              )}
+            </div>
+            <p className="mt-2 text-[13px] leading-tight font-semibold sm:mt-3 sm:text-base">{m.name}</p>
+            <p className="mt-0.5 text-[11px] leading-snug text-ink/60 sm:text-sm">{m.role}</p>
+          </Reveal>
+        ))}
+      </ul>
+    </div>
   );
 }

@@ -84,7 +84,7 @@ export const speakers2026: { name: string; role: string; image: string }[] = [
   { name: "Dev Longs", role: "Lead Engineer, Blockfuse Labs", image: "/speakers/dev-longs.webp" },
   { name: "Christie Dasaro", role: "ICT Coordinator, ECWA", image: "/speakers/christie-dasaro.webp" },
   { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp" },
-  { name: "Nnamdi Ibe", role: "", image: "/speakers/nnamdi-ibe.webp" }, // TODO: add role
+  { name: "Nnamdi Ibe", role: "CEO, Axia Hub", image: "/speakers/nnamdi-ibe.webp" },
   { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp" },
 ];
 

@@ -20,7 +20,8 @@ const asset = (...p: string[]) => path.join(process.cwd(), ...p);
 
 let fonts: Promise<{ name: string; data: Buffer; weight: 700; style: "normal" }[]> | null = null;
 const loadFonts = () =>
-  (fonts ??= readFile(asset("lib/tickets/pdf-fonts/GoogleSans-700.ttf")).then((data) => [
+  (fonts ??= // Latin subset without GSUB: Satori cannot parse the full font's substitution tables.
+    readFile(asset("lib/tickets/templates/GoogleSans-Bold-ticket.ttf")).then((data) => [
     { name: "Google Sans", data, weight: 700 as const, style: "normal" as const },
   ]));
 

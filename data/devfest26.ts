@@ -88,6 +88,7 @@ export const speakers2026: { name: string; role: string; image: string; badge?: 
   { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp", badge: "Panelist" },
   { name: "Nnamdi Ibe", role: "CEO, Axia Hub", image: "/speakers/nnamdi-ibe.webp", badge: "Panelist" },
   { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp", badge: "Moderator" },
+  { name: "Murtala Abdullahi", role: "", image: "/speakers/murtala-abdullahi.webp" }, // TODO: role (and badge?)
 ];
 
 /** DevFest Jos 2026 volunteer crew. Local photos live in public/volunteers. */

@@ -50,7 +50,7 @@ export default function Gallery() {
   return (
     <section id="gallery" className="scroll-mt-24 bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
-        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div className="flex flex-col gap-6">
           <div>
             <Reveal>
               <Eyebrow className="text-ink/60">Gallery</Eyebrow>
@@ -64,17 +64,23 @@ export default function Gallery() {
             </Reveal>
           </div>
           <Reveal delay={0.1} className="flex flex-wrap gap-2">
-            {gallery.archives.map((a) => (
-              <a
-                key={a.href}
-                href={a.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-11 items-center gap-1.5 rounded-full border border-ink/15 px-4 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-g-blue"
-              >
-                {a.label} photos <ArrowUpRight aria-hidden className="size-4" />
-              </a>
-            ))}
+            {gallery.archives.map((a) =>
+              a.href ? (
+                <a
+                  key={a.label}
+                  href={a.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-11 items-center gap-1.5 rounded-full border border-ink/15 px-4 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-g-blue"
+                >
+                  {a.label} photos <ArrowUpRight aria-hidden className="size-4" />
+                </a>
+              ) : (
+                <span key={a.label} className="inline-flex h-11 items-center gap-1.5 rounded-full border border-dashed border-ink/20 px-4 text-sm font-semibold text-ink/50">
+                  {a.label} photos · soon
+                </span>
+              ),
+            )}
           </Reveal>
         </div>
 

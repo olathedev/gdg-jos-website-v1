@@ -138,7 +138,9 @@ export const gallery = {
   archives: [
     { label: "DevFest 2023", href: "https://drive.google.com/drive/u/0/folders/1HtgoxI8vq9mBRhIHVp31Sj78wy0SdcCH" },
     { label: "DevFest 2024", href: "https://drive.google.com/drive/u/0/folders/1E2ENoV1H2HFAlgLDxoyi0FOtZ3IlyLeB" },
-  ],
+    // TODO: add the DevFest 2025 photos link. Shows as "soon" until set.
+    { label: "DevFest 2025", href: null },
+  ] as { label: string; href: string | null }[],
 };
 
 export const partners = [

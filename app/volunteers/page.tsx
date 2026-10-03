@@ -26,7 +26,7 @@ export default function VolunteersPage() {
               Meet the <span className="text-h-yellow">volunteers</span>
             </h1>
             <p className="mx-auto mt-4 max-w-lg text-base text-white/70 sm:text-lg">
-              The crew behind registration, speakers, media, design and partners, plus the 2025 alumni who paved the way.
+              The crew behind registration, speakers, media, design and partners. DevFest Jos doesn&apos;t happen without them.
             </p>
             <div className="mt-8 flex justify-center">
               <PillLink href={event.volunteerUrl} size="lg">

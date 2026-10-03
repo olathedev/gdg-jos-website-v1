@@ -28,11 +28,14 @@ export default function VolunteerGrid() {
 
   return (
     <>
-      <div role="group" aria-label="Filter volunteers" className="flex flex-wrap gap-2">
-        {chip("Everyone", null, people.length)}
-        {groups.map((g) => chip(g.label, g.id, g.count))}
-      </div>
-      <ul className={`mt-10 ${gridCls}`}>
+      {/* Filters only make sense with more than one group (e.g. when 2025 alumni are shown). */}
+      {groups.length > 1 && (
+        <div role="group" aria-label="Filter volunteers" className="mb-10 flex flex-wrap gap-2">
+          {chip("Everyone", null, people.length)}
+          {groups.map((g) => chip(g.label, g.id, g.count))}
+        </div>
+      )}
+      <ul className={gridCls}>
         {shown.map((v, i) => (
           <VolunteerCard key={v.name} {...v} index={i} />
         ))}

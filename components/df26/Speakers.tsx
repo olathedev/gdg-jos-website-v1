@@ -137,26 +137,26 @@ function Panel() {
         {!title && <p className="text-sm text-ink/55">Topic announced soon</p>}
       </Reveal>
       <ul
-        className="mt-8 grid gap-2.5 sm:gap-5"
-        // Keep every panelist on one row, whatever the screen size.
-        style={{ gridTemplateColumns: `repeat(${members.length}, minmax(0, 1fr))` }}
+        // One per row on mobile; every panelist on one row from tablet up.
+        className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-[repeat(var(--cols),minmax(0,1fr))] sm:gap-5"
+        style={{ "--cols": members.length } as React.CSSProperties}
       >
         {members.map((m, i) => (
           <Reveal as="li" key={m.name} delay={i * 0.06} className="group">
-            <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl ${panelTints[i % panelTints.length]}`}>
+            <div className={`relative aspect-[5/4] overflow-hidden rounded-3xl sm:aspect-[4/5] ${panelTints[i % panelTints.length]}`}>
               <Image
                 src={m.image}
                 alt={m.name}
                 fill
-                sizes="(min-width: 640px) 30vw, 33vw"
+                sizes="(min-width: 640px) 25vw, 90vw"
                 className="object-contain object-bottom transition-transform duration-500 group-hover:scale-[1.03]"
               />
               {m.moderator && (
-                <span className="absolute top-2 left-2 rounded-full bg-ink px-2 py-0.5 text-[10px] font-semibold text-white sm:top-3 sm:left-3 sm:px-3 sm:py-1 sm:text-xs">Moderator</span>
+                <span className="absolute top-3 left-3 rounded-full bg-ink px-3 py-1 text-xs font-semibold text-white">Moderator</span>
               )}
             </div>
-            <p className="mt-2 text-[13px] leading-tight font-semibold sm:mt-3 sm:text-base">{m.name}</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-ink/60 sm:text-sm">{m.role}</p>
+            <p className="mt-3 text-base leading-tight font-semibold">{m.name}</p>
+            <p className="mt-0.5 text-sm leading-snug text-ink/60">{m.role}</p>
           </Reveal>
         ))}
       </ul>

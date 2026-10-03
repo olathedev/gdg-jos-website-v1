@@ -9,6 +9,7 @@ import Speakers from "@/components/df26/Speakers";
 import Team from "@/components/df26/Team";
 import Tickets from "@/components/df26/Tickets";
 import Tracks from "@/components/df26/Tracks";
+import Volunteers from "@/components/df26/Volunteers";
 import { Divider } from "@/components/df26/ui";
 
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
         <Partners />
         <Gallery />
         <Team />
+        <Volunteers />
         <Faq />
         <CtaBand />
         <Divider />

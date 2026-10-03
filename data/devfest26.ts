@@ -88,6 +88,31 @@ export const speakers2026: { name: string; role: string; image: string }[] = [
   { name: "Kyendi Hope Fwangter", role: "Panel Moderator", image: "/speakers/kyendi-hope-fwangter.webp" },
 ];
 
+/** DevFest Jos 2026 volunteer crew. Local photos live in public/volunteers. */
+export const volunteers2026: { name: string; role: string; image: string }[] = [
+  { name: "Nshe Velnoe David", role: "Volunteer Team Lead · Social Media · Publicity", image: "https://res.cloudinary.com/dxssytv0p/image/upload/v1758341910/Rectangle_307_ysrn5b.png" },
+  { name: "Ibrahim Fkyafa Musa", role: "Speakers and Guests", image: "/volunteers/ibrahim-fkyafa-musa.webp" },
+  { name: "Itse Collins Arin", role: "Social Media", image: "/volunteers/itse-collins-arin.webp" },
+  { name: "SamY", role: "Design", image: "/volunteers/samy.webp" },
+  { name: "Ononuju Henry", role: "Registration · Social Media", image: "/volunteers/ononuju-henry.webp" },
+  { name: "James Peter", role: "Registration · Media and Publicity", image: "/volunteers/james-peter.webp" },
+  { name: "Pidima Zumji Gomerep", role: "Registration · Accreditation", image: "/volunteers/pidima-zumji-gomerep.webp" },
+  { name: "Catherine Ringbyen Wuyep", role: "Speakers and Guests · Partnership and Sponsorship", image: "/volunteers/catherine-wuyep.webp" },
+  { name: "Retyit Samuel Brengshak", role: "Media and Publicity · Speakers and Guests", image: "/volunteers/retyit-brengshak.webp" },
+  { name: "Jubilant Agida", role: "Partnership and Sponsorship", image: "/volunteers/jubilant-agida.webp" },
+];
+
+/** 2025 volunteers now on the 2026 crew (shown there, not repeated as alumni). */
+export const returningVolunteers2025 = [
+  "Wuyep Catherine R.",
+  "Ise Collins Arin",
+  "James Peter",
+  "Pidima Zumji G.",
+  "Retyit Brengshak",
+  "Jubilant Agida",
+  "Nshe Velnoe",
+];
+
 export const pastStats = [
   { value: 500, suffix: "+", label: "Attendees", tone: "blue" },
   { value: 17, suffix: "", label: "Speakers", tone: "green" },

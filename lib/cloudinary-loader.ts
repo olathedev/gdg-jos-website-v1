@@ -13,7 +13,19 @@ const isTransformation = (seg: string) => /^[a-z]{1,3}_/.test(seg) && !/^v\d+$/.
  * until higher-resolution originals are uploaded.
  */
 export function upscaled(src: string) {
-  return src.includes(UPLOAD) ? src.replace(UPLOAD, `${UPLOAD}e_upscale/`) : src;
+  // e_upscale rejects inputs over 4.2MP, so cap the input first (c_limit never enlarges small photos).
+  return src.includes(UPLOAD) ? src.replace(UPLOAD, `${UPLOAD}c_limit,w_1024,h_1024/e_upscale/`) : src;
+}
+
+/**
+ * Square, face-centred, AI-upscaled portrait. c_lfill crops around the face
+ * without enlarging small photos; large ones are capped under e_upscale's 4.2MP limit.
+ */
+export function facePortrait(src: string, { zoom = false } = {}) {
+  if (!src.includes(UPLOAD)) return src;
+  // zoom: for large photos where the person is small in frame; no upscale needed.
+  const t = zoom ? "c_thumb,g_face,z_0.75,ar_1:1,w_1024" : "c_lfill,g_face,ar_1:1,w_1024/e_upscale";
+  return src.replace(UPLOAD, `${UPLOAD}${t}/`);
 }
 
 /**
@@ -42,7 +54,7 @@ export default function cloudinaryLoader({
     while (i < segs.length - 1 && isTransformation(segs[i])) i++;
     // AI transforms (upscale / background removal) cost a job per distinct URL,
     // so collapse their sizes into two buckets instead of next/image's ~8.
-    const ai = /e_(upscale|background_removal)/.test(rest);
+    const ai = /e_(upscale|background_removal)|c_thumb/.test(rest);
     const w = ai ? (width <= 480 ? 480 : 920) : width;
     const params = `f_auto,c_limit,w_${w},q_${quality ?? "auto"}`;
     return `${base}${UPLOAD}${[...segs.slice(0, i), params, ...segs.slice(i)].join("/")}`;

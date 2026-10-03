@@ -226,6 +226,8 @@ export const volunteers = [
     name: "Michael Olapade O.",
     role: "Web Developer",
     image: "https://res.cloudinary.com/dxssytv0p/image/upload/v1758342142/WhatsApp_Image_2025-08-22_at_18.25.52_1_icm1xg.jpg",
+    // High-res photo taken from a distance: crop in on the face instead of upscaling.
+    zoom: true,
     unit: "Media & Publicity Unit",
   },
   {
@@ -236,7 +238,7 @@ export const volunteers = [
   },
   {
     name: "Joe Ubong",
-    role: "Copywriter, Creative Write",
+    role: "Copywriter, Creative Writer",
     image: "https://res.cloudinary.com/dxssytv0p/image/upload/v1758342025/Rectangle_297_cz7owc.png",
     unit: "Media & Publicity Unit",
   },

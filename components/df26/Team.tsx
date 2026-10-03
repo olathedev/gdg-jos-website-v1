@@ -2,8 +2,7 @@ import Image from "next/image";
 import { upscaled } from "@/lib/cloudinary-loader";
 import Link from "next/link";
 import { organisers } from "@/data/data";
-import { event } from "@/data/devfest26";
-import { Eyebrow, PillLink, Reveal } from "./ui";
+import { Eyebrow, Reveal } from "./ui";
 
 const tones = ["bg-p-blue", "bg-p-red", "bg-p-yellow", "bg-p-green"];
 
@@ -23,14 +22,11 @@ export default function Team() {
             </Reveal>
           </div>
           <Reveal delay={0.1} className="flex flex-wrap items-center gap-3">
-            <PillLink href={event.volunteerUrl} variant="dark" size="lg">
-              Volunteer with us
-            </PillLink>
             <Link
-              href="/devfest/team"
+              href="/volunteers"
               className="inline-flex h-12 items-center rounded-full px-4 text-[15px] font-medium text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-g-blue"
             >
-              Meet the 2025 team
+              Meet the volunteers
             </Link>
           </Reveal>
         </div>

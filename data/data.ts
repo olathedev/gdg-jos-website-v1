@@ -181,9 +181,8 @@ export const organisers = [
   },
   {
     name: "John Ebuga Saduna",
-    role: "Jesanija Media Enterprise\nCo-Organizer",
-    image:
-      "https://res.cloudinary.com/dxssytv0p/image/upload/v1758319631/Rectangle_220_1_pinbde.png",
+    role: "Data Science Nigeria\nCo-Organizer",
+    image: "/organisers/john-ebuga-saduna.webp",
     color: "",
     linkedin: "#",
     twitter: "#",

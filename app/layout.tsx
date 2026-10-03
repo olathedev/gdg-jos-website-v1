@@ -41,7 +41,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DevFest Jos 2026",
     description: "The developer festival of the Plateau, hosted by GDG Jos.",
-    images: ["https://res.cloudinary.com/dxssytv0p/image/upload/f_auto,q_auto,w_1200/v1758289190/devfestbanner_v12utp.jpg"],
   },
 };
 

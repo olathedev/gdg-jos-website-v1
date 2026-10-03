@@ -35,7 +35,6 @@ export default function Hero() {
             rel="noopener noreferrer"
             className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] font-medium text-white/85 ring-1 ring-white/15 backdrop-blur-sm transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-g-blue"
           >
-            <span aria-hidden className="size-1.5 rounded-full bg-h-green" />
             {when} · {where}
           </a>
         </m.div>

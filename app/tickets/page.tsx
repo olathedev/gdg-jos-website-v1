@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     title: "Get your DevFest Jos 2026 ticket",
     description,
     url: "/tickets",
-    images: ["https://res.cloudinary.com/dxssytv0p/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/v1758289190/devfestbanner_v12utp.jpg"],
   },
   twitter: { card: "summary_large_image", title: "Get your DevFest Jos 2026 ticket", description },
 };

@@ -84,7 +84,7 @@ export const heroPills: { label: string; tone: PillTone }[] = [
 export const speakers2026: { name: string; role: string; image: string; topic?: string; badge?: string }[] = [
   // Order also sets each card's colour (blue, red, yellow, green, …), chosen to contrast with outfits.
   { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp", badge: "Keynote" },
-  { name: "Murtala Abdullahi", role: "", image: "/speakers/murtala-abdullahi.webp", badge: "Keynote" }, // TODO: role
+  { name: "Murtala Abdullahi", role: "CEO, Smartweb Nigeria · VP, NiRA", image: "/speakers/murtala-abdullahi.webp", badge: "Keynote" },
   {
     name: "Daniel Okoro",
     role: "Lead Software Engineer",

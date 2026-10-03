@@ -6,7 +6,7 @@ const cld = (path: string) =>
   `https://res.cloudinary.com/dxssytv0p/image/upload/${path}`;
 
 export const COMMUNITY_URL = "https://gdg.community.dev/gdg-jos/";
-export const WHATSAPP_URL = "https://chat.whatsapp.com/LmwwxuXMprREqMy1aD871a";
+export const WHATSAPP_URL = "https://chat.whatsapp.com/FZbv4sddTIgAiK9zZ9B7m3?mode=gi_t";
 
 export const event = {
   name: "DevFest Jos 2026",

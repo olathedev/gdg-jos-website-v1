@@ -12,17 +12,20 @@ const INK = "#1e1e1e";
 const file = (...p: string[]) => readFile(path.join(process.cwd(), ...p));
 
 let assets: Promise<{ fonts: { name: string; data: Buffer; weight: 400 | 600 | 700; style: "normal" }[]; divider: string }> | null = null;
+// Google Sans and Clash have no ₦ glyph; a 1-glyph Noto Sans subset (OFL) fills the gap.
 const loadAssets = () =>
   (assets ??= Promise.all([
     file("lib/og/ClashDisplay-600.ttf"),
     file("lib/og/GoogleSans-400.ttf"),
     file("lib/og/GoogleSans-700.ttf"),
     file("public/divider.svg"),
-  ]).then(([clash, sans, sansBold, divider]) => ({
+    file("lib/og/NotoSans-700-naira.ttf"),
+  ]).then(([clash, sans, sansBold, divider, naira]) => ({
     fonts: [
       { name: "Clash", data: clash, weight: 600, style: "normal" },
       { name: "Sans", data: sans, weight: 400, style: "normal" },
       { name: "Sans", data: sansBold, weight: 700, style: "normal" },
+      { name: "Naira", data: naira, weight: 700, style: "normal" },
     ],
     divider: `data:image/svg+xml;base64,${divider.toString("base64")}`,
   })));

@@ -10,13 +10,15 @@ export function TopStrip() {
 
 export function Wordmark() {
   return (
-    <span className="flex items-center gap-2 text-[17px] font-bold tracking-tight">
-      <span>
+    <span className="flex flex-col leading-none sm:flex-row sm:items-center sm:gap-2">
+      <span className="text-[17px] font-bold tracking-tight">
         <span className="text-g-blue">{"{"}</span>
         <span className="px-0.5">DevFest</span>
         <span className="text-g-yellow">{"}"}</span>
       </span>
-      <span className="text-sm font-medium text-zinc-400">Jos &apos;26 · Admin</span>
+      {/* Phones: small "Admin" under the logo. Larger screens: inline. */}
+      <span className="mt-1 pl-0.5 text-[11px] font-medium tracking-wide text-zinc-400 uppercase sm:hidden">Admin</span>
+      <span className="hidden text-sm font-medium text-zinc-400 sm:inline">Jos &apos;26 · Admin</span>
     </span>
   );
 }

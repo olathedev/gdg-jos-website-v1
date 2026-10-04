@@ -48,10 +48,10 @@ export default function About() {
           <Reveal delay={0.1} className="relative mx-auto w-full max-w-xl">
             <div className="relative aspect-[5/6]">
               <div className="absolute top-0 left-0 h-[72%] w-[70%] overflow-hidden rounded-[2rem] bg-ink/10">
-                <Image src={gallery.speaker} alt="A speaker on stage at DevFest Jos" fill sizes="(min-width: 1024px) 28rem, 70vw" className="object-cover" />
+                <Image src={gallery.speaker} alt="A speaker presenting on the DevFest Jos 2025 stage" fill sizes="(min-width: 1024px) 28rem, 70vw" className="object-cover" />
               </div>
               <div className="absolute right-0 bottom-0 h-[55%] w-[58%] overflow-hidden rounded-[2rem] ring-8 ring-paper">
-                <Image src={gallery.selfie} alt="Attendees taking a selfie during a session" fill sizes="(min-width: 1024px) 22rem, 58vw" className="object-cover" />
+                <Image src={gallery.selfie} alt="Attendees taking a selfie at DevFest Jos 2025" fill sizes="(min-width: 1024px) 22rem, 58vw" className="object-cover" />
               </div>
               <Braces className="absolute top-[6%] -right-2 w-24 text-g-green sm:w-28" />
               <Star4 className="absolute bottom-[38%] left-[64%] w-12 text-g-yellow" />

@@ -9,7 +9,8 @@ import { Logo } from "./ui";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue";
 
-export default function Nav() {
+/** `onLight`: dark text until the bar fills in on scroll (for pages without a dark header). */
+export default function Nav({ onLight = false }: { onLight?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -40,6 +41,8 @@ export default function Nav() {
     };
   }, [open, close]);
 
+  const light = onLight && !scrolled;
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 lg:px-5 lg:pt-4">
       <nav
@@ -49,13 +52,13 @@ export default function Nav() {
         }`}
       >
         <Link href="/#top" className={`rounded-md ${focus}`} aria-label="DevFest Jos 2026 home">
-          <Logo />
+          <Logo tone={light ? "dark" : "light"} />
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
           {navLinks.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className={`rounded-full px-3.5 py-2 text-sm font-medium text-white/75 transition-colors hover:text-white ${focus}`}>
+              <a href={l.href} className={`rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${light ? "text-ink/70 hover:text-ink" : "text-white/75 hover:text-white"} ${focus}`}>
                 {l.label}
               </a>
             </li>
@@ -65,7 +68,7 @@ export default function Nav() {
         <div className="flex items-center gap-2">
           <a
             href={ticketHref}
-            className={`inline-flex h-9 items-center rounded-full bg-white px-4 text-sm font-medium text-ink transition-colors hover:bg-white/85 lg:h-10 lg:px-5 ${focus}`}
+            className={`inline-flex h-9 items-center rounded-full px-4 text-sm font-medium transition-colors lg:h-10 lg:px-5 ${light ? "bg-ink text-white hover:bg-ink/85" : "bg-white text-ink hover:bg-white/85"} ${focus}`}
           >
             Get tickets
           </a>
@@ -76,7 +79,7 @@ export default function Nav() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label="Open menu"
-            className={`-mr-1 grid size-10 place-items-center rounded-full text-white transition-colors hover:bg-white/10 lg:hidden ${focus}`}
+            className={`-mr-1 grid size-10 place-items-center rounded-full transition-colors lg:hidden ${light ? "text-ink hover:bg-ink/5" : "text-white hover:bg-white/10"} ${focus}`}
           >
             <Menu className="size-6" aria-hidden />
           </button>

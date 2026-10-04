@@ -24,7 +24,7 @@ export default function Faq() {
           </Reveal>
           <Reveal delay={0.1} className="relative mt-10 hidden max-w-md lg:block">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] rounded-tr-[6rem]">
-              <Image src={gallery.keynote} alt="A speaker addressing the DevFest Jos audience" fill sizes="28rem" className="object-cover" />
+              <Image src={gallery.keynote} alt="A speaker at the podium during DevFest Jos 2025" fill sizes="28rem" className="object-cover" />
             </div>
           </Reveal>
           <Reveal delay={0.1}>

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local email previews (ticketing dev fallback)
 .dev-emails
+
+# full-size 2025 originals (site uses the WebP versions)
+public/images/2025/*.jpg

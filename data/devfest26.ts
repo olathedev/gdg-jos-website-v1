@@ -45,6 +45,7 @@ export const navLinks = [
   { label: "Tracks", href: "/#tracks" },
   { label: "Speakers", href: "/#speakers" },
   { label: "Tickets", href: "/tickets" },
+  { label: "DP Maker", href: "/dp" },
   { label: "FAQ", href: "/#faq" },
 ];
 
@@ -200,15 +201,18 @@ export const tracks = [
 ] as const;
 
 export const gallery = {
-  stage: cld("v1758289190/devfestbanner_v12utp.jpg"),
-  speaker: cld("v1758292404/pic4_aphqof.jpg"),
-  selfie: cld("v1758371946/WhatsApp_Image_2025-09-20_at_11.40.01_c4i71t.jpg"),
-  audience: cld("v1758292408/pic2_cwzwle.jpg"),
-  checkin: cld("v1758292385/pic5_gifxgq.png"),
-  logoG: cld("v1758371949/WhatsApp_Image_2025-09-20_at_11.40.00_ytlbpn.jpg"),
-  wtm: cld("v1758371954/WhatsApp_Image_2025-09-20_at_11.40.02_3_dhw8th.jpg"),
-  swag: cld("v1758371963/WhatsApp_Image_2025-09-20_at_11.40.00_1_kelwit.jpg"),
-  keynote: cld("v1758292394/pic1_ssmzx7.jpg"),
+  // DevFest Jos 2025 photos (public/images/2025, 1600px WebP)
+  stage: "/images/2025/stage-hall.webp",
+  speaker: "/images/2025/speaker-stage.webp",
+  selfie: "/images/2025/selfie.webp",
+  audience: "/images/2025/crowd.webp",
+  checkin: "/images/2025/attendees.webp",
+  logoG: "/images/2025/coding.webp",
+  wtm: "/images/2025/conversation.webp",
+  swag: "/images/2025/registration-desk.webp",
+  keynote: "/images/2025/speaker-podium.webp",
+  group: "/images/2025/group-photo.webp",
+  volunteersDesk: "/images/2025/volunteers-desk.webp",
   recap:
     "https://res.cloudinary.com/dxssytv0p/video/upload/q_auto,w_960/v1758373015/WhatsApp_Video_2024-12-07_at_07.29.59_a718ad78_qlb6oy.mp4",
   archives: [

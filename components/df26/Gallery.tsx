@@ -85,7 +85,7 @@ export default function Gallery() {
         </div>
 
         <Reveal delay={0.1} className="mt-14 grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] sm:gap-4 lg:grid-cols-4">
-          <Photo src={gallery.stage} alt="A packed hall listening to a talk at DevFest Jos" sizes="(min-width: 1024px) 50vw, 100vw" className="col-span-2 row-span-2" />
+          <Photo src={gallery.group} alt="The DevFest Jos 2025 group photo outside the venue" sizes="(min-width: 1024px) 50vw, 100vw" className="col-span-2 row-span-2" />
           <RecapVideo className="row-span-2" />
           <div className="relative flex flex-col justify-between overflow-hidden rounded-[1.75rem] bg-h-yellow p-5 text-ink">
             <Braces className="absolute -right-4 -bottom-6 w-28 text-g-yellow" />
@@ -96,10 +96,10 @@ export default function Gallery() {
               &apos;26
             </p>
           </div>
-          <Photo src={gallery.wtm} alt="Women Techmakers attendees posing with a photo frame" sizes="(min-width: 1024px) 25vw, 50vw" />
-          <Photo src={gallery.audience} alt="Attendees taking notes during a session" sizes="(min-width: 1024px) 50vw, 100vw" className="col-span-2" />
-          <Photo src={gallery.swag} alt="DevFest swag laid out on a table" sizes="(min-width: 1024px) 25vw, 50vw" />
-          <Photo src={gallery.logoG} alt="The giant Google G sculpture at the venue" sizes="(min-width: 1024px) 25vw, 50vw" />
+          <Photo src={gallery.wtm} alt="Attendees chatting between sessions" sizes="(min-width: 1024px) 25vw, 50vw" />
+          <Photo src={gallery.audience} alt="A full hall during a DevFest Jos session" sizes="(min-width: 1024px) 50vw, 100vw" className="col-span-2" />
+          <Photo src={gallery.swag} alt="Volunteers checking attendees in at the registration desk" sizes="(min-width: 1024px) 25vw, 50vw" />
+          <Photo src={gallery.logoG} alt="An attendee coding on his laptop during a workshop" sizes="(min-width: 1024px) 25vw, 50vw" />
         </Reveal>
       </div>
     </section>

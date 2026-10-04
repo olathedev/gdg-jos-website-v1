@@ -18,7 +18,7 @@ export default function VolunteersPage() {
       <Nav />
       <main className="overflow-x-clip">
         <header className="relative isolate overflow-hidden bg-ink pt-28 pb-16 text-center text-white sm:pt-36 sm:pb-20">
-          <PhotoBackdrop src={gallery.wtm} priority position="center 40%" dim="bg-ink/[0.86]" />
+          <PhotoBackdrop src={gallery.volunteersDesk} priority position="center 40%" dim="bg-ink/[0.86]" />
           <div className="mx-auto max-w-3xl px-5">
             <h1 className="type-heading text-[clamp(2.5rem,6vw,4.5rem)]">
               Meet the <span className="text-h-yellow">volunteers</span>

@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     "/opengraph-image": ["./lib/og/**", "./public/divider.svg"],
     "/tickets/opengraph-image": ["./lib/og/**", "./public/divider.svg"],
     "/volunteers/opengraph-image": ["./lib/og/**", "./public/divider.svg"],
+    "/dp/opengraph-image": ["./lib/og/**", "./public/divider.svg"],
   },
   async redirects() {
     // The 2026 landing page lives at the root now.

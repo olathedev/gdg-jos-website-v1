@@ -47,7 +47,7 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
   const sp = await searchParams;
   const [stats, list] = await Promise.all([
     getStats(),
-    listOrders({ q: sp.q, status: sp.status, tier: sp.tier, mode: sp.mode, page: Number(sp.page) || 1 }),
+    listOrders({ q: sp.q, status: sp.status, tier: sp.tier, page: Number(sp.page) || 1 }),
   ]);
   const qs = (patch: Record<string, string | number | undefined>) => {
     const p = new URLSearchParams();
@@ -57,10 +57,10 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
   };
 
   const cards = [
-    { label: "Revenue (live)", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid orders`, tone: "bg-g-blue text-white" },
+    { label: "Revenue", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid orders`, tone: "bg-g-blue text-white" },
     { label: "Tickets issued", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi${stats.tickets.regular ? ` · ${stats.tickets.regular} Regular` : ""}`, tone: "bg-white" },
     { label: "Checked in", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} tickets`, tone: "bg-white" },
-    { label: "Needs attention", value: String(stats.pending), sub: `pending · ${stats.failed} failed · ${stats.testOrders} test`, tone: "bg-white" },
+    { label: "Needs attention", value: String(stats.pending), sub: `pending · ${stats.failed} failed`, tone: "bg-white" },
   ];
 
   const select = "h-11 rounded-xl bg-white px-3 text-sm ring-1 ring-ink/10 outline-none focus:ring-2 focus:ring-g-blue";
@@ -121,11 +121,6 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
             <option value="vip">VIP</option>
             <option value="padi">My Padi</option>
             <option value="regular">Regular</option>
-          </select>
-          <select name="mode" defaultValue={sp.mode ?? ""} aria-label="Payment mode" className={select}>
-            <option value="">Live + test</option>
-            <option value="live">Live only</option>
-            <option value="test">Test only</option>
           </select>
           <button className="h-11 rounded-xl bg-ink px-4 text-sm font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-g-blue">Apply</button>
           <a
@@ -189,7 +184,6 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
 }
 
 function OrderRows({ o }: { o: AdminOrder }) {
-  const test = o.mode === "test";
   return (
     <tbody className="group border-b border-ink/[0.06] last:border-0">
       <tr className="align-top [&>td]:pb-2">
@@ -212,7 +206,6 @@ function OrderRows({ o }: { o: AdminOrder }) {
         <td className="px-5 py-4">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${statusStyle[o.status]}`}>{o.status}</span>
-            {test && <span className="rounded-full bg-ink/[0.07] px-2 py-0.5 text-xs font-semibold">Test</span>}
           </div>
           {o.failure && <p className="mt-1 text-xs text-[#a50e0e]">{o.failure.replace(/_/g, " ")}</p>}
         </td>

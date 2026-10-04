@@ -25,8 +25,9 @@ export async function getStats(): Promise<Stats> {
       count(*) filter (where o.status = 'paid' and ${LIVE})::int as paid,
       count(*) filter (where o.status = 'pending')::int as pending,
       count(*) filter (where o.status = 'failed')::int as failed,
-      count(*) filter (where o.paystack->>'domain' = 'test')::int as test
-    from orders o`);
+      0 as test
+    from orders o
+    where ${LIVE}`);
   const [t] = await sql.unsafe<{ total: number; vip: number; padi: number; regular: number; checked: number }[]>(`
     select
       count(*)::int as total,
@@ -74,7 +75,6 @@ export async function listOrders(f: OrderFilters) {
   const q = f.q?.trim();
   const status = ["paid", "free", "pending", "failed"].includes(f.status ?? "") ? f.status! : null;
   const tier = ["vip", "padi", "regular"].includes(f.tier ?? "") ? f.tier! : null;
-  const mode = f.mode === "live" || f.mode === "test" ? f.mode : null;
   const page = Math.max(1, f.page ?? 1);
   const like = q ? `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%` : null;
 
@@ -83,7 +83,7 @@ export async function listOrders(f: OrderFilters) {
            or exists (select 1 from tickets t where t.order_id = o.id and (t.holder_name ilike ${like} or t.holder_email ilike ${like} or t.code ilike ${like})))
       and (${status}::text is null or o.status = ${status})
       and (${tier}::text is null or o.tier = ${tier})
-      and (${mode}::text is null or coalesce(o.paystack->>'domain', 'live') = ${mode})`;
+      and coalesce(o.paystack->>'domain', 'live') = 'live'`; // test-mode payments are never shown
 
   const [{ count }] = await sql<{ count: number }[]>`select count(*)::int as count from orders o ${where}`;
   const rows = await sql<AdminOrder[]>`
@@ -103,13 +103,14 @@ export async function ticketsCsv() {
   const rows = await db()<Record<string, string>[]>`
     select t.code, t.tier, t.holder_name, t.holder_email,
            coalesce(to_char(t.checked_in_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI'), '') as checked_in,
-           o.reference, o.status, coalesce(o.paystack->>'domain', 'live') as mode,
+           o.reference, o.status,
            o.buyer_name, o.buyer_email, coalesce(o.buyer_phone, '') as buyer_phone,
            (o.amount_kobo / 100)::text as order_amount_ngn,
            to_char(o.created_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI') as ordered_at
     from tickets t join orders o on o.id = t.order_id
+    where coalesce(o.paystack->>'domain', 'live') = 'live'
     order by o.created_at desc, t.created_at`;
-  const cols = ["code", "tier", "holder_name", "holder_email", "checked_in", "reference", "status", "mode", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
+  const cols = ["code", "tier", "holder_name", "holder_email", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
   // Quote every cell; neutralise spreadsheet formula injection.
   const cell = (v: string) => `"${String(v ?? "").replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
   return [cols.join(","), ...rows.map((r) => cols.map((c) => cell(r[c])).join(","))].join("\n");

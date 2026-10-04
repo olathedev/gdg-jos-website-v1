@@ -104,6 +104,12 @@ export const speakers2026: { name: string; role: string; image: string; topic?: 
     image: "/speakers/umar-faruq-zubairu.webp",
     topic: "Beyond 5G: Engineering Low-Latency USSD & Voice Workflows with FastAPI & Cloud Run",
   },
+  {
+    name: "Sonia Style",
+    role: "Co-founder, 10:45 Digi Technologies",
+    image: "/speakers/sonia-style.webp",
+    topic: "Skilled but Broke: Why Learning Tech Skills Is No Longer Enough to Build a Profitable Career",
+  },
 ];
 
 /** Panel session. `title` shows as the headline once announced. */

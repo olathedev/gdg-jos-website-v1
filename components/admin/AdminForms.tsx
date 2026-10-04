@@ -5,20 +5,20 @@ import { useActionState } from "react";
 import { checkInAction, loginAction, recheckAction, resendAction, type ActionState } from "@/app/admin-internal/actions";
 
 const field =
-  "h-12 w-full rounded-xl bg-paper/60 px-4 text-base ring-1 ring-ink/10 outline-none ring-inset placeholder:text-ink/40 focus:bg-white focus:ring-2 focus:ring-g-blue";
+  "h-11 w-full rounded-xl border border-zinc-200 bg-white px-3.5 text-[15px] outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100";
 
 export function LoginForm() {
   const [state, action, pending] = useActionState<ActionState, FormData>(loginAction, null);
   return (
     <form action={action} className="space-y-4">
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
+        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-zinc-700">
           Email
         </label>
         <input id="email" name="email" type="email" required autoComplete="username" className={field} />
       </div>
       <div>
-        <label htmlFor="pin" className="mb-1.5 block text-sm font-medium">
+        <label htmlFor="pin" className="mb-1.5 block text-sm font-medium text-zinc-700">
           PIN
         </label>
         <input
@@ -35,14 +35,14 @@ export function LoginForm() {
         />
       </div>
       {state && !state.ok && (
-        <p role="alert" className="rounded-xl bg-p-red px-4 py-3 text-sm font-medium text-[#a50e0e]">
+        <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-600/15 ring-inset">
           {state.message}
         </p>
       )}
       <button
         type="submit"
         disabled={pending}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:opacity-70"
+        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-ink text-[15px] font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:opacity-70"
       >
         {pending ? <Loader2 aria-hidden className="size-4 animate-spin" /> : <Lock aria-hidden className="size-4" />}
         Sign in
@@ -67,9 +67,9 @@ export function ActionButton({
 }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(actions[kind], null);
   const cls = {
-    default: "bg-white ring-1 ring-ink/15 hover:bg-ink hover:text-white",
+    default: "border border-zinc-200 bg-white hover:bg-zinc-50",
     primary: "bg-ink text-white hover:bg-ink/85",
-    quiet: "text-ink/60 underline underline-offset-4 hover:text-ink",
+    quiet: "text-zinc-500 hover:bg-zinc-100 hover:text-ink",
   }[tone];
   return (
     <form action={action} className="inline-flex items-center gap-2">
@@ -79,13 +79,13 @@ export function ActionButton({
       <button
         type="submit"
         disabled={pending}
-        className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-60 ${cls}`}
+        className={`inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-60 ${cls}`}
       >
         {pending && <Loader2 aria-hidden className="size-3 animate-spin" />}
         {label}
       </button>
       {state && (
-        <span role="status" className={`text-xs ${state.ok ? "text-[#188038]" : "text-[#a50e0e]"}`}>
+        <span role="status" className={`text-xs ${state.ok ? "text-emerald-600" : "text-rose-600"}`}>
           {state.message}
         </span>
       )}

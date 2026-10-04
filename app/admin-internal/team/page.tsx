@@ -34,7 +34,33 @@ export default async function TeamPage() {
         <InviteForm roles={invitableBy[me.role]} />
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-zinc-200/80">
+      {/* Mobile: member cards */}
+      <ul className="mt-8 space-y-2 md:hidden">
+        {members.length === 0 && <li className="rounded-2xl border border-zinc-200/80 px-5 py-12 text-center text-sm text-zinc-500">No team members yet. Add someone above.</li>}
+        {members.map((m) => (
+          <li key={m.id} className="rounded-2xl border border-zinc-200/80 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate font-medium">{m.name ?? m.email}</p>
+                {m.name && <p className="truncate text-sm text-zinc-500">{m.email}</p>}
+              </div>
+              <span className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-medium ${rolePill[m.role]}`}>{roleLabel[m.role]}</span>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className={m.activated_at ? "text-emerald-700" : m.invite_expired ? "text-rose-600" : "text-yellow-700"}>
+                {m.activated_at ? "Active" : m.invite_expired ? "Invite expired" : "Invited"}
+                <span className="text-zinc-400"> · added by {m.invited_by ?? "—"}</span>
+              </span>
+              <div className="flex gap-1">
+                {!m.activated_at && invitableBy[me.role].includes(m.role) && <ReissueButton id={m.id} />}
+                {canRemove(me.role, m.role) && m.email !== me.email && <RemoveButton id={m.id} email={m.email} />}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-8 hidden overflow-hidden rounded-2xl border border-zinc-200/80 md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[44rem] text-left text-sm">
             <thead className="text-[13px] text-zinc-500">

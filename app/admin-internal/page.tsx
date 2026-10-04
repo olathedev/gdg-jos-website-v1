@@ -57,17 +57,17 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
           {figures.map((f, i) => (
             <div
               key={f.label}
-              className="group relative isolate overflow-hidden rounded-2xl px-5 py-5 transition-colors duration-300 hover:bg-zinc-50/80"
+              className="group relative isolate overflow-hidden rounded-2xl px-3 py-4 sm:px-5 sm:py-5 transition-colors duration-300 hover:bg-zinc-50/80"
             >
               {/* Big, tilted, greyed-out icon: a watermark behind the figure, cropped at the corner */}
               <span
                 aria-hidden
                 className={`pointer-events-none absolute -right-5 -bottom-7 -z-10 rotate-45 text-zinc-100 transition-[transform,color] duration-500 ease-out motion-safe:group-hover:scale-110 motion-safe:group-hover:rotate-[20deg] ${f.tint}`}
               >
-                <Icon icon={f.icon} className="size-32 sm:size-36" strokeWidth={1.4} />
+                <Icon icon={f.icon} className="size-24 sm:size-36" strokeWidth={1.4} />
               </span>
               <dt className="text-sm text-zinc-500">{f.label}</dt>
-              <dd className="mt-2 text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">{f.value}</dd>
+              <dd className="mt-2 text-2xl font-semibold tracking-tight tabular-nums sm:text-4xl">{f.value}</dd>
               <dd className="mt-1.5 text-sm text-zinc-400">{f.sub}</dd>
             </div>
           ))}

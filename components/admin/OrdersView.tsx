@@ -114,11 +114,11 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
   return (
     <section className="mt-12">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="mr-auto text-lg font-semibold">
+        <h2 className="mr-auto w-full text-lg font-semibold sm:w-auto">
           Orders <span className="ml-1 text-sm font-normal text-zinc-400">{count}</span>
           {pending && <span className="ml-2 text-sm font-normal text-zinc-400">updating…</span>}
         </h2>
-        <form onSubmit={onSearch} className="relative w-full sm:w-80">
+        <form onSubmit={onSearch} className="relative w-full sm:w-72 lg:w-80">
           <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-zinc-400">
             <Icon icon={Search01Icon} className="size-4" />
           </span>
@@ -127,7 +127,7 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
             defaultValue={params.get("q") ?? ""}
             placeholder="Search name, email, reference or code"
             aria-label="Search orders"
-            className="h-10 w-full rounded-full border border-zinc-200 bg-white pr-4 pl-10 text-sm outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
+            className="h-11 w-full rounded-full border border-zinc-200 bg-white pr-4 pl-10 text-base outline-none sm:h-10 sm:text-sm placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
           />
         </form>
         <Dropdown
@@ -160,7 +160,43 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
         </a>
       </div>
 
-      <div className={`mt-5 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-opacity ${pending ? "opacity-60" : ""}`}>
+      {/* Mobile: tappable cards */}
+      <ul className={`mt-5 space-y-2 md:hidden ${pending ? "opacity-60" : ""}`}>
+        {rows.length === 0 && (
+          <li className="rounded-2xl border border-zinc-200/80 px-5 py-14 text-center">
+            <p className="font-medium">No orders here yet</p>
+            <p className="mt-1 text-sm text-zinc-500">Try a different search or filter.</p>
+          </li>
+        )}
+        {rows.map((o) => (
+          <li key={o.id}>
+            <button
+              type="button"
+              onClick={() => setOpenRef(o.reference)}
+              className="w-full rounded-2xl border border-zinc-200/80 bg-white p-4 text-left transition-colors active:bg-zinc-50"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{o.buyer_name}</p>
+                  <p className="truncate text-sm text-zinc-500">{o.buyer_email}</p>
+                </div>
+                <StatusPill status={o.status} />
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <TierPill tier={o.tier} units={o.units} />
+                  <span className="font-medium tabular-nums">{o.amount_kobo ? formatNaira(o.amount_kobo) : "Free"}</span>
+                </div>
+                <span className="text-xs text-zinc-400 tabular-nums">
+                  {ymd(o.created_at)} · {hm.format(new Date(o.created_at))}
+                </span>
+              </div>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div className={`mt-5 hidden overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-opacity md:block ${pending ? "opacity-60" : ""}`}>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[60rem] text-left text-sm">
             <thead className="text-[13px] text-zinc-500">
@@ -268,6 +304,22 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
         )}
       </div>
 
+      {pages > 1 && (
+        <div className="mt-3 flex items-center justify-between text-sm text-zinc-500 md:hidden">
+          <span>
+            Page {page} of {pages}
+          </span>
+          <div className="flex gap-1">
+            <button type="button" disabled={page <= 1} onClick={() => setParam({ page: String(page - 1) })} aria-label="Previous page" className="grid size-10 place-items-center rounded-full border border-zinc-200 disabled:opacity-40">
+              <Icon icon={ArrowLeft01Icon} className="size-4" />
+            </button>
+            <button type="button" disabled={page >= pages} onClick={() => setParam({ page: String(page + 1) })} aria-label="Next page" className="grid size-10 place-items-center rounded-full border border-zinc-200 disabled:opacity-40">
+              <Icon icon={ArrowRight01Icon} className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {open && <OrderDrawer o={open} onClose={() => setOpenRef(null)} />}
     </section>
   );
@@ -300,7 +352,7 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`Order ${o.reference}`}>
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[2px]" />
       <div className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5">
+        <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-5 py-4 sm:px-6 sm:py-5">
           <div className="min-w-0">
             <p className="truncate font-semibold">{o.buyer_name}</p>
             <p className="truncate text-sm text-zinc-500">{o.buyer_email}</p>
@@ -316,7 +368,7 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
           </button>
         </div>
 
-        <div className="flex-1 space-y-7 overflow-y-auto px-6 py-6 text-sm">
+        <div className="flex-1 space-y-7 overflow-y-auto px-5 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-sm sm:px-6">
           <div className="flex items-end justify-between">
             <div>
               <TierPill tier={o.tier} units={o.units} />

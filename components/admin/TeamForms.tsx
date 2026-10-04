@@ -8,7 +8,7 @@ import Dropdown from "./Dropdown";
 import Icon from "./Icon";
 
 const field =
-  "h-11 w-full rounded-xl border border-zinc-200 bg-white px-3.5 text-[15px] outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100";
+  "h-11 w-full rounded-xl border border-zinc-200 bg-white px-3.5 text-base outline-none sm:text-[15px] placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100";
 
 const roleNames: Record<string, string> = { superadmin: "Super admin", admin: "Admin", volunteer: "Volunteer" };
 

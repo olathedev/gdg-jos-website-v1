@@ -139,6 +139,7 @@ export const volunteers2026: { name: string; role: string; image: string }[] = [
   { name: "Retyit Samuel Brengshak", role: "Media and Publicity · Speakers and Guests", image: "/volunteers/retyit-brengshak.webp" },
   { name: "Jubilant Agida", role: "Partnership and Sponsorship", image: "/volunteers/jubilant-agida.webp" },
   { name: "Salim Tasiu Ibrahim", role: "Media and Publicity · Graphics", image: "/volunteers/salim-tasiu-ibrahim.webp" },
+  { name: "Aminu Yakubu Muhammad", role: "Design", image: "/volunteers/aminu-yakubu-muhammad.webp" },
 ];
 
 /** 2025 volunteers now on the 2026 crew (shown there, not repeated as alumni). */
@@ -151,6 +152,7 @@ export const returningVolunteers2025 = [
   "Jubilant Agida",
   "Nshe Velnoe",
   "Salim Tasiu Ibrahim",
+  "Aminu Yakubu M.",
 ];
 
 /** 2025 volunteers still shown on /volunteers (exact names from data/data.ts). */

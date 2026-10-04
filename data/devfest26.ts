@@ -147,6 +147,7 @@ export const volunteers2026: { name: string; role: string; image: string }[] = [
   { name: "Jubilant Agida", role: "Partnership and Sponsorship", image: "/volunteers/jubilant-agida.webp" },
   { name: "Salim Tasiu Ibrahim", role: "Media and Publicity · Graphics", image: "/volunteers/salim-tasiu-ibrahim.webp" },
   { name: "Aminu Yakubu Muhammad", role: "Design", image: "/volunteers/aminu-yakubu-muhammad.webp" },
+  { name: "Gift Amevye Affiru", role: "Speakers and Guests", image: "/volunteers/gift-amevye-affiru.webp" },
 ];
 
 /** 2025 volunteers now on the 2026 crew (shown there, not repeated as alumni). */

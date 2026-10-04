@@ -58,7 +58,7 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
 
   const cards = [
     { label: "Revenue", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid orders`, tone: "bg-g-blue text-white" },
-    { label: "Tickets issued", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi${stats.tickets.regular ? ` · ${stats.tickets.regular} Regular` : ""}`, tone: "bg-white" },
+    { label: "Tickets issued", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi`, tone: "bg-white" },
     { label: "Checked in", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} tickets`, tone: "bg-white" },
     { label: "Needs attention", value: String(stats.pending), sub: `pending · ${stats.failed} failed`, tone: "bg-white" },
   ];
@@ -112,7 +112,6 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
           <select name="status" defaultValue={sp.status ?? ""} aria-label="Status" className={select}>
             <option value="">All statuses</option>
             <option value="paid">Paid</option>
-            <option value="free">Free</option>
             <option value="pending">Pending</option>
             <option value="failed">Failed</option>
           </select>
@@ -120,7 +119,6 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
             <option value="">All tickets</option>
             <option value="vip">VIP</option>
             <option value="padi">My Padi</option>
-            <option value="regular">Regular</option>
           </select>
           <button className="h-11 rounded-xl bg-ink px-4 text-sm font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-g-blue">Apply</button>
           <a

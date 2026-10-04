@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, ChevronDown } from "lucide-react";
+import { ArrowDown01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
+import Icon from "./Icon";
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
 export type Option = { value: string; label: string; dot?: string };
@@ -81,7 +82,7 @@ export default function Dropdown({
         aria-label={`${label}: ${current.label}`}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKey}
-        className={`inline-flex h-10 items-center gap-2 rounded-xl border bg-white pr-3 pl-3.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue ${
+        className={`inline-flex h-10 items-center gap-2 rounded-full border bg-white pr-3 pl-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue ${
           open ? "border-ink/30" : "border-zinc-200 hover:border-zinc-300"
         }`}
       >
@@ -90,7 +91,9 @@ export default function Dropdown({
           {current.dot && <span aria-hidden className={`size-2 rounded-full ${current.dot}`} />}
           {current.label}
         </span>
-        <ChevronDown aria-hidden className={`size-4 text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className={`text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`}>
+          <Icon icon={ArrowDown01Icon} className="size-4" />
+        </span>
       </button>
       {open && (
         <ul
@@ -116,7 +119,7 @@ export default function Dropdown({
               >
                 {o.dot && <span aria-hidden className={`size-2 rounded-full ${o.dot}`} />}
                 <span className="flex-1">{o.label}</span>
-                {selected && <Check aria-hidden className="size-4 text-ink" />}
+                {selected && <Icon icon={Tick02Icon} className="size-4 text-ink" />}
               </li>
             );
           })}

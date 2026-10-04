@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronDown, LogOut } from "lucide-react";
+import { ArrowDown01Icon, Logout03Icon, SecurityCheckIcon } from "@hugeicons/core-free-icons";
 import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/admin-internal/actions";
-import { Avatar } from "./OrdersView";
+import Icon from "./Icon";
 
 export default function UserMenu({ email }: { email: string }) {
   const [open, setOpen] = useState(false);
@@ -21,24 +21,25 @@ export default function UserMenu({ email }: { email: string }) {
   }, [open]);
 
   return (
-    <div ref={root} className="relative">
+    <div ref={root} className="relative flex items-center gap-2">
+      <span className="hidden items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 sm:inline-flex">
+        <Icon icon={SecurityCheckIcon} className="size-3.5" strokeWidth={2} /> Organiser
+      </span>
       <button
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-full py-1 pr-2 pl-1 hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-g-blue"
+        className="flex h-9 items-center gap-1.5 rounded-full border border-zinc-200 pr-2.5 pl-3.5 text-sm font-medium hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-g-blue"
       >
-        <Avatar name={email.split("@")[0].replace(/[._-]/g, " ")} size="size-8" />
-        <span className="hidden max-w-[12rem] truncate text-sm font-medium sm:block">{email}</span>
-        <ChevronDown aria-hidden className="size-4 text-zinc-400" />
+        <span className="max-w-[10rem] truncate sm:max-w-[16rem]">{email}</span>
+        <Icon icon={ArrowDown01Icon} className="size-4 text-zinc-400" />
       </button>
       {open && (
-        <div role="menu" className="absolute top-full right-0 z-40 mt-2 w-56 rounded-xl border border-zinc-200 bg-white p-1 shadow-lg shadow-zinc-900/[0.06]">
-          <p className="truncate px-3 pt-2 pb-1.5 text-xs text-zinc-500">{email}</p>
+        <div role="menu" className="absolute top-full right-0 z-40 mt-2 w-48 rounded-xl border border-zinc-200 bg-white p-1 shadow-lg shadow-zinc-900/[0.06]">
           <form action={logoutAction}>
             <button role="menuitem" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-zinc-100">
-              <LogOut aria-hidden className="size-4" /> Sign out
+              <Icon icon={Logout03Icon} className="size-4" /> Sign out
             </button>
           </form>
         </div>

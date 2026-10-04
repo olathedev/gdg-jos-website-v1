@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AlertCircle, ScanLine, Ticket, Wallet } from "lucide-react";
 import { LoginForm } from "@/components/admin/AdminForms";
 import OrdersView from "@/components/admin/OrdersView";
 import UserMenu from "@/components/admin/UserMenu";
@@ -13,6 +12,11 @@ export const metadata: Metadata = { title: "Admin · DevFest Jos 2026", robots: 
 
 type SP = Promise<{ q?: string; status?: string; tier?: string; page?: string }>;
 
+/** A slim slice of the DevFest shapes strip along the very top edge. */
+function TopStrip() {
+  return <div aria-hidden className="h-3 w-full bg-[#0a2914] bg-[url(/divider.svg)] bg-[length:auto_82px] bg-[position:center_-34px] bg-repeat-x sm:h-4" />;
+}
+
 function Wordmark() {
   return (
     <span className="flex items-center gap-2 text-[17px] font-bold tracking-tight">
@@ -21,7 +25,7 @@ function Wordmark() {
         <span className="px-0.5">DevFest</span>
         <span className="text-g-yellow">{"}"}</span>
       </span>
-      <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[11px] font-semibold text-zinc-600">Admin</span>
+      <span className="text-sm font-medium text-zinc-400">Jos &apos;26 · Admin</span>
     </span>
   );
 }
@@ -33,58 +37,56 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
 
   if (!admin) {
     return (
-      <main className="grid min-h-svh place-items-center bg-white px-4 font-sans text-ink">
-        <div className="w-full max-w-[22rem]">
-          <div className="mb-8 flex justify-center">
-            <Wordmark />
+      <div className="flex min-h-svh flex-col bg-white font-sans text-ink">
+        <TopStrip />
+        <main className="grid flex-1 place-items-center px-4">
+          <div className="w-full max-w-[22rem]">
+            <div className="mb-8 flex justify-center">
+              <Wordmark />
+            </div>
+            <h1 className="text-center text-2xl font-semibold tracking-tight">Welcome back</h1>
+            <p className="mt-1.5 mb-8 text-center text-sm text-zinc-500">Sign in with your organiser email and PIN.</p>
+            <LoginForm />
+            <p className="mt-8 text-center text-xs text-zinc-400">Authorised DevFest Jos organisers only.</p>
           </div>
-          <h1 className="text-center text-2xl font-semibold tracking-tight">Welcome back</h1>
-          <p className="mt-1.5 mb-8 text-center text-sm text-zinc-500">Sign in with your organiser email and PIN.</p>
-          <LoginForm />
-          <p className="mt-8 text-center text-xs text-zinc-400">Authorised DevFest Jos organisers only.</p>
-        </div>
-      </main>
+        </main>
+      </div>
     );
   }
 
   const sp = await searchParams;
   const [stats, list] = await Promise.all([getStats(), listOrders({ q: sp.q, status: sp.status, tier: sp.tier, page: Number(sp.page) || 1 })]);
 
-  const cards = [
-    { label: "Revenue", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid order${stats.paidOrders === 1 ? "" : "s"}`, icon: Wallet, tone: "bg-blue-50 text-blue-600" },
-    { label: "Tickets sold", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi`, icon: Ticket, tone: "bg-emerald-50 text-emerald-600" },
-    { label: "Checked in", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} attendees`, icon: ScanLine, tone: "bg-violet-50 text-violet-600" },
-    { label: "Needs attention", value: String(stats.pending), sub: `pending · ${stats.failed} failed`, icon: AlertCircle, tone: "bg-amber-50 text-amber-600" },
+  const figures = [
+    { label: "Revenue", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid order${stats.paidOrders === 1 ? "" : "s"}` },
+    { label: "Tickets sold", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi` },
+    { label: "Checked in", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} attendees` },
+    { label: "Pending", value: String(stats.pending), sub: `${stats.failed} failed` },
   ];
-  const first = admin.split("@")[0].split(/[._-]/)[0];
 
   return (
     <div className="min-h-svh bg-white font-sans text-ink">
-      <header className="sticky top-0 z-30 border-b border-zinc-100 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <TopStrip />
+      <header className="border-b border-zinc-100">
+        <div className="flex h-16 items-center justify-between px-5 sm:px-8 lg:px-10">
           <Wordmark />
           <UserMenu email={admin} />
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pt-8 pb-20 sm:px-6">
-        <p className="text-sm text-zinc-500">Hi {first.charAt(0).toUpperCase() + first.slice(1)} 👋</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">Ticket sales</h1>
+      <main className="px-5 pt-10 pb-20 sm:px-8 lg:px-10">
+        <h1 className="text-2xl font-semibold tracking-tight">Ticket sales</h1>
 
-        <ul className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {cards.map(({ label, value, sub, icon: Icon, tone }) => (
-            <li key={label} className="rounded-2xl border border-zinc-200 bg-white p-5">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-zinc-500">{label}</p>
-                <span className={`grid size-8 place-items-center rounded-lg ${tone}`}>
-                  <Icon aria-hidden className="size-4" />
-                </span>
-              </div>
-              <p className="mt-3 text-2xl font-semibold tracking-tight tabular-nums sm:text-[28px]">{value}</p>
-              <p className="mt-1 text-xs text-zinc-500">{sub}</p>
-            </li>
+        {/* Figures: a plain row, no cards */}
+        <dl className="mt-8 grid grid-cols-2 gap-y-8 lg:grid-cols-4 lg:divide-x lg:divide-zinc-100">
+          {figures.map((f, i) => (
+            <div key={f.label} className={`pr-6 ${i > 0 ? "lg:pl-8" : ""}`}>
+              <dt className="text-sm text-zinc-500">{f.label}</dt>
+              <dd className="mt-2 text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">{f.value}</dd>
+              <dd className="mt-1.5 text-sm text-zinc-400">{f.sub}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
 
         <OrdersView base={base} rows={list.rows} count={list.count} page={list.page} pages={list.pages} />
       </main>

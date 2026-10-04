@@ -1,6 +1,7 @@
 "use client";
 
-import { Loader2, Lock } from "lucide-react";
+import { Loading03Icon, LockIcon } from "@hugeicons/core-free-icons";
+import Icon from "./Icon";
 import { useActionState } from "react";
 import { checkInAction, loginAction, recheckAction, resendAction, type ActionState } from "@/app/admin-internal/actions";
 
@@ -42,9 +43,9 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-ink text-[15px] font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:opacity-70"
+        className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:opacity-70"
       >
-        {pending ? <Loader2 aria-hidden className="size-4 animate-spin" /> : <Lock aria-hidden className="size-4" />}
+        <Icon icon={pending ? Loading03Icon : LockIcon} className={`size-4 ${pending ? "animate-spin" : ""}`} />
         Sign in
       </button>
     </form>
@@ -79,9 +80,9 @@ export function ActionButton({
       <button
         type="submit"
         disabled={pending}
-        className={`inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-60 ${cls}`}
+        className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-xs font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-g-blue disabled:opacity-60 ${cls}`}
       >
-        {pending && <Loader2 aria-hidden className="size-3 animate-spin" />}
+        {pending && <Icon icon={Loading03Icon} className="size-3.5 animate-spin" />}
         {label}
       </button>
       {state && (

@@ -1,60 +1,97 @@
 "use client";
 
-import { ArrowUpRight, ChevronLeft, ChevronRight, Download, FileDown, Search, Ticket, X } from "lucide-react";
+import {
+  Alert02Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  ArrowUpRight01Icon,
+  Cancel01Icon,
+  CheckmarkCircle02Icon,
+  Copy01Icon,
+  Crown02Icon,
+  Download04Icon,
+  File02Icon,
+  HourglassIcon,
+  Search01Icon,
+  Tick02Icon,
+  Ticket02Icon,
+  UserGroupIcon,
+} from "@hugeicons/core-free-icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
+import { useEffect, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import type { AdminOrder } from "@/lib/admin/data";
 import { formatNaira, tiers } from "@/lib/tickets/tiers";
 import { ActionButton } from "./AdminForms";
 import Dropdown from "./Dropdown";
+import Icon, { type IconData } from "./Icon";
 
-const dt = new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", timeZone: "Africa/Lagos" });
 const dtLong = new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Lagos" });
+const hm = new Intl.DateTimeFormat("en-NG", { hour: "numeric", minute: "2-digit", timeZone: "Africa/Lagos" });
+const ymd = (d: Date | string) => new Date(d).toLocaleDateString("en-CA", { timeZone: "Africa/Lagos" });
 
-export const statusMeta: Record<string, { label: string; pill: string; dot: string }> = {
-  paid: { label: "Paid", pill: "bg-emerald-50 text-emerald-700 ring-emerald-600/15", dot: "bg-emerald-500" },
-  pending: { label: "Pending", pill: "bg-amber-50 text-amber-700 ring-amber-600/15", dot: "bg-amber-500" },
-  failed: { label: "Failed", pill: "bg-rose-50 text-rose-700 ring-rose-600/15", dot: "bg-rose-500" },
-  free: { label: "Free", pill: "bg-sky-50 text-sky-700 ring-sky-600/15", dot: "bg-sky-500" },
+export const statusMeta: Record<string, { label: string; pill: string; dot: string; icon: IconData }> = {
+  paid: { label: "Paid", pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500", icon: CheckmarkCircle02Icon },
+  pending: { label: "Pending", pill: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500", icon: HourglassIcon },
+  failed: { label: "Failed", pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500", icon: Alert02Icon },
+  free: { label: "Free", pill: "bg-sky-50 text-sky-700", dot: "bg-sky-500", icon: Ticket02Icon },
 };
 
-const avatarTones = ["bg-blue-100 text-blue-700", "bg-rose-100 text-rose-700", "bg-amber-100 text-amber-800", "bg-emerald-100 text-emerald-700", "bg-violet-100 text-violet-700"];
-const initials = (n: string) =>
-  n
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
-const toneFor = (s: string) => avatarTones[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % avatarTones.length];
+const tierMeta = {
+  vip: { label: "VIP", pill: "bg-sky-50 text-sky-700", icon: Crown02Icon },
+  padi: { label: "My Padi", pill: "bg-emerald-50 text-emerald-700", icon: UserGroupIcon },
+  regular: { label: "Regular", pill: "bg-zinc-100 text-zinc-700", icon: Ticket02Icon },
+} as const;
 
-export function Avatar({ name, size = "size-9" }: { name: string; size?: string }) {
-  return <span className={`grid shrink-0 place-items-center rounded-full text-xs font-semibold ${size} ${toneFor(name)}`}>{initials(name) || "?"}</span>;
+function Pill({ icon, className, children }: { icon: IconData; className: string; children: ReactNode }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium whitespace-nowrap ${className}`}>
+      <Icon icon={icon} className="size-3.5" strokeWidth={2} />
+      {children}
+    </span>
+  );
 }
 
 function StatusPill({ status }: { status: string }) {
   const m = statusMeta[status] ?? statusMeta.pending;
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${m.pill}`}>
-      <span aria-hidden className={`size-1.5 rounded-full ${m.dot}`} />
+    <Pill icon={m.icon} className={m.pill}>
       {m.label}
-    </span>
+    </Pill>
   );
 }
 
-export default function OrdersView({
-  base,
-  rows,
-  count,
-  page,
-  pages,
-}: {
-  base: string;
-  rows: AdminOrder[];
-  count: number;
-  page: number;
-  pages: number;
-}) {
+function TierPill({ tier, units }: { tier: keyof typeof tierMeta; units: number }) {
+  const m = tierMeta[tier];
+  return (
+    <Pill icon={m.icon} className={m.pill}>
+      {m.label}
+      {units > 1 && <span className="opacity-60">×{units}</span>}
+    </Pill>
+  );
+}
+
+/** Copy-to-clipboard button that flips to a tick. */
+function CopyBtn({ value, label }: { value: string; label: string }) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      type="button"
+      aria-label={`Copy ${label}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        navigator.clipboard?.writeText(value).then(() => {
+          setDone(true);
+          setTimeout(() => setDone(false), 1400);
+        });
+      }}
+      className="grid size-6 shrink-0 place-items-center rounded-md text-zinc-400 opacity-0 transition hover:bg-zinc-100 hover:text-ink focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-g-blue group-hover/row:opacity-100"
+    >
+      <Icon icon={done ? Tick02Icon : Copy01Icon} className={`size-3.5 ${done ? "text-emerald-600" : ""}`} />
+    </button>
+  );
+}
+
+export default function OrdersView({ base, rows, count, page, pages }: { base: string; rows: AdminOrder[]; count: number; page: number; pages: number }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -76,33 +113,22 @@ export default function OrdersView({
   };
 
   return (
-    <section className="mt-10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold">Orders</h2>
-          <p className="text-sm text-zinc-500">
-            {count} order{count === 1 ? "" : "s"}
-            {pending && " · updating…"}
-          </p>
-        </div>
-        <a
-          href={`${base}/export`}
-          className="inline-flex h-10 items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3.5 text-sm font-medium hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-g-blue"
-        >
-          <Download aria-hidden className="size-4" /> Export CSV
-        </a>
-      </div>
-
-      {/* Toolbar */}
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <form onSubmit={onSearch} className="relative min-w-[15rem] flex-1">
-          <Search aria-hidden className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-zinc-400" />
+    <section className="mt-12">
+      <div className="flex flex-wrap items-center gap-2">
+        <h2 className="mr-auto text-lg font-semibold">
+          Orders <span className="ml-1 text-sm font-normal text-zinc-400">{count}</span>
+          {pending && <span className="ml-2 text-sm font-normal text-zinc-400">updating…</span>}
+        </h2>
+        <form onSubmit={onSearch} className="relative w-full sm:w-80">
+          <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-zinc-400">
+            <Icon icon={Search01Icon} className="size-4" />
+          </span>
           <input
             name="q"
             defaultValue={params.get("q") ?? ""}
-            placeholder="Search name, email, reference or ticket code"
+            placeholder="Search name, email, reference or code"
             aria-label="Search orders"
-            className="h-10 w-full rounded-xl border border-zinc-200 bg-white pr-3 pl-10 text-sm outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
+            className="h-10 w-full rounded-full border border-zinc-200 bg-white pr-4 pl-10 text-sm outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
           />
         </form>
         <Dropdown
@@ -127,70 +153,90 @@ export default function OrdersView({
             { value: "padi", label: "My Padi", dot: "bg-emerald-400" },
           ]}
         />
+        <a
+          href={`${base}/export`}
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 text-sm font-medium hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-g-blue"
+        >
+          <Icon icon={Download04Icon} className="size-4 text-zinc-500" /> Export
+        </a>
       </div>
 
-      {/* Table */}
-      <div className={`mt-4 overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-opacity ${pending ? "opacity-60" : ""}`}>
+      <div className={`mt-5 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-opacity ${pending ? "opacity-60" : ""}`}>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[52rem] text-left text-sm">
-            <thead className="border-b border-zinc-100 bg-zinc-50/60 text-xs text-zinc-500">
-              <tr>
-                <th className="px-5 py-3 font-medium">Customer</th>
-                <th className="px-5 py-3 font-medium">Ticket</th>
-                <th className="px-5 py-3 font-medium">Amount</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Date</th>
-                <th className="px-5 py-3 font-medium">
-                  <span className="sr-only">Open</span>
-                </th>
+          <table className="w-full min-w-[60rem] text-left text-sm">
+            <thead className="text-[13px] text-zinc-500">
+              <tr className="border-b border-zinc-100">
+                <th className="px-5 py-3.5 font-normal">Customer</th>
+                <th className="px-4 py-3.5 font-normal">Email</th>
+                <th className="px-4 py-3.5 font-normal">Phone number</th>
+                <th className="px-4 py-3.5 font-normal">Ticket</th>
+                <th className="px-4 py-3.5 font-normal">Amount</th>
+                <th className="px-4 py-3.5 font-normal">Status</th>
+                <th className="px-4 py-3.5 font-normal">Reference</th>
+                <th className="px-5 py-3.5 font-normal">Created</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-5 py-20 text-center">
-                    <Ticket aria-hidden className="mx-auto size-8 text-zinc-300" />
+                  <td colSpan={8} className="px-5 py-20 text-center">
+                    <span className="mx-auto block w-fit text-zinc-300">
+                      <Icon icon={Ticket02Icon} className="size-9" />
+                    </span>
                     <p className="mt-3 font-medium">No orders here yet</p>
                     <p className="mt-1 text-sm text-zinc-500">Try a different search or filter.</p>
                   </td>
                 </tr>
               )}
               {rows.map((o) => (
-                <tr key={o.id} onClick={() => setOpenRef(o.reference)} className="cursor-pointer transition-colors hover:bg-zinc-50">
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={o.buyer_name} />
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{o.buyer_name}</p>
-                        <p className="truncate text-xs text-zinc-500">{o.buyer_email}</p>
-                      </div>
+                <tr
+                  key={o.id}
+                  tabIndex={0}
+                  onClick={() => setOpenRef(o.reference)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setOpenRef(o.reference);
+                    }
+                  }}
+                  aria-label={`Open order from ${o.buyer_name}`}
+                  className="group/row cursor-pointer transition-colors outline-none hover:bg-zinc-50/80 focus-visible:bg-zinc-50"
+                >
+                  <td className="px-5 py-4">
+                    <span className="block max-w-[12rem] truncate font-medium">{o.buyer_name}</span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-1 text-zinc-600">
+                      <span className="max-w-[14rem] truncate">{o.buyer_email}</span>
+                      <CopyBtn value={o.buyer_email} label="email" />
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 whitespace-nowrap">
-                    <p className="font-medium">
-                      {tiers[o.tier].name} <span className="text-zinc-400">×{o.units}</span>
-                    </p>
-                    <p className="text-xs text-zinc-500">
-                      {o.tickets.length} ticket{o.tickets.length === 1 ? "" : "s"}
-                      {o.tickets.some((t) => t.checked_in_at) && ` · ${o.tickets.filter((t) => t.checked_in_at).length} in`}
-                    </p>
+                  <td className="px-4 py-4">
+                    {o.buyer_phone ? (
+                      <div className="flex items-center gap-1 whitespace-nowrap text-zinc-600 tabular-nums">
+                        {o.buyer_phone}
+                        <CopyBtn value={o.buyer_phone} label="phone number" />
+                      </div>
+                    ) : (
+                      <span className="text-zinc-300">—</span>
+                    )}
                   </td>
-                  <td className="px-5 py-3.5 font-medium whitespace-nowrap tabular-nums">{o.amount_kobo ? formatNaira(o.amount_kobo) : "Free"}</td>
-                  <td className="px-5 py-3.5">
+                  <td className="px-4 py-4">
+                    <TierPill tier={o.tier} units={o.units} />
+                  </td>
+                  <td className="px-4 py-4 font-medium whitespace-nowrap tabular-nums">{o.amount_kobo ? formatNaira(o.amount_kobo) : "Free"}</td>
+                  <td className="px-4 py-4">
                     <StatusPill status={o.status} />
                   </td>
-                  <td className="px-5 py-3.5 whitespace-nowrap text-zinc-500">{dt.format(new Date(o.created_at))}</td>
-                  <td className="px-5 py-3.5 text-right">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenRef(o.reference);
-                      }}
-                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-g-blue"
-                    >
-                      View
-                    </button>
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-1 font-mono text-xs whitespace-nowrap text-zinc-500">
+                      {o.reference.replace(/^DFJ26-/, "")}
+                      <CopyBtn value={o.reference} label="reference" />
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <span className="tabular-nums">{ymd(o.created_at)}</span>
+                    <span className="ml-2 text-xs text-zinc-400">{hm.format(new Date(o.created_at))}</span>
                   </td>
                 </tr>
               ))}
@@ -203,24 +249,21 @@ export default function OrdersView({
               Page {page} of {pages}
             </span>
             <div className="flex gap-1">
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => setParam({ page: String(page - 1) })}
-                aria-label="Previous page"
-                className="grid size-9 place-items-center rounded-lg border border-zinc-200 hover:bg-zinc-50 disabled:opacity-40"
-              >
-                <ChevronLeft aria-hidden className="size-4" />
-              </button>
-              <button
-                type="button"
-                disabled={page >= pages}
-                onClick={() => setParam({ page: String(page + 1) })}
-                aria-label="Next page"
-                className="grid size-9 place-items-center rounded-lg border border-zinc-200 hover:bg-zinc-50 disabled:opacity-40"
-              >
-                <ChevronRight aria-hidden className="size-4" />
-              </button>
+              {[
+                { label: "Previous page", icon: ArrowLeft01Icon, to: page - 1, disabled: page <= 1 },
+                { label: "Next page", icon: ArrowRight01Icon, to: page + 1, disabled: page >= pages },
+              ].map((b) => (
+                <button
+                  key={b.label}
+                  type="button"
+                  disabled={b.disabled}
+                  onClick={() => setParam({ page: String(b.to) })}
+                  aria-label={b.label}
+                  className="grid size-9 place-items-center rounded-full border border-zinc-200 hover:bg-zinc-50 disabled:opacity-40"
+                >
+                  <Icon icon={b.icon} className="size-4" />
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -246,43 +289,39 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
   }, [onClose]);
 
   const checked = o.tickets.filter((t) => t.checked_in_at).length;
-  const row = (k: string, v: React.ReactNode) => (
+  const row = (k: string, v: ReactNode) => (
     <div className="flex justify-between gap-4 py-2.5">
       <dt className="text-zinc-500">{k}</dt>
       <dd className="text-right font-medium">{v}</dd>
     </div>
   );
+  const linkBtn = "inline-flex h-9 items-center gap-1.5 rounded-full border border-zinc-200 px-3.5 text-xs font-medium hover:bg-zinc-50";
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`Order ${o.reference}`}>
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-zinc-900/20 backdrop-blur-[2px]" />
       <div className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white shadow-2xl">
         <div className="flex items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5">
-          <div className="flex items-center gap-3">
-            <Avatar name={o.buyer_name} size="size-11" />
-            <div className="min-w-0">
-              <p className="truncate font-semibold">{o.buyer_name}</p>
-              <p className="truncate text-sm text-zinc-500">{o.buyer_email}</p>
-            </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold">{o.buyer_name}</p>
+            <p className="truncate text-sm text-zinc-500">{o.buyer_email}</p>
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="grid size-9 shrink-0 place-items-center rounded-lg text-zinc-500 hover:bg-zinc-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-g-blue"
+            className="grid size-9 shrink-0 place-items-center rounded-full text-zinc-500 hover:bg-zinc-100 hover:text-ink focus-visible:outline-2 focus-visible:outline-g-blue"
           >
-            <X aria-hidden className="size-5" />
+            <Icon icon={Cancel01Icon} className="size-5" />
           </button>
         </div>
 
         <div className="flex-1 space-y-7 overflow-y-auto px-6 py-6 text-sm">
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-zinc-500">
-                {tiers[o.tier].name} × {o.units}
-              </p>
-              <p className="mt-1 text-3xl font-semibold tabular-nums">{o.amount_kobo ? formatNaira(o.amount_kobo) : "Free"}</p>
+              <TierPill tier={o.tier} units={o.units} />
+              <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums">{o.amount_kobo ? formatNaira(o.amount_kobo) : "Free"}</p>
             </div>
             <StatusPill status={o.status} />
           </div>
@@ -292,11 +331,11 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
             {(o.status === "paid" || o.status === "free") && <ActionButton kind="resend" fields={{ reference: o.reference }} label="Resend tickets" />}
             {o.tickets.length > 0 && (
               <>
-                <a href={`/tickets/order/${o.reference}`} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 px-3 text-xs font-medium hover:bg-zinc-50">
-                  View tickets <ArrowUpRight aria-hidden className="size-3.5" />
+                <a href={`/tickets/order/${o.reference}`} target="_blank" rel="noopener noreferrer" className={linkBtn}>
+                  View tickets <Icon icon={ArrowUpRight01Icon} className="size-3.5" />
                 </a>
-                <a href={`/api/tickets/order/${o.reference}/pdf`} className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 px-3 text-xs font-medium hover:bg-zinc-50">
-                  <FileDown aria-hidden className="size-3.5" /> PDF
+                <a href={`/api/tickets/order/${o.reference}/pdf`} className={linkBtn}>
+                  <Icon icon={File02Icon} className="size-3.5" /> PDF
                 </a>
               </>
             )}
@@ -331,7 +370,9 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
                     </div>
                     {t.checked_in_at ? (
                       <div className="flex shrink-0 items-center gap-1">
-                        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-600/15 ring-inset">Checked in</span>
+                        <Pill icon={CheckmarkCircle02Icon} className="bg-emerald-50 text-emerald-700">
+                          Checked in
+                        </Pill>
                         <ActionButton kind="checkin" fields={{ ticketId: t.id, undo: "1" }} label="Undo" tone="quiet" />
                       </div>
                     ) : (

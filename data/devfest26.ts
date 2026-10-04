@@ -94,6 +94,13 @@ export const speakers2026: { name: string; role: string; image: string; topic?: 
     topic: "API First or API Fast? Designing APIs That Scale from MVP to Production",
   },
   {
+    name: "Taiwo Famakinde",
+    role: "Senior Software Engineer",
+    image: "/speakers/taiwo-famakinde.webp",
+    topic: "Building Production Tool-Calling Pipelines with Gemini Enterprise Agent Platform",
+    badge: "Also on the panel",
+  },
+  {
     name: "Tejas Pravinbhai Patel",
     // Full title: IEEE Award-Winning Researcher | Best Keynote Speaker | Sr. Software Engineer at Amazon | AI Systems & Agent Architect
     role: "Sr. Software Engineer at Amazon · IEEE Award-Winning Researcher",

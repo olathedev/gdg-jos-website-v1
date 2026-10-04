@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { HourglassIcon, Money03Icon, Ticket02Icon, UserCheck01Icon } from "@hugeicons/core-free-icons";
 import { LoginForm } from "@/components/admin/AdminForms";
+import Icon from "@/components/admin/Icon";
 import OrdersView from "@/components/admin/OrdersView";
-import UserMenu from "@/components/admin/UserMenu";
+import { AdminChrome, TopStrip, Wordmark } from "@/components/admin/Chrome";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
 import { getStats, listOrders } from "@/lib/admin/data";
 import { formatNaira } from "@/lib/tickets/tiers";
@@ -11,24 +13,6 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Admin · DevFest Jos 2026", robots: { index: false, follow: false } };
 
 type SP = Promise<{ q?: string; status?: string; tier?: string; page?: string }>;
-
-/** A slim slice of the DevFest shapes strip along the very top edge. */
-function TopStrip() {
-  return <div aria-hidden className="h-3 w-full bg-[#0a2914] bg-[url(/divider.svg)] bg-[length:auto_82px] bg-[position:center_-34px] bg-repeat-x sm:h-4" />;
-}
-
-function Wordmark() {
-  return (
-    <span className="flex items-center gap-2 text-[17px] font-bold tracking-tight">
-      <span>
-        <span className="text-g-blue">{"{"}</span>
-        <span className="px-0.5">DevFest</span>
-        <span className="text-g-yellow">{"}"}</span>
-      </span>
-      <span className="text-sm font-medium text-zinc-400">Jos &apos;26 · Admin</span>
-    </span>
-  );
-}
 
 export default async function AdminPage({ searchParams }: { searchParams: SP }) {
   if (!adminEnabled()) notFound();
@@ -58,29 +42,30 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
   const [stats, list] = await Promise.all([getStats(), listOrders({ q: sp.q, status: sp.status, tier: sp.tier, page: Number(sp.page) || 1 })]);
 
   const figures = [
-    { label: "Revenue", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid order${stats.paidOrders === 1 ? "" : "s"}` },
-    { label: "Tickets sold", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi` },
-    { label: "Checked in", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} attendees` },
-    { label: "Pending", value: String(stats.pending), sub: `${stats.failed} failed` },
+    { label: "Revenue", icon: Money03Icon, tint: "group-hover:text-blue-100", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid order${stats.paidOrders === 1 ? "" : "s"}` },
+    { label: "Tickets sold", icon: Ticket02Icon, tint: "group-hover:text-emerald-100", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi` },
+    { label: "Checked in", icon: UserCheck01Icon, tint: "group-hover:text-violet-100", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} attendees` },
+    { label: "Pending", icon: HourglassIcon, tint: "group-hover:text-yellow-100", value: String(stats.pending), sub: `${stats.failed} failed` },
   ];
 
   return (
-    <div className="min-h-svh bg-white font-sans text-ink">
-      <TopStrip />
-      <header className="border-b border-zinc-100">
-        <div className="flex h-16 items-center justify-between px-5 sm:px-8 lg:px-10">
-          <Wordmark />
-          <UserMenu email={admin} />
-        </div>
-      </header>
-
-      <main className="px-5 pt-10 pb-20 sm:px-8 lg:px-10">
+    <AdminChrome base={base} user={admin} active="sales">
         <h1 className="text-2xl font-semibold tracking-tight">Ticket sales</h1>
 
         {/* Figures: a plain row, no cards */}
-        <dl className="mt-8 grid grid-cols-2 gap-y-8 lg:grid-cols-4 lg:divide-x lg:divide-zinc-100">
+        <dl className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {figures.map((f, i) => (
-            <div key={f.label} className={`pr-6 ${i > 0 ? "lg:pl-8" : ""}`}>
+            <div
+              key={f.label}
+              className="group relative isolate overflow-hidden rounded-2xl px-5 py-5 transition-colors duration-300 hover:bg-zinc-50/80"
+            >
+              {/* Big, tilted, greyed-out icon: a watermark behind the figure, cropped at the corner */}
+              <span
+                aria-hidden
+                className={`pointer-events-none absolute -right-5 -bottom-7 -z-10 rotate-45 text-zinc-100 transition-[transform,color] duration-500 ease-out motion-safe:group-hover:scale-110 motion-safe:group-hover:rotate-[20deg] ${f.tint}`}
+              >
+                <Icon icon={f.icon} className="size-32 sm:size-36" strokeWidth={1.4} />
+              </span>
               <dt className="text-sm text-zinc-500">{f.label}</dt>
               <dd className="mt-2 text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">{f.value}</dd>
               <dd className="mt-1.5 text-sm text-zinc-400">{f.sub}</dd>
@@ -89,7 +74,6 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
         </dl>
 
         <OrdersView base={base} rows={list.rows} count={list.count} page={list.page} pages={list.pages} />
-      </main>
-    </div>
+    </AdminChrome>
   );
 }

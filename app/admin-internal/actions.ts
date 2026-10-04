@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { adminPath, attemptLogin, destroySession, requireAdmin } from "@/lib/admin/auth";
+import { adminPath, attemptLogin, canRemove, destroySession, requireAdmin, type InvitableRole } from "@/lib/admin/auth";
+import { acceptInvite, createInvite, InviteError, reissueInvite, removeMember } from "@/lib/admin/team";
 import { db } from "@/lib/tickets/db";
 import { sendTicketEmails } from "@/lib/tickets/email";
 import { verifyAndFulfil } from "@/lib/tickets/fulfil";
@@ -23,9 +24,9 @@ async function site() {
 
 export async function loginAction(_: ActionState, form: FormData): Promise<ActionState> {
   const email = String(form.get("email") ?? "");
-  const pin = String(form.get("pin") ?? "");
-  if (!email || !/^\d{6,12}$/.test(pin)) return { ok: false, message: "Enter your email and PIN." };
-  const res = await attemptLogin(email, pin);
+  const password = String(form.get("password") ?? "");
+  if (!email || password.length < 6 || password.length > 200) return { ok: false, message: "Enter your email and password." };
+  const res = await attemptLogin(email, password);
   if (!res.ok) return { ok: false, message: res.error };
   redirect(`/${adminPath()}`);
 }
@@ -76,4 +77,61 @@ export async function checkInAction(_: ActionState, form: FormData): Promise<Act
   else await sql`update tickets set checked_in_at = now() where id = ${id} and checked_in_at is null`;
   revalidatePath("/admin-internal");
   return { ok: true, message: undo ? "Check-in undone." : "Checked in." };
+}
+
+/* ---------- team ---------- */
+
+export type InviteState = { ok: boolean; message: string; link?: string } | null;
+
+export async function inviteAction(_: InviteState, form: FormData): Promise<InviteState> {
+  const actor = await requireAdmin();
+  const email = String(form.get("email") ?? "").trim();
+  const name = String(form.get("name") ?? "").trim().slice(0, 80);
+  const role = String(form.get("role") ?? "") as InvitableRole;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, message: "Enter a valid email." };
+  try {
+    const token = await createInvite(actor, { email, name, role });
+    revalidatePath("/admin-internal/team");
+    return { ok: true, message: `Invite created for ${email}. Send them this link (valid 72 hours):`, link: `${await site()}/${adminPath()}/invite/${token}` };
+  } catch (e) {
+    if (e instanceof InviteError) return { ok: false, message: e.message };
+    throw e;
+  }
+}
+
+export async function reissueAction(_: InviteState, form: FormData): Promise<InviteState> {
+  const actor = await requireAdmin();
+  try {
+    const token = await reissueInvite(actor, String(form.get("id") ?? ""));
+    revalidatePath("/admin-internal/team");
+    return { ok: true, message: "New link (valid 72 hours):", link: `${await site()}/${adminPath()}/invite/${token}` };
+  } catch (e) {
+    if (e instanceof InviteError) return { ok: false, message: e.message };
+    throw e;
+  }
+}
+
+export async function removeAction(_: ActionState, form: FormData): Promise<ActionState> {
+  const actor = await requireAdmin();
+  try {
+    const email = await removeMember(actor.role, canRemove, String(form.get("id") ?? ""), actor.email);
+    revalidatePath("/admin-internal/team");
+    return { ok: true, message: `${email} removed.` };
+  } catch (e) {
+    if (e instanceof InviteError) return { ok: false, message: e.message };
+    throw e;
+  }
+}
+
+export async function acceptInviteAction(_: ActionState, form: FormData): Promise<ActionState> {
+  const token = String(form.get("token") ?? "");
+  const password = String(form.get("password") ?? "");
+  if (password !== String(form.get("confirm") ?? "")) return { ok: false, message: "The passwords don't match." };
+  try {
+    await acceptInvite(token, password);
+    return { ok: true, message: "Password set." };
+  } catch (e) {
+    if (e instanceof InviteError) return { ok: false, message: e.message };
+    throw e;
+  }
 }

@@ -8,14 +8,12 @@ import {
   Cancel01Icon,
   CheckmarkCircle02Icon,
   Copy01Icon,
-  Crown02Icon,
   Download04Icon,
   File02Icon,
   HourglassIcon,
   Search01Icon,
   Tick02Icon,
   Ticket02Icon,
-  UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
@@ -31,15 +29,16 @@ const ymd = (d: Date | string) => new Date(d).toLocaleDateString("en-CA", { time
 
 export const statusMeta: Record<string, { label: string; pill: string; dot: string; icon: IconData }> = {
   paid: { label: "Paid", pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500", icon: CheckmarkCircle02Icon },
-  pending: { label: "Pending", pill: "bg-fuchsia-50 text-fuchsia-700", dot: "bg-fuchsia-500", icon: HourglassIcon },
-  failed: { label: "Failed", pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500", icon: Alert02Icon },
+  pending: { label: "Pending", pill: "bg-yellow-100 text-yellow-800", dot: "bg-yellow-500", icon: HourglassIcon },
+  failed: { label: "Failed", pill: "bg-rose-50 text-rose-700", dot: "bg-rose-500", icon: Alert02Icon },
   free: { label: "Free", pill: "bg-sky-50 text-sky-700", dot: "bg-sky-500", icon: Ticket02Icon },
 };
 
+// Solid pills; shades chosen so white text passes AA contrast.
 const tierMeta = {
-  vip: { label: "VIP", pill: "bg-sky-50 text-sky-700", icon: Crown02Icon },
-  padi: { label: "My Padi", pill: "bg-emerald-50 text-emerald-700", icon: UserGroupIcon },
-  regular: { label: "Regular", pill: "bg-zinc-100 text-zinc-700", icon: Ticket02Icon },
+  vip: { label: "VIP", pill: "bg-blue-600 text-white" },
+  padi: { label: "My Padi", pill: "bg-emerald-700 text-white" },
+  regular: { label: "Regular", pill: "bg-zinc-700 text-white" },
 } as const;
 
 function Pill({ icon, className, children }: { icon: IconData; className: string; children: ReactNode }) {
@@ -63,10 +62,10 @@ function StatusPill({ status }: { status: string }) {
 function TierPill({ tier, units }: { tier: keyof typeof tierMeta; units: number }) {
   const m = tierMeta[tier];
   return (
-    <Pill icon={m.icon} className={m.pill}>
+    <span className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium whitespace-nowrap ${m.pill}`}>
       {m.label}
-      {units > 1 && <span className="opacity-60">×{units}</span>}
-    </Pill>
+      {units > 1 && <span className="opacity-75">×{units}</span>}
+    </span>
   );
 }
 
@@ -149,8 +148,8 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
           align="right"
           options={[
             { value: "", label: "All" },
-            { value: "vip", label: "VIP", dot: "bg-sky-400" },
-            { value: "padi", label: "My Padi", dot: "bg-emerald-400" },
+            { value: "vip", label: "VIP", dot: "bg-blue-600" },
+            { value: "padi", label: "My Padi", dot: "bg-emerald-700" },
           ]}
         />
         <a

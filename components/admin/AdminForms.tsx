@@ -19,21 +19,10 @@ export function LoginForm() {
         <input id="email" name="email" type="email" required autoComplete="username" className={field} />
       </div>
       <div>
-        <label htmlFor="pin" className="mb-1.5 block text-sm font-medium text-zinc-700">
-          PIN
+        <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-zinc-700">
+          Password <span className="font-normal text-zinc-400">(owners use their PIN)</span>
         </label>
-        <input
-          id="pin"
-          name="pin"
-          type="password"
-          required
-          inputMode="numeric"
-          pattern="\d{6,12}"
-          minLength={6}
-          maxLength={12}
-          autoComplete="current-password"
-          className={`${field} tracking-[0.3em]`}
-        />
+        <input id="password" name="password" type="password" required minLength={6} maxLength={200} autoComplete="current-password" className={field} />
       </div>
       {state && !state.ok && (
         <p role="alert" className="rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm text-rose-700 ring-1 ring-rose-600/15 ring-inset">

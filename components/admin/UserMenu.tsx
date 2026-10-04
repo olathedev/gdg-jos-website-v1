@@ -3,9 +3,12 @@
 import { ArrowDown01Icon, Logout03Icon, SecurityCheckIcon } from "@hugeicons/core-free-icons";
 import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/admin-internal/actions";
+import type { Role } from "@/lib/admin/auth";
 import Icon from "./Icon";
 
-export default function UserMenu({ email }: { email: string }) {
+const roleLabel: Record<Role, string> = { owner: "Owner", superadmin: "Super admin", admin: "Admin", volunteer: "Volunteer" };
+
+export default function UserMenu({ email, role }: { email: string; role: Role }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -23,7 +26,7 @@ export default function UserMenu({ email }: { email: string }) {
   return (
     <div ref={root} className="relative flex items-center gap-2">
       <span className="hidden items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 sm:inline-flex">
-        <Icon icon={SecurityCheckIcon} className="size-3.5" strokeWidth={2} /> Organiser
+        <Icon icon={SecurityCheckIcon} className="size-3.5" strokeWidth={2} /> {roleLabel[role]}
       </span>
       <button
         type="button"

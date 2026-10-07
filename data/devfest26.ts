@@ -88,6 +88,13 @@ export const speakers2026: { name: string; role: string; image: string; topic?: 
   { name: "Manji Wilson", role: "Chief Technical Adviser to the Governor of Plateau State", image: "/speakers/manji-wilson.webp", badge: "Keynote" },
   { name: "Murtala Abdullahi", role: "CEO, Smartweb Nigeria · VP, NiRA", image: "/speakers/murtala-abdullahi.webp", badge: "Keynote" },
   {
+    name: "Moses Amama",
+    // Full title: Founder & CEO, Startup Lab | Founder, Futurefeat | Senior Product Designer, thoughtbot
+    role: "Founder & CEO, Startup Lab · Senior Product Designer, thoughtbot",
+    image: "/speakers/moses-amama.webp",
+    badge: "Keynote",
+  },
+  {
     name: "Daniel Okoro",
     role: "Lead Software Engineer",
     image: "/speakers/daniel-okoro.webp",

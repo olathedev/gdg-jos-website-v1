@@ -19,6 +19,19 @@ function cssFont(varName: string, fallback: string) {
   return v || fallback;
 }
 
+// iPhone (and some Samsung) photos.
+const HEIC_TYPE = /^image\/hei[cf](-sequence)?$/i;
+const HEIC_EXT = /\.hei[cf]$/i;
+
+function loadImage(blob: Blob) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
 /** Clamp the photo offset so it always covers the frame. */
 function clampPhoto(p: Photo): Photo {
   const s = Math.max(FRAME.w / p.img.width, FRAME.h / p.img.height) * p.zoom;
@@ -95,18 +108,32 @@ export default function DpMaker() {
     if (ctx) draw(ctx, { photo, template });
   }, [photo, template, fontsReady]);
 
-  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+  const onFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
     setError(null);
-    if (!file.type.startsWith("image/")) return setError("That file isn't an image. Try a JPG or PNG.");
-    if (file.size > 15 * 1024 * 1024) return setError("That image is over 15 MB. Try a smaller one.");
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => setPhoto({ img, zoom: 1, ox: 0, oy: 0 });
-    img.onerror = () => setError("We couldn't read that image. Try a JPG or PNG.");
-    img.src = url;
+    // Some browsers leave HEIC/HEIF files without a MIME type, so also go by extension.
+    const heic = HEIC_TYPE.test(file.type) || HEIC_EXT.test(file.name);
+    if (!heic && !file.type.startsWith("image/")) return setError("That file isn't an image. Try a JPG, PNG or HEIC.");
+    if (file.size > 25 * 1024 * 1024) return setError("That image is over 25 MB. Try a smaller one.");
+    setBusy(true);
+    try {
+      let img: HTMLImageElement;
+      try {
+        // Safari decodes HEIC natively; everything else needs converting.
+        img = await loadImage(file);
+      } catch (err) {
+        if (!heic) throw err;
+        const { heicTo } = await import("heic-to/next");
+        img = await loadImage(await heicTo({ blob: file, type: "image/jpeg", quality: 0.92 }));
+      }
+      setPhoto({ img, zoom: 1, ox: 0, oy: 0 });
+    } catch {
+      setError("We couldn't read that image. Try a JPG, PNG or HEIC.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   // Drag to reposition the photo inside the circle
@@ -193,13 +220,13 @@ export default function DpMaker() {
       <div className="order-2 space-y-7 rounded-3xl bg-white p-6 ring-1 ring-ink/10 sm:p-8 lg:order-1">
         <div>
           <span className={label}>Your photo</span>
-          <input ref={fileRef} type="file" accept="image/*" onChange={onFile} className="sr-only" id="dp-photo" />
+          <input ref={fileRef} type="file" accept="image/*,.heic,.heif" onChange={onFile} disabled={busy} className="sr-only" id="dp-photo" />
           <label
             htmlFor="dp-photo"
             className="flex h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-ink/20 text-[15px] font-medium transition-colors hover:border-ink/50 hover:bg-paper has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-g-blue"
           >
-            <ImagePlus aria-hidden className="size-5" />
-            {photo ? "Change photo" : "Upload a photo"}
+            {busy ? <Loader2 aria-hidden className="size-5 animate-spin" /> : <ImagePlus aria-hidden className="size-5" />}
+            {busy ? "Preparing your photo…" : photo ? "Change photo" : "Upload a photo"}
           </label>
           {photo && (
             <div className="mt-4">

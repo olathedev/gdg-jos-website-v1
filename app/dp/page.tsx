@@ -67,7 +67,7 @@ export default function DpPage() {
           <div className="mx-auto max-w-6xl">
             <h2 className="type-heading text-center text-[clamp(1.75rem,3.4vw,2.75rem)]">Make your DP</h2>
             <p className="mx-auto mt-3 max-w-md text-center text-ink/65">
-              Add your photo and name, pick a role and colour, then download or share it.
+              Add your photo, fit it in the frame, then download or share it.
             </p>
             <div className="mt-10">
               <DpMaker />

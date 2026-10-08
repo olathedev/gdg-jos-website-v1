@@ -39,14 +39,14 @@ export default function Image() {
     title: (
       <>
         <span>Grab your&nbsp;</span>
-        <span style={{ color: "#57caff" }}>spot.</span>
+        <span style={{ color: "#34a853" }}>spot.</span>
       </>
     ),
     subtitle: "Free registration · VIP ₦8,000 · My Padi ₦15,000 for two",
     art: (
       <>
-        {stub("VIP", "8,000", "#b8eef8", 770, 250, -7)}
-        {stub("My Padi", "15,000", "#ccf6cf", 860, 60, 6)}
+        {stub("VIP", "8,000", "#b8eef8", 800, 225, -7)}
+        {stub("My Padi", "15,000", "#ccf6cf", 870, 40, 6)}
       </>
     ),
   });

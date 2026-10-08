@@ -10,16 +10,16 @@ export default function Image() {
     title: (
       <>
         <span>Tell everyone you&apos;ll be&nbsp;</span>
-        <span style={{ color: "#ffd427" }}>there.</span>
+        <span style={{ color: "#4285f4" }}>there.</span>
       </>
     ),
     subtitle: "Make your DevFest Jos 2026 DP in seconds.",
     art: (
       <>
-        <Pill label="Attendee" bg="#57caff" x={880} y={90} rotate={-8} />
-        <Pill label="Speaker" bg="#ff7daf" x={940} y={190} rotate={7} />
-        <Pill label="Volunteer" bg="#ffd427" x={860} y={290} rotate={-5} />
-        <Pill label="Organiser" bg="#5cdb6d" x={950} y={390} rotate={10} />
+        <Pill label="Attendee" bg="#57caff" x={880} y={64} rotate={-8} />
+        <Pill label="Speaker" bg="#ff7daf" x={940} y={150} rotate={7} />
+        <Pill label="Volunteer" bg="#ffd427" x={860} y={240} rotate={-5} />
+        <Pill label="Organiser" bg="#5cdb6d" x={930} y={330} rotate={8} />
       </>
     ),
   });

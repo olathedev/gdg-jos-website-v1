@@ -45,8 +45,7 @@ export const navLinks = [
   { label: "Tracks", href: "/#tracks" },
   { label: "Speakers", href: "/#speakers" },
   { label: "Tickets", href: "/tickets" },
-  // DP Maker hidden until the designer's custom template is ready (page still lives at /dp).
-  // { label: "DP Maker", href: "/dp" },
+  { label: "DP Maker", href: "/dp" },
   { label: "FAQ", href: "/#faq" },
 ];
 

@@ -3,8 +3,8 @@ import { renderTicketsPdf } from "@/lib/tickets/pdf";
 
 export const runtime = "nodejs";
 
-/** Downloads every ticket in an order as a PDF (one ticket per page). */
-export async function GET(_req: Request, { params }: { params: Promise<{ reference: string }> }) {
+/** Downloads every ticket in an order as a PDF (one ticket per page), or just one with ?code=. */
+export async function GET(req: Request, { params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params;
   if (!/^DFJ26-[A-Z0-9-]{8,40}$/.test(reference)) return new Response("Not found", { status: 404 });
 
@@ -13,8 +13,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ referen
     return new Response("Not found", { status: 404 });
   }
 
-  const pdf = await renderTicketsPdf(data.tickets);
-  const filename = data.tickets.length > 1 ? `DevFest-Jos-2026-tickets-${reference}.pdf` : `DevFest-Jos-2026-ticket-${data.tickets[0].code}.pdf`;
+  const code = new URL(req.url).searchParams.get("code");
+  const tickets = code ? data.tickets.filter((t) => t.code === code) : data.tickets;
+  if (tickets.length === 0) return new Response("Not found", { status: 404 });
+
+  const pdf = await renderTicketsPdf(tickets);
+  const filename = tickets.length > 1 ? `DevFest-Jos-2026-tickets-${reference}.pdf` : `DevFest-Jos-2026-ticket-${tickets[0].code}.pdf`;
   return new Response(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",

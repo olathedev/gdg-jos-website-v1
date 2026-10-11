@@ -47,7 +47,7 @@ export async function getStats(): Promise<Stats> {
   };
 }
 
-export type AdminTicket = { id: string; code: string; holder_name: string; holder_email: string; checked_in_at: string | null };
+export type AdminTicket = { id: string; code: string; tier: TierId; holder_name: string; holder_email: string; checked_in_at: string | null };
 export type AdminOrder = {
   id: string;
   reference: string;
@@ -90,7 +90,7 @@ export async function listOrders(f: OrderFilters) {
     select o.id, o.reference, o.tier, o.units, o.amount_kobo, o.status, o.buyer_name, o.buyer_email, o.buyer_phone,
            o.created_at, o.paid_at, o.emailed_at, o.failure,
            o.paystack->>'domain' as mode, o.paystack->>'channel' as channel,
-           coalesce((select json_agg(json_build_object('id', t.id, 'code', t.code, 'holder_name', t.holder_name,
+           coalesce((select json_agg(json_build_object('id', t.id, 'code', t.code, 'tier', t.tier, 'holder_name', t.holder_name,
                      'holder_email', t.holder_email, 'checked_in_at', t.checked_in_at) order by t.created_at)
                      from tickets t where t.order_id = o.id), '[]') as tickets
     from orders o ${where}

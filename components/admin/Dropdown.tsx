@@ -6,19 +6,27 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
 export type Option = { value: string; label: string; dot?: string };
 
-/** Accessible custom select (listbox) with keyboard support. */
+/**
+ * Accessible custom select (listbox) with keyboard support.
+ * `variant="field"` is the full-width form version (label shown outside it);
+ * pass `name` to submit the value with a form.
+ */
 export default function Dropdown({
   label,
   value,
   options,
   onChange,
   align = "left",
+  variant = "pill",
+  name,
 }: {
   label: string;
   value: string;
   options: Option[];
   onChange: (v: string) => void;
   align?: "left" | "right";
+  variant?: "pill" | "field";
+  name?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -69,8 +77,10 @@ export default function Dropdown({
     }
   };
 
+  const field = variant === "field";
   return (
-    <div ref={root} className="relative">
+    <div ref={root} className={`relative ${field ? "w-full" : ""}`}>
+      {name && <input type="hidden" name={name} value={value} />}
       <button
         ref={button}
         type="button"
@@ -82,12 +92,12 @@ export default function Dropdown({
         aria-label={`${label}: ${current.label}`}
         onClick={() => (open ? setOpen(false) : openList())}
         onKeyDown={onKey}
-        className={`inline-flex h-10 items-center gap-2 rounded-full border bg-white pr-3 pl-4 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue ${
-          open ? "border-ink/30" : "border-zinc-200 hover:border-zinc-300"
-        }`}
+        className={`inline-flex h-10 items-center gap-2 border bg-white text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue ${
+          field ? "w-full rounded-xl pr-2.5 pl-3 text-base sm:text-sm" : "rounded-full pr-3 pl-4"
+        } ${open ? (field ? "border-ink/30 ring-4 ring-zinc-100" : "border-ink/30") : "border-zinc-200 hover:border-zinc-300"}`}
       >
-        <span className="text-zinc-500">{label}</span>
-        <span className="flex items-center gap-1.5 font-medium text-ink">
+        {!field && <span className="text-zinc-500">{label}</span>}
+        <span className={`flex items-center gap-1.5 font-medium text-ink ${field ? "min-w-0 flex-1 truncate text-left" : ""}`}>
           {current.dot && <span aria-hidden className={`size-2 rounded-full ${current.dot}`} />}
           {current.label}
         </span>
@@ -100,7 +110,7 @@ export default function Dropdown({
           id={listId}
           role="listbox"
           aria-label={label}
-          className={`absolute top-full z-40 mt-1.5 min-w-full overflow-hidden rounded-xl border border-zinc-200 bg-white p-1 shadow-lg shadow-zinc-900/[0.06] ${
+          className={`absolute top-full z-40 mt-1.5 max-h-72 min-w-full overflow-y-auto rounded-xl border border-zinc-200 bg-white p-1 shadow-lg shadow-zinc-900/[0.06] ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >

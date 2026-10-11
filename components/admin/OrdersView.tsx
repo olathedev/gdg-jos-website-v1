@@ -22,6 +22,7 @@ import { formatNaira, tiers } from "@/lib/tickets/tiers";
 import { ActionButton } from "./AdminForms";
 import Dropdown from "./Dropdown";
 import Icon, { type IconData } from "./Icon";
+import { IssueTicketsButton, MarkPaid, TicketTools } from "./ManualActions";
 
 const dtLong = new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Lagos" });
 const hm = new Intl.DateTimeFormat("en-NG", { hour: "numeric", minute: "2-digit", timeZone: "Africa/Lagos" });
@@ -139,6 +140,7 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
             { value: "paid", label: "Paid", dot: statusMeta.paid.dot },
             { value: "pending", label: "Pending", dot: statusMeta.pending.dot },
             { value: "failed", label: "Failed", dot: statusMeta.failed.dot },
+            { value: "free", label: "Free", dot: statusMeta.free.dot },
           ]}
         />
         <Dropdown
@@ -150,6 +152,7 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
             { value: "", label: "All" },
             { value: "vip", label: "VIP", dot: "bg-blue-600" },
             { value: "padi", label: "My Padi", dot: "bg-emerald-700" },
+            { value: "regular", label: "Regular", dot: "bg-zinc-700" },
           ]}
         />
         <a
@@ -158,6 +161,7 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
         >
           <Icon icon={Download04Icon} className="size-4 text-zinc-500" /> Export
         </a>
+        <IssueTicketsButton />
       </div>
 
       {/* Mobile: tappable cards */}
@@ -379,6 +383,7 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
 
           <div className="flex flex-wrap gap-2">
             {o.status === "pending" && <ActionButton kind="recheck" fields={{ reference: o.reference }} label="Re-check payment" tone="primary" />}
+            {(o.status === "pending" || o.status === "failed") && <MarkPaid reference={o.reference} />}
             {(o.status === "paid" || o.status === "free") && <ActionButton kind="resend" fields={{ reference: o.reference }} label="Resend tickets" />}
             {o.tickets.length > 0 && (
               <>
@@ -412,9 +417,12 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
               </div>
               <ul className="space-y-2">
                 {o.tickets.map((t) => (
-                  <li key={t.id} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-100 px-4 py-3">
+                  <li key={t.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-100 px-4 py-3">
                     <div className="min-w-0">
-                      <p className="truncate font-medium">{t.holder_name}</p>
+                      <p className="flex items-center gap-2 truncate font-medium">
+                        {t.holder_name}
+                        {t.tier !== o.tier && <span className={`rounded-md px-1.5 py-0.5 text-[10px] ${tierMeta[t.tier].pill}`}>{tierMeta[t.tier].label}</span>}
+                      </p>
                       <p className="truncate text-xs text-zinc-500">
                         <span className="font-mono">{t.code}</span> · {t.holder_email}
                       </p>
@@ -429,6 +437,9 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
                     ) : (
                       <ActionButton kind="checkin" fields={{ ticketId: t.id }} label="Check in" tone="primary" />
                     )}
+                    <div className="-mx-2 -mb-1 w-[calc(100%+1rem)] border-t border-zinc-100 pt-2">
+                      <TicketTools reference={o.reference} ticket={t} />
+                    </div>
                   </li>
                 ))}
               </ul>

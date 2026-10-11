@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminPath, attemptLogin, canRemove, destroySession, requireAdmin, type InvitableRole } from "@/lib/admin/auth";
+import { adminSiteUrl } from "@/lib/admin/site";
 import { acceptInvite, createInvite, InviteError, reissueInvite, removeMember } from "@/lib/admin/team";
 import { db } from "@/lib/tickets/db";
 import { sendTicketEmails } from "@/lib/tickets/email";
@@ -15,12 +15,7 @@ export type ActionState = { ok: boolean; message: string } | null;
 
 const refOk = (r: unknown): r is string => typeof r === "string" && /^DFJ26-[A-Z0-9-]{8,40}$/.test(r);
 
-async function site() {
-  const env = process.env.NEXT_PUBLIC_SITE_URL;
-  if (env) return env.replace(/\/$/, "");
-  const h = await headers();
-  return `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
-}
+const site = adminSiteUrl;
 
 export async function loginAction(_: ActionState, form: FormData): Promise<ActionState> {
   const email = String(form.get("email") ?? "");

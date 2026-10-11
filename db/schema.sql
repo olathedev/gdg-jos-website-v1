@@ -47,3 +47,19 @@ create unique index if not exists tickets_one_regular_per_email
 -- does not restrict, so ticketing keeps working.
 alter table orders enable row level security;
 alter table tickets enable row level security;
+
+-- Emails sent from the admin Mail page (broadcasts, one-off messages, ticket resends).
+create table if not exists mail_log (
+  id          uuid primary key default gen_random_uuid(),
+  kind        text not null check (kind in ('broadcast', 'individual', 'ticket')),
+  audience    text not null,
+  subject     text not null,
+  body        text,
+  recipients  int  not null default 0,
+  sent        int  not null default 0,
+  failed      int  not null default 0,
+  sent_by     text not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists mail_log_created_idx on mail_log (created_at desc);
+alter table mail_log enable row level security;

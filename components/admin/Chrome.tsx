@@ -24,9 +24,10 @@ export function Wordmark() {
 }
 
 /** Page frame for signed-in admin pages: top strip, header with tabs, centred content. */
-export function AdminChrome({ base, user, active, children }: { base: string; user: AdminUser; active: "sales" | "team"; children: ReactNode }) {
+export function AdminChrome({ base, user, active, children }: { base: string; user: AdminUser; active: "sales" | "mail" | "team"; children: ReactNode }) {
   const tabs = [
     { id: "sales", label: "Sales", href: base },
+    { id: "mail", label: "Mail", href: `${base}/mail` },
     { id: "team", label: "Team", href: `${base}/team` },
   ] as const;
   return (

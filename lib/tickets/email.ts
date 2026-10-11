@@ -1,8 +1,6 @@
 import "server-only";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { Resend } from "resend";
 import { event } from "@/data/devfest26";
+import { sendMail } from "@/lib/mail/send";
 import type { Order, Ticket } from "./orders";
 import { tierColor, tiers } from "./tiers";
 import { calendarUrl } from "./calendar";
@@ -84,30 +82,7 @@ function render(order: Order, tickets: Ticket[], recipientName: string, site: st
   </table></td></tr></table></body></html>`;
 }
 
-async function send(to: string, subject: string, html: string) {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) {
-    // Dev fallback: write the email to disk so it can be previewed.
-    try {
-      const dir = path.join(process.cwd(), ".dev-emails");
-      await mkdir(dir, { recursive: true });
-      const file = path.join(dir, `${Date.now()}-${to.replace(/[^a-z0-9]/gi, "_")}.html`);
-      await writeFile(file, html);
-      console.info(`[email] RESEND_API_KEY not set. Saved "${subject}" for ${to} to ${file}`);
-    } catch {
-      console.warn(`[email] RESEND_API_KEY not set and could not save preview for ${to}`);
-    }
-    return;
-  }
-  const resend = new Resend(key);
-  const { error } = await resend.emails.send({
-    from: process.env.EMAIL_FROM ?? "DevFest Jos <tickets@devfestjos.com>",
-    to,
-    subject,
-    html,
-  });
-  if (error) throw new Error(`Resend: ${error.message}`);
-}
+const send = (to: string, subject: string, html: string) => sendMail({ to, subject, html });
 
 /**
  * The buyer gets every ticket in the order; anyone else on the order gets
@@ -124,4 +99,9 @@ export async function sendTicketEmails(order: Order, tickets: Ticket[], site: st
   const failed = results.filter((r) => r.status === "rejected");
   failed.forEach((r) => console.error("[email]", (r as PromiseRejectedResult).reason));
   return failed.length === 0;
+}
+
+/** Send a single ticket to any address (admin "resend ticket"). Throws on failure. */
+export async function sendTicketTo(order: Order, ticket: Ticket, to: string, site: string) {
+  await send(to, "Your DevFest Jos 2026 ticket", render(order, [ticket], ticket.holder_name, site));
 }

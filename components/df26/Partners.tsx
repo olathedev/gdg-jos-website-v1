@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { event, partners } from "@/data/devfest26";
 import { Eyebrow, PillLink, Reveal, Ring } from "./ui";
 
@@ -68,24 +69,34 @@ export default function Partners() {
         </div>
       </div>
 
-      {/* Past partners */}
-      <div className="mt-20">
-        <p className="px-4 text-center text-xs tracking-[0.12em] text-ink uppercase">
-          Backed in 2025 by
-        </p>
-        <div className="mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-          <ul className="flex w-max animate-marquee gap-3 [--marquee-duration:60s] hover:[animation-play-state:paused]">
-            {[...partners, ...partners].map((p, i) => (
-              <li
-                key={`${p.name}-${i}`}
-                aria-hidden={i >= partners.length}
-                className="grid h-24 w-44 shrink-0 place-items-center rounded-2xl bg-white px-6"
-              >
-                <Image src={p.logo} alt={i >= partners.length ? "" : p.name} width={140} height={56} loading="eager" className="max-h-12 w-auto object-contain" />
+      {/* Partners */}
+      <div className="mx-auto mt-20 max-w-7xl px-4 sm:px-8">
+        <Reveal className="rounded-[2rem] bg-white p-3 sm:p-4">
+          {/* <p className="text-xs tracking-[0.12em] uppercase">Backed in 2025 by</p> */}
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 px-4 pt-5 pb-7 sm:px-6 sm:pt-7 sm:pb-9">
+            <h3 className="type-heading text-3xl sm:text-4xl">In good company</h3>
+            <p className="max-w-sm text-sm text-ink/60">The organisations helping us bring DevFest to the Plateau.</p>
+          </div>
+          {/* Hairline grid: the 1px gap shows the list's tint through as dividers. */}
+          <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-[1.5rem] bg-ink/8 ring-1 ring-ink/8 md:grid-cols-4">
+            {partners.map((p) => (
+              <li key={p.name} className="group relative flex h-32 items-center justify-center bg-white sm:h-40">
+                {/* Equal-area sizing: width grows with √aspect so wide wordmarks and square marks carry the same visual weight. */}
+                <Image
+                  src={p.logo}
+                  alt={p.name}
+                  width={p.w}
+                  height={p.h}
+                  style={{ "--s": Math.sqrt(p.w / p.h) * (p.scale ?? 1) } as CSSProperties}
+                  className="h-auto w-[calc(var(--s)*3.75rem)] max-w-[78%] transition-transform duration-300 ease-out group-hover:scale-[1.06] sm:w-[calc(var(--s)*4.5rem)]"
+                />
+                <span className="pointer-events-none absolute inset-x-0 bottom-3 hidden translate-y-1 text-center text-[11px] font-medium text-ink/45 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:block">
+                  {p.name}
+                </span>
               </li>
             ))}
           </ul>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

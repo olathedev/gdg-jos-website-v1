@@ -2,9 +2,6 @@
 // Anything still unannounced is `null` — the UI shows a "coming soon" state
 // until you fill it in. Update the values here, not in the components.
 
-const cld = (path: string) =>
-  `https://res.cloudinary.com/dxssytv0p/image/upload/${path}`;
-
 export const COMMUNITY_URL = "https://gdg.community.dev/gdg-jos/";
 /** Free Regular registration happens on the GDG community platform, not our checkout. */
 export const REGULAR_REGISTRATION_URL = "https://gdg.community.dev/events/details/google-gdg-jos-presents-devfest-jos-2026/";
@@ -239,27 +236,19 @@ export const gallery = {
   ] as { label: string; href: string | null }[],
 };
 
-export const partners = [
-  { name: "Google", logo: cld("v1758364854/Google_logo_yavnha.png") },
-  { name: "Startup Lab", logo: cld("v1758364875/Startuplab_logo_tq73dh.png") },
-  { name: "Kora", logo: cld("v1758364869/Kora_logo_olzzpo.png") },
-  { name: "Kefiano Global Foundation", logo: cld("v1758364868/Kefiano_global_foundaion_logo_gax88t.png") },
-  { name: "nHub", logo: cld("v1758364874/nhub_logo_rgabpz.png") },
-  { name: "Axia Hub", logo: cld("v1758364854/Axia_Hub_Logo_zvvjji.png") },
-  { name: "The Art of Gabby", logo: cld("v1758364901/TAG_logo_cktzpg.png") },
-  { name: "Colab", logo: cld("v1758364855/Colab_logo_cxbh5x.png") },
-  { name: "KIMS Caffe", logo: cld("v1758364868/KIMS_Caffe_logo_iqtd9g.png") },
-  { name: "Futurefeat", logo: cld("v1758364854/Futurefeat_logo_nxumgu.png") },
-  { name: "Ignite", logo: cld("v1758364855/ignite_logo_agf7km.png") },
-  { name: "KC Hub", logo: cld("v1758364864/kchub_logo_cwp0ku.png") },
-  { name: "Tedge News Africa", logo: cld("v1758364901/tedge_news_africa_logo_mlqtf9.png") },
-  { name: "Women Techmakers", logo: cld("v1758364901/women_technmakers_logo_i6mgug.png") },
-  { name: "Bluehouse", logo: cld("v1758364854/Bluehouse_logo_p1gf7m.png") },
-  { name: "Joey Offair", logo: cld("v1758364855/Joey_offair_logo_dfee0y.png") },
-  { name: "Media Center", logo: cld("v1758364874/media_center_logo_fuuxel.png") },
-  { name: "Plateau Express Services Group", logo: cld("v1758364875/plateau_exptress_services_group_logo_utsrxu.png") },
-  { name: "Learn Afrika", logo: cld("v1758364869/Learn_Africa_Logo_kuiiem.png") },
-  { name: "Codeplay72", logo: cld("v1758364855/codeplay72_logo_z98ukx.png") },
+// TODO: name partner-b and partner-fingerprint (logos have no wordmark), then uncomment them
+// w/h are the image's pixel size; `scale` nudges logos that read heavier or lighter than their area suggests.
+export const partners: { name: string; logo: string; w: number; h: number; scale?: number }[] = [
+  { name: "PICTDA", logo: "/partners/pictda.png", w: 513, h: 640 },
+  { name: "Axia Hub", logo: "/partners/axia-hub.png", w: 92, h: 61, scale: 1.2 },
+  { name: "HER Intelligence", logo: "/partners/her-intelligence.png", w: 341, h: 487 },
+  { name: "Smart Web IT Solutions", logo: "/partners/smart-web.png", w: 231, h: 180, scale: 1.3 },
+  { name: "Startup Lab", logo: "/partners/startup-lab.png", w: 288, h: 288, scale: 0.8 },
+  { name: "ScoutSity", logo: "/partners/scoutsity.png", w: 640, h: 233, scale: 1.15 },
+  { name: "Codeplay72", logo: "/partners/codeplay72.png", w: 596, h: 182, scale: 1.1 },
+  { name: "Blockfuse Labs", logo: "/partners/blockfuse-labs.png", w: 226, h: 258, scale: 0.9 },
+  // { name: "Partner (b)", logo: "/partners/partner-b.png", w: 74, h: 98, scale: 0.9 },
+  // { name: "Partner (fingerprint)", logo: "/partners/partner-fingerprint.png", w: 640, h: 640, scale: 0.8 },
 ];
 
 export const socials = [

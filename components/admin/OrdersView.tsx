@@ -17,6 +17,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { orderStatusFilter } from "@/lib/admin/order-filters";
 import type { AdminOrder } from "@/lib/admin/data";
 import { formatNaira, tiers } from "@/lib/tickets/tiers";
 import { ActionButton } from "./AdminForms";
@@ -133,10 +134,10 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
         </form>
         <Dropdown
           label="Status"
-          value={params.get("status") ?? ""}
-          onChange={(v) => setParam({ status: v || null })}
+          value={orderStatusFilter(params.get("status"))}
+          onChange={(v) => setParam({ status: v === "paid" ? null : v })}
           options={[
-            { value: "", label: "All" },
+            { value: "all", label: "All" },
             { value: "paid", label: "Paid", dot: statusMeta.paid.dot },
             { value: "pending", label: "Pending", dot: statusMeta.pending.dot },
             { value: "failed", label: "Failed", dot: statusMeta.failed.dot },
@@ -437,6 +438,10 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
                     ) : (
                       <ActionButton kind="checkin" fields={{ ticketId: t.id }} label="Check in" tone="primary" />
                     )}
+                    <dl className="w-full border-t border-zinc-100 pt-2">
+                      {row("Merch", t.merch === "shirt" ? "Shirt" : t.merch === "tote" ? "Tote bag" : "Not selected")}
+                      {t.merch === "shirt" && row("Shirt size", t.shirt_size || "Not selected")}
+                    </dl>
                     <div className="-mx-2 -mb-1 w-[calc(100%+1rem)] border-t border-zinc-100 pt-2">
                       <TicketTools reference={o.reference} ticket={t} />
                     </div>

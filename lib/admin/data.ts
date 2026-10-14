@@ -1,4 +1,5 @@
 import "server-only";
+import { orderStatusFilter } from "./order-filters";
 import { db } from "@/lib/tickets/db";
 import type { OrderStatus } from "@/lib/tickets/orders";
 import type { TierId } from "@/lib/tickets/tiers";
@@ -47,7 +48,7 @@ export async function getStats(): Promise<Stats> {
   };
 }
 
-export type AdminTicket = { id: string; code: string; tier: TierId; holder_name: string; holder_email: string; checked_in_at: string | null };
+export type AdminTicket = { id: string; code: string; tier: TierId; holder_name: string; holder_email: string; checked_in_at: string | null; merch: "shirt" | "tote" | null; shirt_size: string | null };
 export type AdminOrder = {
   id: string;
   reference: string;
@@ -73,7 +74,8 @@ export const PAGE_SIZE = 25;
 export async function listOrders(f: OrderFilters) {
   const sql = db();
   const q = f.q?.trim();
-  const status = ["paid", "free", "pending", "failed"].includes(f.status ?? "") ? f.status! : null;
+  const selectedStatus = orderStatusFilter(f.status);
+  const status = selectedStatus === "all" ? null : selectedStatus;
   const tier = ["vip", "padi", "regular"].includes(f.tier ?? "") ? f.tier! : null;
   const page = Math.max(1, f.page ?? 1);
   const like = q ? `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%` : null;
@@ -91,8 +93,12 @@ export async function listOrders(f: OrderFilters) {
            o.created_at, o.paid_at, o.emailed_at, o.failure,
            o.paystack->>'domain' as mode, o.paystack->>'channel' as channel,
            coalesce((select json_agg(json_build_object('id', t.id, 'code', t.code, 'tier', t.tier, 'holder_name', t.holder_name,
-                     'holder_email', t.holder_email, 'checked_in_at', t.checked_in_at) order by t.created_at)
-                     from tickets t where t.order_id = o.id), '[]') as tickets
+                     'holder_email', t.holder_email, 'checked_in_at', t.checked_in_at,
+                     'merch', a.details->>'merch', 'shirt_size', a.details->>'shirtSize') order by t.created_at)
+                     from tickets t
+                     left join lateral (select details from jsonb_array_elements(o.attendees) details
+                       where lower(details->>'email') = lower(t.holder_email) limit 1) a on true
+                     where t.order_id = o.id), '[]') as tickets
     from orders o ${where}
     order by o.created_at desc
     limit ${PAGE_SIZE} offset ${(page - 1) * PAGE_SIZE}`;

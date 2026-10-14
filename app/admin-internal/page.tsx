@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HourglassIcon, Money03Icon, Ticket02Icon, UserCheck01Icon } from "@hugeicons/core-free-icons";
+import { Money03Icon, Ticket02Icon, UserCheck01Icon } from "@hugeicons/core-free-icons";
 import { LoginForm } from "@/components/admin/AdminForms";
 import Icon from "@/components/admin/Icon";
 import OrdersView from "@/components/admin/OrdersView";
@@ -43,9 +43,8 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
 
   const figures = [
     { label: "Revenue", icon: Money03Icon, tint: "group-hover:text-blue-100", value: formatNaira(stats.revenueKobo), sub: `${stats.paidOrders} paid order${stats.paidOrders === 1 ? "" : "s"}` },
-    { label: "Tickets sold", icon: Ticket02Icon, tint: "group-hover:text-emerald-100", value: String(stats.tickets.total), sub: `${stats.tickets.vip} VIP · ${stats.tickets.padi} My Padi` },
+    { label: "Tickets sold", icon: Ticket02Icon, tint: "group-hover:text-emerald-100", value: String(stats.soldUnits), sub: `${stats.tickets.vip} VIP · ${stats.padiUnits} My Padi` },
     { label: "Checked in", icon: UserCheck01Icon, tint: "group-hover:text-violet-100", value: String(stats.tickets.checkedIn), sub: `of ${stats.tickets.total} attendees` },
-    { label: "Pending", icon: HourglassIcon, tint: "group-hover:text-yellow-100", value: String(stats.pending), sub: `${stats.failed} failed` },
   ];
 
   return (
@@ -53,8 +52,8 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
         <h1 className="text-2xl font-semibold tracking-tight">Ticket sales</h1>
 
         {/* Figures: a plain row, no cards */}
-        <dl className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {figures.map((f, i) => (
+        <dl className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {figures.map((f) => (
             <div
               key={f.label}
               className="group relative isolate overflow-hidden rounded-2xl px-3 py-4 sm:px-5 sm:py-5 transition-colors duration-300 hover:bg-zinc-50/80"

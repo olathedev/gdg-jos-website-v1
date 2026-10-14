@@ -1,4 +1,4 @@
-/** Missing or invalid filters always start with paid orders. */
+/** Default, legacy "all", and invalid filters show paid orders only. */
 export function orderStatusFilter(value?: string | null) {
-  return value && ["all", "paid", "pending", "failed", "free"].includes(value) ? value : "paid";
+  return value && ["paid", "pending", "failed", "free"].includes(value) ? value : "paid";
 }

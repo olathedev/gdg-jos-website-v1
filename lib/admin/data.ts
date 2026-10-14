@@ -10,25 +10,23 @@ const LIVE = `coalesce(o.paystack->>'domain', 'live') = 'live'`;
 export type Stats = {
   revenueKobo: number;
   paidOrders: number;
-  pending: number;
-  failed: number;
-  testOrders: number;
+  soldUnits: number;
+  padiUnits: number;
   tickets: { total: number; vip: number; padi: number; regular: number; checkedIn: number };
 };
 
 export async function getStats(): Promise<Stats> {
   const sql = db();
   const [o] = await sql.unsafe<
-    { revenue: string; paid: number; pending: number; failed: number; test: number }[]
+    { revenue: string; paid: number; sold_units: number; padi_units: number }[]
   >(`
     select
-      coalesce(sum(o.amount_kobo) filter (where o.status = 'paid' and ${LIVE}), 0) as revenue,
-      count(*) filter (where o.status = 'paid' and ${LIVE})::int as paid,
-      count(*) filter (where o.status = 'pending')::int as pending,
-      count(*) filter (where o.status = 'failed')::int as failed,
-      0 as test
+      coalesce(sum(o.amount_kobo), 0) as revenue,
+      count(*)::int as paid,
+      coalesce(sum(o.units), 0)::int as sold_units,
+      coalesce(sum(o.units) filter (where o.tier = 'padi'), 0)::int as padi_units
     from orders o
-    where ${LIVE}`);
+    where o.status = 'paid' and ${LIVE}`);
   const [t] = await sql.unsafe<{ total: number; vip: number; padi: number; regular: number; checked: number }[]>(`
     select
       count(*)::int as total,
@@ -37,13 +35,12 @@ export async function getStats(): Promise<Stats> {
       count(*) filter (where t.tier = 'regular')::int as regular,
       count(*) filter (where t.checked_in_at is not null)::int as checked
     from tickets t join orders o on o.id = t.order_id
-    where o.status in ('paid', 'free') and ${LIVE}`);
+    where o.status = 'paid' and ${LIVE}`);
   return {
     revenueKobo: Number(o.revenue),
     paidOrders: o.paid,
-    pending: o.pending,
-    failed: o.failed,
-    testOrders: o.test,
+    soldUnits: o.sold_units,
+    padiUnits: o.padi_units,
     tickets: { total: t.total, vip: t.vip, padi: t.padi, regular: t.regular, checkedIn: t.checked },
   };
 }
@@ -74,8 +71,7 @@ export const PAGE_SIZE = 25;
 export async function listOrders(f: OrderFilters) {
   const sql = db();
   const q = f.q?.trim();
-  const selectedStatus = orderStatusFilter(f.status);
-  const status = selectedStatus === "all" ? null : selectedStatus;
+  const status = orderStatusFilter(f.status);
   const tier = ["vip", "padi", "regular"].includes(f.tier ?? "") ? f.tier! : null;
   const page = Math.max(1, f.page ?? 1);
   const like = q ? `%${q.replace(/[%_\\]/g, (c) => `\\${c}`)}%` : null;
@@ -83,7 +79,7 @@ export async function listOrders(f: OrderFilters) {
   const where = sql`
     where (${like}::text is null or o.reference ilike ${like} or o.buyer_name ilike ${like} or o.buyer_email ilike ${like}
            or exists (select 1 from tickets t where t.order_id = o.id and (t.holder_name ilike ${like} or t.holder_email ilike ${like} or t.code ilike ${like})))
-      and (${status}::text is null or o.status = ${status})
+      and o.status = ${status}
       and (${tier}::text is null or o.tier = ${tier})
       and coalesce(o.paystack->>'domain', 'live') = 'live'`; // test-mode payments are never shown
 

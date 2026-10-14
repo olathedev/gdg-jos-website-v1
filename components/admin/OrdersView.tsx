@@ -137,7 +137,6 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
           value={orderStatusFilter(params.get("status"))}
           onChange={(v) => setParam({ status: v === "paid" ? null : v })}
           options={[
-            { value: "all", label: "All" },
             { value: "paid", label: "Paid", dot: statusMeta.paid.dot },
             { value: "pending", label: "Pending", dot: statusMeta.pending.dot },
             { value: "failed", label: "Failed", dot: statusMeta.failed.dot },

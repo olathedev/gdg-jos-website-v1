@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 import { Field } from "./FormUI";
 import { useId } from "react";
-import { shirtSizes, type MerchFields as Selection } from "@/lib/tickets/merch";
+import { shirtColors, shirtSizes, type MerchFields as Selection } from "@/lib/tickets/merch";
 
 export default function MerchFields({ value, onChange, errors = {}, disabled = false }: {
   value: Selection; onChange: (value: Selection) => void; errors?: Record<string, string>; disabled?: boolean;
@@ -17,7 +17,7 @@ export default function MerchFields({ value, onChange, errors = {}, disabled = f
           <label key={item} className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-2xl px-4 py-3.5 transition-shadow has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-g-blue ${value.merch === item ? 'bg-p-blue ring-2 ring-ink' : 'bg-white ring-1 ring-ink/12 hover:ring-ink/30'}`}>
             <input type="radio" name={`${id}-merch`} value={item} checked={value.merch === item} required
               data-invalid={errors.merch ? "true" : undefined} aria-describedby={errors.merch ? `${id}-error` : undefined}
-              onChange={() => onChange({ merch: item, shirtSize: "" })} className="sr-only" />
+              onChange={() => onChange({ merch: item, shirtSize: "", shirtColor: "" })} className="sr-only" />
             <span aria-hidden className={`grid size-5 shrink-0 place-items-center rounded-full ${value.merch === item ? "bg-ink text-white" : "ring-2 ring-ink/20"}`}>
               {value.merch === item && <Check className="size-3" strokeWidth={3} />}
             </span>
@@ -27,12 +27,20 @@ export default function MerchFields({ value, onChange, errors = {}, disabled = f
       </div>
       {errors.merch && <p id={`${id}-error`} className="text-sm text-g-red">{errors.merch}</p>}
       {value.merch === "shirt" && (
+        <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Shirt size (required)" error={errors.shirtSize}>
           {(p) => <select {...p} value={value.shirtSize} onChange={(e) => onChange({ ...value, shirtSize: e.target.value })}>
             <option value="">Select your size</option>
             {shirtSizes.map((size, i) => <option key={size} value={size}>{["Small (S)", "Medium (M)", "Large (L)", "Extra large (XL)", "2X large (XXL)"][i]}</option>)}
           </select>}
         </Field>
+        <Field label="Shirt colour (required)" error={errors.shirtColor}>
+          {(p) => <select {...p} value={value.shirtColor} onChange={(e) => onChange({ ...value, shirtColor: e.target.value })}>
+            <option value="">Select your colour</option>
+            {shirtColors.map((color) => <option key={color} value={color}>{color[0].toUpperCase() + color.slice(1)}</option>)}
+          </select>}
+        </Field>
+        </div>
       )}
     </fieldset>
   );

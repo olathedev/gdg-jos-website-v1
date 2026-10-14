@@ -16,7 +16,7 @@ type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "paying" } | {
 const primaryBtn =
   "flex items-center justify-center gap-2 rounded-full bg-ink font-medium text-white transition-colors hover:bg-ink/85 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70";
 
-const emptyHolder = (self = false): Holder => ({ self, name: "", email: "", merch: "", shirtSize: "" });
+const emptyHolder = (self = false): Holder => ({ self, name: "", email: "", merch: "", shirtSize: "", shirtColor: "" });
 
 function resize(list: Holder[], n: number) {
   return Array.from({ length: n }, (_, i) => list[i] ?? emptyHolder(i === 0));
@@ -76,7 +76,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
       tier: tierId as CheckoutInput["tier"], // the picker only offers paid tiers
       units,
       buyer,
-      attendees: holders.map((h) => ({ name: h.self ? buyer.name : h.name, email: h.self ? buyer.email : h.email, merch: h.merch || undefined, shirtSize: h.shirtSize || undefined })),
+      attendees: holders.map((h) => ({ name: h.self ? buyer.name : h.name, email: h.self ? buyer.email : h.email, merch: h.merch || undefined, shirtSize: h.shirtSize || undefined, shirtColor: h.shirtColor || undefined })),
       company,
     }),
     [tierId, units, buyer, holders, company],
@@ -246,7 +246,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
           {holders[0]?.self && (
             <div className="mt-5 border-t border-ink/10 pt-5">
               <MerchFields value={holders[0]} onChange={(selection) => updateHolder(0, selection)} disabled={busy}
-                errors={{ merch: errors["attendees.0.merch"], shirtSize: errors["attendees.0.shirtSize"] }} />
+                errors={{ merch: errors["attendees.0.merch"], shirtSize: errors["attendees.0.shirtSize"], shirtColor: errors["attendees.0.shirtColor"] }} />
             </div>
           )}
           {/* Honeypot: hidden from people and assistive tech. */}
@@ -276,7 +276,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                   </div>
                   <div className="mt-5">
                     <MerchFields value={h} onChange={(selection) => updateHolder(i, selection)} disabled={busy}
-                      errors={{ merch: errors[`attendees.${i}.merch`], shirtSize: errors[`attendees.${i}.shirtSize`] }} />
+                      errors={{ merch: errors[`attendees.${i}.merch`], shirtSize: errors[`attendees.${i}.shirtSize`], shirtColor: errors[`attendees.${i}.shirtColor`] }} />
                   </div>
                 </li>
               ))}

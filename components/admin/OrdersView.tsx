@@ -440,6 +440,7 @@ function OrderDrawer({ o, onClose }: { o: AdminOrder; onClose: () => void }) {
                     <dl className="w-full border-t border-zinc-100 pt-2">
                       {row("Merch", t.merch === "shirt" ? "Shirt" : t.merch === "tote" ? "Tote bag" : "Not selected")}
                       {t.merch === "shirt" && row("Shirt size", t.shirt_size || "Not selected")}
+                      {t.merch === "shirt" && row("Shirt colour", <span className="capitalize">{t.shirt_color || "Not selected"}</span>)}
                     </dl>
                     <div className="-mx-2 -mb-1 w-[calc(100%+1rem)] border-t border-zinc-100 pt-2">
                       <TicketTools reference={o.reference} ticket={t} />

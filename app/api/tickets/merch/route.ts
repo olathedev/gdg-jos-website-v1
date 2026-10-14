@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         for update of o`;
       if (!order) return false;
       if (!order.attendees.some((a) => a.email.toLowerCase() === email)) return false;
-      const attendees = order.attendees.map((a) => a.email.toLowerCase() === email ? { ...a, merch: selection.merch, shirtSize: selection.shirtSize ?? null } : a);
+      const attendees = order.attendees.map((a) => a.email.toLowerCase() === email ? { ...a, merch: selection.merch, shirtSize: selection.shirtSize ?? null, shirtColor: selection.shirtColor ?? null } : a);
       await sql`update orders set attendees = ${sql.json(attendees)} where id = ${order.id}`;
       return true;
     });

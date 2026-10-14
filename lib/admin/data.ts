@@ -45,7 +45,7 @@ export async function getStats(): Promise<Stats> {
   };
 }
 
-export type AdminTicket = { id: string; code: string; tier: TierId; holder_name: string; holder_email: string; checked_in_at: string | null; merch: "shirt" | "tote" | null; shirt_size: string | null };
+export type AdminTicket = { id: string; code: string; tier: TierId; holder_name: string; holder_email: string; checked_in_at: string | null; merch: "shirt" | "tote" | null; shirt_size: string | null; shirt_color: string | null };
 export type AdminOrder = {
   id: string;
   reference: string;
@@ -90,7 +90,7 @@ export async function listOrders(f: OrderFilters) {
            o.paystack->>'domain' as mode, o.paystack->>'channel' as channel,
            coalesce((select json_agg(json_build_object('id', t.id, 'code', t.code, 'tier', t.tier, 'holder_name', t.holder_name,
                      'holder_email', t.holder_email, 'checked_in_at', t.checked_in_at,
-                     'merch', a.details->>'merch', 'shirt_size', a.details->>'shirtSize') order by t.created_at)
+                     'merch', a.details->>'merch', 'shirt_size', a.details->>'shirtSize', 'shirt_color', a.details->>'shirtColor') order by t.created_at)
                      from tickets t
                      left join lateral (select details from jsonb_array_elements(o.attendees) details
                        where lower(details->>'email') = lower(t.holder_email) limit 1) a on true
@@ -106,6 +106,7 @@ export async function ticketsCsv() {
     select t.code, t.tier, t.holder_name, t.holder_email,
            coalesce(a.details->>'merch', '') as merch,
            coalesce(a.details->>'shirtSize', '') as shirt_size,
+           coalesce(a.details->>'shirtColor', '') as shirt_color,
            coalesce(to_char(t.checked_in_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI'), '') as checked_in,
            o.reference, o.status,
            o.buyer_name, o.buyer_email, coalesce(o.buyer_phone, '') as buyer_phone,
@@ -115,7 +116,7 @@ export async function ticketsCsv() {
     left join lateral (select details from jsonb_array_elements(o.attendees) details where lower(details->>'email') = lower(t.holder_email) limit 1) a on true
     where o.status = 'paid' and coalesce(o.paystack->>'domain', 'live') = 'live'
     order by o.created_at desc, t.created_at`;
-  const cols = ["code", "tier", "holder_name", "holder_email", "merch", "shirt_size", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
+  const cols = ["code", "tier", "holder_name", "holder_email", "merch", "shirt_size", "shirt_color", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
   // Quote every cell; neutralise spreadsheet formula injection.
   const cell = (v: string) => `"${String(v ?? "").replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
   return [cols.join(","), ...rows.map((r) => cols.map((c) => cell(r[c])).join(","))].join("\n");

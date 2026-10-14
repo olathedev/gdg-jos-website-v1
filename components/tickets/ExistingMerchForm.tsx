@@ -10,7 +10,7 @@ import { fieldErrors } from "@/lib/tickets/schema";
 export default function ExistingMerchForm() {
   const [code, setCode] = useState("");
   const [email, setEmail] = useState("");
-  const [selection, setSelection] = useState<Selection>({ merch: "", shirtSize: "" });
+  const [selection, setSelection] = useState<Selection>({ merch: "", shirtSize: "", shirtColor: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,7 +20,7 @@ export default function ExistingMerchForm() {
     event.preventDefault();
     setSaved(false);
     setMessage("");
-    const parsed = existingMerchSchema.safeParse({ code, email, selection: { merch: selection.merch || undefined, shirtSize: selection.shirtSize || undefined } });
+    const parsed = existingMerchSchema.safeParse({ code, email, selection: { merch: selection.merch || undefined, shirtSize: selection.shirtSize || undefined, shirtColor: selection.shirtColor || undefined } });
     if (!parsed.success) {
       setErrors(fieldErrors(parsed.error));
       requestAnimationFrame(() => document.querySelector<HTMLElement>("[aria-invalid=true], [data-invalid=true]")?.focus());
@@ -43,7 +43,7 @@ export default function ExistingMerchForm() {
     <div role="status" className="rounded-3xl bg-white p-5 ring-1 ring-ink/[0.08] sm:p-7">
       <Check aria-hidden className="mb-4 size-8 text-g-green" />
       <h2 className="type-heading text-2xl">Your merch choice is saved!</h2>
-      <p className="mt-2 text-sm text-ink/70">{selection.merch === "shirt" ? `Shirt · ${selection.shirtSize}` : "Tote bag"} for ticket {code.trim().toUpperCase()}.</p>
+      <p className="mt-2 text-sm text-ink/70">{selection.merch === "shirt" ? `Shirt · ${selection.shirtSize} · ${selection.shirtColor}` : "Tote bag"} for ticket {code.trim().toUpperCase()}.</p>
       <button type="button" onClick={() => setSaved(false)} className="mt-6 h-12 rounded-full bg-ink px-6 text-sm font-medium text-white hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue">Choose for another ticket or edit</button>
     </div>
   );
@@ -63,7 +63,7 @@ export default function ExistingMerchForm() {
           </div>
           <p className="text-sm text-ink/60">Find the code on your downloaded ticket. For Padi tickets, submit each person’s choice using their own code and email.</p>
           <div className="border-t border-ink/10 pt-5">
-            <MerchFields value={selection} onChange={setSelection} errors={{ merch: errors['selection.merch'], shirtSize: errors['selection.shirtSize'] }} />
+            <MerchFields value={selection} onChange={setSelection} errors={{ merch: errors['selection.merch'], shirtSize: errors['selection.shirtSize'], shirtColor: errors['selection.shirtColor'] }} />
           </div>
           {message && <p role="alert" className="rounded-xl bg-p-red px-4 py-3 text-sm font-medium text-ink">{message}</p>}
           <button type="submit" disabled={busy} className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-6 text-[15px] font-medium text-white transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70">
@@ -76,7 +76,7 @@ export default function ExistingMerchForm() {
         <h2 className="type-heading text-xl sm:text-2xl">Your merch</h2>
         <p className="mt-2 text-sm text-ink/60">One item per ticket holder, included with your paid ticket.</p>
         <p className="mt-5 border-t border-ink/10 pt-5 font-semibold">
-          {selection.merch === "shirt" ? `Shirt${selection.shirtSize ? ` · ${selection.shirtSize}` : " · Choose a size"}` : selection.merch === "tote" ? "Tote bag" : "Choose a shirt or a tote bag"}
+          {selection.merch === "shirt" ? `Shirt${selection.shirtSize ? ` · ${selection.shirtSize}` : " · Choose a size"}${selection.shirtColor ? ` · ${selection.shirtColor}` : " · Choose a colour"}` : selection.merch === "tote" ? "Tote bag" : "Choose a shirt or a tote bag"}
         </p>
         <p className="mt-2 text-sm text-ink/60">You can return here to update your choice.</p>
       </aside>

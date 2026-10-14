@@ -162,13 +162,6 @@ export default function OrdersView({ base, rows, count, page, pages }: { base: s
         >
           <Icon icon={Download04Icon} className="size-4 text-zinc-500" /> Export paid tickets
         </a>
-        <a
-          href={`${base}/export?type=all-emails`}
-          title="Unique buyer and attendee emails from all order statuses, including pending and failed"
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 text-sm font-medium hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-g-blue"
-        >
-          <Icon icon={Download04Icon} className="size-4 text-zinc-500" /> Export all emails
-        </a>
         <IssueTicketsButton />
       </div>
 

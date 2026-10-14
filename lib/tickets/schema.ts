@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { merchSchema } from "./merch";
 import { tiers, type TierId } from "./tiers";
 
 const name = z.string().trim().min(2, "Enter a full name").max(80, "That name is too long");
@@ -19,7 +20,7 @@ export const checkoutSchema = z
         .trim()
         .regex(/^\+?[0-9\s-]{7,20}$/, "Enter a valid phone number"),
     }),
-    attendees: z.array(attendeeSchema).min(1),
+    attendees: z.array(attendeeSchema.and(merchSchema)).min(1),
     /** Honeypot: real people never fill this in. */
     company: z.string().max(0).optional(),
   })

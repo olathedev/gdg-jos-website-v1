@@ -2,18 +2,21 @@
 
 import { Check, Loader2, Lock, Minus, Plus, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useId, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { checkoutSchema, fieldErrors, type CheckoutInput } from "@/lib/tickets/schema";
 import { formatNaira, paidTiers, priceLabel, tierColor, tiers, type TierId } from "@/lib/tickets/tiers";
+import { Field, Section } from "./FormUI";
+import MerchFields from "./MerchFields";
+import type { MerchFields as MerchSelection } from "@/lib/tickets/merch";
 import TierArt from "./TierArt";
 
-type Holder = { self: boolean; name: string; email: string };
+type Holder = { self: boolean; name: string; email: string } & MerchSelection;
 type Status = { kind: "idle" } | { kind: "submitting" } | { kind: "paying" } | { kind: "error"; message: string } | { kind: "cancelled" };
 
 const primaryBtn =
   "flex items-center justify-center gap-2 rounded-full bg-ink font-medium text-white transition-colors hover:bg-ink/85 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-g-blue disabled:cursor-wait disabled:opacity-70";
 
-const emptyHolder = (self = false): Holder => ({ self, name: "", email: "" });
+const emptyHolder = (self = false): Holder => ({ self, name: "", email: "", merch: "", shirtSize: "" });
 
 function resize(list: Holder[], n: number) {
   return Array.from({ length: n }, (_, i) => list[i] ?? emptyHolder(i === 0));
@@ -68,12 +71,12 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     touch(...Object.keys(patch).map((k) => `attendees.${i}.${k}`), "attendees");
   };
 
-  const payload = useMemo<CheckoutInput>(
+  const payload = useMemo(
     () => ({
       tier: tierId as CheckoutInput["tier"], // the picker only offers paid tiers
       units,
       buyer,
-      attendees: holders.map((h) => (h.self ? { name: buyer.name, email: buyer.email } : { name: h.name, email: h.email })),
+      attendees: holders.map((h) => ({ name: h.self ? buyer.name : h.name, email: h.self ? buyer.email : h.email, merch: h.merch || undefined, shirtSize: h.shirtSize || undefined })),
       company,
     }),
     [tierId, units, buyer, holders, company],
@@ -101,7 +104,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     if (!parsed.success) {
       setErrors(mapErrors(fieldErrors(parsed.error)));
       setStatus({ kind: "error", message: "Check the highlighted fields." });
-      requestAnimationFrame(() => document.querySelector<HTMLElement>("[aria-invalid=true]")?.focus());
+      requestAnimationFrame(() => document.querySelector<HTMLElement>("[aria-invalid=true], [data-invalid=true]")?.focus());
       return;
     }
     setErrors({});
@@ -240,6 +243,12 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
             />
             {seats === 1 ? "I'm buying this ticket for someone else" : "I'm not attending myself"}
           </label>
+          {holders[0]?.self && (
+            <div className="mt-5 border-t border-ink/10 pt-5">
+              <MerchFields value={holders[0]} onChange={(selection) => updateHolder(0, selection)} disabled={busy}
+                errors={{ merch: errors["attendees.0.merch"], shirtSize: errors["attendees.0.shirtSize"] }} />
+            </div>
+          )}
           {/* Honeypot: hidden from people and assistive tech. */}
           <div aria-hidden className="absolute -left-[9999px] h-0 overflow-hidden">
             <label>
@@ -264,6 +273,10 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                     <Field label="Email" error={errors[`attendees.${i}.email`]}>
                       {(p) => <input {...p} type="email" inputMode="email" autoComplete="off" value={h.email} onChange={(e) => updateHolder(i, { email: e.target.value })} />}
                     </Field>
+                  </div>
+                  <div className="mt-5">
+                    <MerchFields value={h} onChange={(selection) => updateHolder(i, selection)} disabled={busy}
+                      errors={{ merch: errors[`attendees.${i}.merch`], shirtSize: errors[`attendees.${i}.shirtSize`] }} />
                   </div>
                 </li>
               ))}
@@ -353,46 +366,6 @@ function holderLabel(tier: TierId, units: number, i: number, buyerAttends: boole
     return `Pair ${Math.floor(i / 2) + 1} · Person ${(i % 2) + 1}`;
   }
   return `Ticket ${i + 1}`;
-}
-
-function Section({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
-  return (
-    <section className="relative rounded-3xl bg-white p-5 ring-1 ring-ink/[0.08] sm:p-7">
-      <div className="mb-5">
-        <h2 className="type-heading text-xl sm:text-2xl">{title}</h2>
-        {hint && <p className="mt-1 text-sm text-ink/60">{hint}</p>}
-      </div>
-      {children}
-    </section>
-  );
-}
-
-type InputProps = { id: string; name: string; required: true; "aria-invalid": boolean; "aria-describedby"?: string; className: string };
-
-function Field({ label, error, className = "", children }: { label: string; error?: string; className?: string; children: (p: InputProps) => ReactNode }) {
-  const id = useId();
-  return (
-    <div className={className}>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-ink/80">
-        {label}
-      </label>
-      {children({
-        id,
-        name: id,
-        required: true,
-        "aria-invalid": Boolean(error),
-        "aria-describedby": error ? `${id}-err` : undefined,
-        className: `h-12 w-full rounded-xl bg-paper/60 px-4 text-base text-ink ring-1 ring-inset transition-shadow outline-none placeholder:text-ink/40 focus:bg-white focus:ring-2 focus:ring-g-blue ${
-          error ? "ring-g-red" : "ring-ink/10"
-        }`,
-      })}
-      {error && (
-        <p id={`${id}-err`} className="mt-1.5 text-sm font-medium text-[#c5221f]">
-          {error}
-        </p>
-      )}
-    </div>
-  );
 }
 
 function StepButton({ label, disabled, onClick, children }: { label: string; disabled: boolean; onClick: () => void; children: ReactNode }) {

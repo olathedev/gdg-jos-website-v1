@@ -102,15 +102,18 @@ export async function listOrders(f: OrderFilters) {
 export async function ticketsCsv() {
   const rows = await db()<Record<string, string>[]>`
     select t.code, t.tier, t.holder_name, t.holder_email,
+           coalesce(a.details->>'merch', '') as merch,
+           coalesce(a.details->>'shirtSize', '') as shirt_size,
            coalesce(to_char(t.checked_in_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI'), '') as checked_in,
            o.reference, o.status,
            o.buyer_name, o.buyer_email, coalesce(o.buyer_phone, '') as buyer_phone,
            (o.amount_kobo / 100)::text as order_amount_ngn,
            to_char(o.created_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI') as ordered_at
     from tickets t join orders o on o.id = t.order_id
+    left join lateral (select details from jsonb_array_elements(o.attendees) details where lower(details->>'email') = lower(t.holder_email) limit 1) a on true
     where coalesce(o.paystack->>'domain', 'live') = 'live'
     order by o.created_at desc, t.created_at`;
-  const cols = ["code", "tier", "holder_name", "holder_email", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
+  const cols = ["code", "tier", "holder_name", "holder_email", "merch", "shirt_size", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
   // Quote every cell; neutralise spreadsheet formula injection.
   const cell = (v: string) => `"${String(v ?? "").replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
   return [cols.join(","), ...rows.map((r) => cols.map((c) => cell(r[c])).join(","))].join("\n");

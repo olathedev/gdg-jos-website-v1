@@ -117,10 +117,31 @@ export async function ticketsCsv() {
            to_char(o.created_at at time zone 'Africa/Lagos', 'YYYY-MM-DD HH24:MI') as ordered_at
     from tickets t join orders o on o.id = t.order_id
     left join lateral (select details from jsonb_array_elements(o.attendees) details where lower(details->>'email') = lower(t.holder_email) limit 1) a on true
-    where coalesce(o.paystack->>'domain', 'live') = 'live'
+    where o.status = 'paid' and coalesce(o.paystack->>'domain', 'live') = 'live'
     order by o.created_at desc, t.created_at`;
   const cols = ["code", "tier", "holder_name", "holder_email", "merch", "shirt_size", "checked_in", "reference", "status", "buyer_name", "buyer_email", "buyer_phone", "order_amount_ngn", "ordered_at"];
   // Quote every cell; neutralise spreadsheet formula injection.
   const cell = (v: string) => `"${String(v ?? "").replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
   return [cols.join(","), ...rows.map((r) => cols.map((c) => cell(r[c])).join(","))].join("\n");
+}
+
+/** Unique buyer and attendee emails across live orders, including unpaid orders. */
+export async function allEmailsCsv() {
+  const rows = await db()<{ email: string }[]>`
+    with live_orders as (
+      select id, buyer_email, attendees from orders o
+      where coalesce(o.paystack->>'domain', 'live') = 'live'
+    ), emails as (
+      select buyer_email as email from live_orders
+      union all
+      select a.details->>'email' from live_orders o
+        cross join lateral jsonb_array_elements(o.attendees) a(details)
+      union all
+      select t.holder_email from tickets t join live_orders o on o.id = t.order_id
+    )
+    select distinct lower(trim(email)) as email from emails
+    where nullif(trim(email), '') is not null
+    order by email`;
+  const cell = (value: string) => `"${value.replace(/^[=+\-@\t\r]/, "'$&").replace(/"/g, '""')}"`;
+  return ["email", ...rows.map(({ email }) => cell(email))].join("\n");
 }

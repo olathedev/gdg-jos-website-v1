@@ -19,7 +19,7 @@ export const checkoutSchema = z
       phone: z
         .string()
         .trim()
-        .optional()
+        .nullish() // client sends its already-parsed data, so null comes back
         .transform((v) => v || null)
         .pipe(z.string().regex(/^\+?[0-9\s().-]{7,20}$/, "Enter a valid phone number").nullable()),
     }),

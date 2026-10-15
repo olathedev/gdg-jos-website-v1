@@ -57,6 +57,10 @@ export const tiers: Record<TierId, Tier> = {
   },
 };
 
+/** Master switch for paid ticket sales (site + /api/checkout). Payments already
+ *  in progress still complete, and admins can still issue tickets manually. */
+export const SALES_OPEN = false;
+
 export const tierList = [tiers.regular, tiers.vip, tiers.padi];
 
 /** Ticket fill colours (VIP matches the ticket design guide). */

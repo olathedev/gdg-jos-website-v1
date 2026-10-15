@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { REGULAR_REGISTRATION_URL } from "@/data/devfest26";
-import { priceLabel, tierColor, tierList } from "@/lib/tickets/tiers";
+import { SALES_OPEN, priceLabel, tierColor, tierList } from "@/lib/tickets/tiers";
 import TierArt from "./TierArt";
 
 /** Ticket-stub cards for the three tiers (landing section + /tickets page). */
@@ -59,6 +59,10 @@ export default function TierCards() {
                 >
                   Register free
                 </a>
+              ) : !SALES_OPEN ? (
+                <span className="mt-auto flex h-12 cursor-not-allowed items-center justify-center rounded-full bg-paper text-[15px] font-medium text-ink/50 ring-1 ring-ink/10">
+                  Sales closed
+                </span>
               ) : (
                 <Link
                   href={`/tickets/checkout?tier=${t.id}`}

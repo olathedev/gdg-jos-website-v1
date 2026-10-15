@@ -5,7 +5,7 @@ import { AlreadyRegisteredError, SoldOutError, createOrder, markEmailed } from "
 import { PaystackError, initializeTransaction } from "@/lib/tickets/paystack";
 import { checkoutSchema, fieldErrors } from "@/lib/tickets/schema";
 import { siteUrl } from "@/lib/tickets/site";
-import { tiers } from "@/lib/tickets/tiers";
+import { SALES_OPEN, tiers } from "@/lib/tickets/tiers";
 
 export const runtime = "nodejs";
 
@@ -13,6 +13,7 @@ const fail = (status: number, error: string, fields?: Record<string, string>) =>
   NextResponse.json({ error, fields }, { status });
 
 export async function POST(req: Request) {
+  if (!SALES_OPEN) return fail(410, "Ticket sales have closed.");
   const body = await req.json().catch(() => null);
   const parsed = checkoutSchema.safeParse(body);
   if (!parsed.success) return fail(422, "Check the highlighted fields.", fieldErrors(parsed.error));

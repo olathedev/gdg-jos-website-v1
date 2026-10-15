@@ -8,6 +8,7 @@ import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
 import Tickets from "@/components/df26/Tickets";
 import { Divider } from "@/components/df26/ui";
 import { event, gallery, mapsHref } from "@/data/devfest26";
+import { SALES_OPEN } from "@/lib/tickets/tiers";
 
 const description = `${event.dateLabel} at ${event.venue}, ${event.city}. Free Regular registration, VIP ₦8,000, My Padi ₦15,000 for two. Get your DevFest Jos 2026 ticket.`;
 
@@ -43,7 +44,8 @@ export default function TicketsPage() {
               DevFest Jos 2026 <span className="text-h-blue">tickets</span>
             </h1>
             <p className="mx-auto mt-4 max-w-lg text-base text-white/70 sm:text-lg">
-              A full day of talks, workshops and community. Pick your ticket below.
+              A full day of talks, workshops and community.{" "}
+              {SALES_OPEN ? "Pick your ticket below." : "Ticket sales have closed. Already have a ticket? Check your inbox for your QR code."}
             </p>
             {event.startsAt && (
               <div className="mt-8 flex justify-center">

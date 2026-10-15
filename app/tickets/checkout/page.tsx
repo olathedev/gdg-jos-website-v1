@@ -6,7 +6,7 @@ import CheckoutForm from "@/components/tickets/CheckoutForm";
 import Nav from "@/components/df26/Nav";
 import PhotoBackdrop from "@/components/df26/PhotoBackdrop";
 import { REGULAR_REGISTRATION_URL, event, gallery } from "@/data/devfest26";
-import { isTierId } from "@/lib/tickets/tiers";
+import { SALES_OPEN, isTierId } from "@/lib/tickets/tiers";
 
 export const metadata: Metadata = {
   title: "Get tickets · DevFest Jos 2026",
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ tier?: string }> }) {
   const { tier } = await searchParams;
   if (tier === "regular") redirect(REGULAR_REGISTRATION_URL);
+  if (!SALES_OPEN) redirect("/tickets");
 
   return (
     <>

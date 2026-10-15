@@ -98,13 +98,40 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     return out;
   };
 
+  const others = holders.map((h, i) => ({ h, i })).filter(({ h, i }) => !(i === 0 && h.self));
+
+  // Only keys with an input on screen can be "highlighted". Anything else
+  // (e.g. a ticket-count mismatch) is spelled out in the banner instead.
+  const isVisible = (key: string) =>
+    /^buyer\.(name|email|phone)$/.test(key) ||
+    /^attendees\.\d+\.(name|email|merch|shirtSize|shirtColor)$/.test(key) ||
+    (key === "attendees" && others.length > 0);
+
+  const showErrors = (errs: Record<string, string>) => {
+    setErrors(errs);
+    const keys = Object.keys(errs);
+    const hidden = keys.filter((k) => !isVisible(k));
+    const shown = keys.length - hidden.length;
+    const message = hidden.length
+      ? errs[hidden[0]]
+      : shown === 1
+        ? `${errs[keys[0]]}. It's highlighted above.`
+        : `Please fix the ${shown} highlighted fields.`;
+    setStatus({ kind: "error", message });
+    requestAnimationFrame(() => {
+      const el = document.querySelector<HTMLElement>("[aria-invalid=true], [data-invalid=true]");
+      if (!el) return;
+      // Merch radios are visually hidden, so scroll to their group instead.
+      (el.closest("fieldset") ?? el).scrollIntoView({ behavior: "smooth", block: "center" });
+      el.focus({ preventScroll: true });
+    });
+  };
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     const parsed = checkoutSchema.safeParse(payload);
     if (!parsed.success) {
-      setErrors(mapErrors(fieldErrors(parsed.error)));
-      setStatus({ kind: "error", message: "Check the highlighted fields." });
-      requestAnimationFrame(() => document.querySelector<HTMLElement>("[aria-invalid=true], [data-invalid=true]")?.focus());
+      showErrors(mapErrors(fieldErrors(parsed.error)));
       return;
     }
     setErrors({});
@@ -115,8 +142,8 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
       const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(parsed.data) });
       data = await res.json();
       if (!res.ok) {
-        if (data.fields) setErrors(mapErrors(data.fields));
-        setStatus({ kind: "error", message: data.error ?? "Something went wrong. Please try again." });
+        if (data.fields && Object.keys(data.fields).length) showErrors(mapErrors(data.fields));
+        else setStatus({ kind: "error", message: data.error ?? "Something went wrong. Please try again." });
         return;
       }
     } catch {
@@ -144,7 +171,6 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
     }
   }
 
-  const others = holders.map((h, i) => ({ h, i })).filter(({ h, i }) => !(i === 0 && h.self));
   const payLabel = total === 0 ? "Get my free ticket" : `Pay ${formatNaira(total)}`;
 
   const statusBox = (
@@ -230,7 +256,7 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
             <Field label="Email" error={errors["buyer.email"]}>
               {(p) => <input {...p} type="email" inputMode="email" autoComplete="email" value={buyer.email} onChange={(e) => setBuyerField("email", e.target.value)} />}
             </Field>
-            <Field label="Phone" error={errors["buyer.phone"]}>
+            <Field label="Phone (optional)" error={errors["buyer.phone"]} optional>
               {(p) => <input {...p} type="tel" inputMode="tel" autoComplete="tel" placeholder="080…" value={buyer.phone} onChange={(e) => setBuyerField("phone", e.target.value)} />}
             </Field>
           </div>
@@ -249,11 +275,12 @@ export default function CheckoutForm({ initialTier }: { initialTier: TierId }) {
                 errors={{ merch: errors["attendees.0.merch"], shirtSize: errors["attendees.0.shirtSize"], shirtColor: errors["attendees.0.shirtColor"] }} />
             </div>
           )}
-          {/* Honeypot: hidden from people and assistive tech. */}
+          {/* Honeypot: hidden from people and assistive tech. Neutral label/name so
+              browser autofill (which loves "Company") never fills it for real buyers. */}
           <div aria-hidden className="absolute -left-[9999px] h-0 overflow-hidden">
             <label>
-              Company
-              <input tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
+              Leave this empty
+              <input name="hp_ref" tabIndex={-1} autoComplete="one-time-code" value={company} onChange={(e) => setCompany(e.target.value)} />
             </label>
           </div>
         </Section>

@@ -14,9 +14,9 @@ export function Section({ title, hint, children }: { title: string; hint?: strin
   );
 }
 
-type InputProps = { id: string; name: string; required: true; "aria-invalid": boolean; "aria-describedby"?: string; className: string };
+type InputProps = { id: string; name: string; required: boolean; "aria-invalid": boolean; "aria-describedby"?: string; className: string };
 
-export function Field({ label, error, className = "", children }: { label: string; error?: string; className?: string; children: (p: InputProps) => ReactNode }) {
+export function Field({ label, error, optional = false, className = "", children }: { label: string; error?: string; optional?: boolean; className?: string; children: (p: InputProps) => ReactNode }) {
   const id = useId();
   return (
     <div className={className}>
@@ -26,7 +26,7 @@ export function Field({ label, error, className = "", children }: { label: strin
       {children({
         id,
         name: id,
-        required: true,
+        required: !optional,
         "aria-invalid": Boolean(error),
         "aria-describedby": error ? `${id}-err` : undefined,
         className: `h-12 w-full rounded-xl bg-paper/60 px-4 text-base text-ink ring-1 ring-inset transition-shadow outline-none placeholder:text-ink/40 focus:bg-white focus:ring-2 focus:ring-g-blue ${

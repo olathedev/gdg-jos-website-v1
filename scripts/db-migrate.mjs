@@ -1,4 +1,5 @@
-// Applies db/schema.sql to DATABASE_URL. Usage: npm run db:migrate
+// Applies db/schema.sql (or the SQL file given as an argument) to DATABASE_URL.
+// Usage: npm run db:migrate · npm run db:seed-quest
 import { readFile } from "node:fs/promises";
 import postgres from "postgres";
 
@@ -9,8 +10,9 @@ if (!url) {
 }
 const sql = postgres(url, { prepare: false, max: 1, onnotice: () => {} });
 try {
-  await sql.unsafe(await readFile(new URL("../db/schema.sql", import.meta.url), "utf8"));
-  console.log("Database schema is up to date.");
+  const file = process.argv[2];
+  await sql.unsafe(await readFile(file ? file : new URL("../db/schema.sql", import.meta.url), "utf8"));
+  console.log(file ? `Applied ${file}.` : "Database schema is up to date.");
 } finally {
   await sql.end();
 }

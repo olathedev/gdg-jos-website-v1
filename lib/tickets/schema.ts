@@ -15,14 +15,18 @@ export const checkoutSchema = z
     buyer: z.object({
       name,
       email,
+      // Optional. Empty → null so it's stored as NULL.
       phone: z
         .string()
         .trim()
-        .regex(/^\+?[0-9\s-]{7,20}$/, "Enter a valid phone number"),
+        .optional()
+        .transform((v) => v || null)
+        .pipe(z.string().regex(/^\+?[0-9\s().-]{7,20}$/, "Enter a valid phone number").nullable()),
     }),
     attendees: z.array(attendeeSchema.and(merchSchema)).min(1),
-    /** Honeypot: real people never fill this in. */
-    company: z.string().max(0).optional(),
+    /** Honeypot: real people never fill this in. Checked by the route, not here,
+     *  so browser autofill can never cause an error the user can't see. */
+    company: z.string().optional(),
   })
   .superRefine((v, ctx) => {
     const tier = tiers[v.tier as TierId];

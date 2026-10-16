@@ -11,16 +11,15 @@ type Initial = {
   avatar: string | null;
   stack: string[];
   fun_fact: string | null;
-  is_adult: boolean;
   onboarded: boolean;
 };
 
 const FACT_IDEAS = ["I've never seen snow", "I can name every Pokémon", "I code with my left hand only", "I've been to 9 states"];
 
-const shown = (name: string, adult: boolean) => {
+const shown = (name: string) => {
   const p = name.trim().split(/\s+/).filter(Boolean);
   if (!p.length) return "Your name";
-  return adult && p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
+  return p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
 };
 
 const label = "text-[11px] font-bold tracking-[0.2em] text-white/50";
@@ -33,7 +32,6 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
   const [name, setName] = useState(initial.full_name);
   const [picked, setPicked] = useState<string[]>(initial.stack);
   const [fact, setFact] = useState(initial.fun_fact ?? "");
-  const [adult, setAdult] = useState(initial.is_adult);
 
   const toggle = (l: string) => setPicked((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : cur.length < 3 ? [...cur, l] : cur));
 
@@ -42,7 +40,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
-        <span className="type-heading text-2xl font-bold">{shown(name, adult)}</span>
+        <span className="type-heading text-2xl font-bold">{shown(name)}</span>
         <span className="flex flex-wrap justify-center gap-1.5">
           {(picked.length ? picked : ["Your stack"]).map((p) => (
             <span key={p} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold">
@@ -91,7 +89,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
           className={`${field} h-14`}
         />
         <p className="text-xs text-white/50">
-          Players see {adult ? `"${shown(name, adult)}"` : "your first name"}. They&apos;ll need to know it to lock you in.
+          Players see &quot;{shown(name)}&quot;. They&apos;ll need to know it to lock you in.
         </p>
       </div>
 
@@ -146,11 +144,6 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
           <span className="tabular-nums">{fact.length}/90</span>
         </p>
       </div>
-
-      <label className="flex min-h-14 items-center gap-3 rounded-2xl border border-white/[0.12] bg-[#121212] px-4 text-[15px] font-bold">
-        <input type="checkbox" name="is_adult" checked={adult} onChange={(e) => setAdult(e.target.checked)} className="size-5 accent-h-yellow" />
-        I am 18 or over
-      </label>
 
       {state && (
         <p role="status" className={`rounded-full border px-4 py-2.5 text-center text-sm font-bold ${state.ok ? "border-g-green/40 bg-g-green/10 text-[#CCF6C5]" : "border-g-red/40 bg-g-red/10 text-[#F8D8D8]"}`}>

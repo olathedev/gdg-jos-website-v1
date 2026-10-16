@@ -28,7 +28,6 @@ export default async function Setup() {
           avatar: me.avatar,
           stack: me.stack,
           fun_fact: me.fun_fact,
-          is_adult: me.is_adult,
           onboarded: ready,
         }}
       />

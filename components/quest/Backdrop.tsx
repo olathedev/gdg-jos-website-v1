@@ -10,7 +10,7 @@ const G = "#34A853";
 export default function Backdrop() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <svg className="absolute top-0 left-0 h-full w-auto opacity-60" viewBox="0 0 140 900" preserveAspectRatio="xMinYMin meet">
+      <svg className="absolute top-0 left-0 h-full w-auto opacity-[0.22] lg:opacity-60" viewBox="0 0 140 900" preserveAspectRatio="xMinYMin meet">
         {/* { brace */}
         <path d="M44 60c-14 0-18 6-18 18v26c0 9-5 13-14 13 9 0 14 4 14 13v26c0 12 4 18 18 18" stroke={B} {...s} strokeWidth={3} />
         <circle cx="96" cy="210" r="7" fill={R} />
@@ -25,7 +25,7 @@ export default function Backdrop() {
         <rect x="70" y="790" width="34" height="34" rx="9" stroke={R} {...s} transform="rotate(14 87 807)" />
       </svg>
 
-      <svg className="absolute top-0 right-0 h-full w-auto opacity-60" viewBox="0 0 140 900" preserveAspectRatio="xMaxYMin meet">
+      <svg className="absolute top-0 right-0 h-full w-auto opacity-[0.22] lg:opacity-60" viewBox="0 0 140 900" preserveAspectRatio="xMaxYMin meet">
         <circle cx="104" cy="96" r="26" stroke={Y} {...s} strokeWidth={2.5} />
         <path d="M70 150h12M76 144v12" stroke="#fff" strokeOpacity="0.35" {...s} />
         {/* hexagon */}

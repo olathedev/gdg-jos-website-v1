@@ -50,13 +50,20 @@ export async function leaderboard(): Promise<Board> {
       select user_id,
              case when ${capped} then least(max(cum), ${PRE_EVENT_CAP}) else max(cum) end as score
       from t group by user_id
+    ),
+    -- When each player first reached that score (the tie-break), in one pass.
+    r as (
+      select t.user_id, min(t.at) as reached
+      from t join s on s.user_id = t.user_id
+      where t.cum >= s.score
+      group by t.user_id
     )
     select p.id, p.full_name, p.is_adult, p.stack, p.avatar, s.score::int as score
     from s
+    join r on r.user_id = s.user_id
     join quest_profiles p on p.id = s.user_id
     where s.score > 0
-    order by s.score desc,
-             (select min(t.at) from t where t.user_id = s.user_id and t.cum >= s.score) asc`;
+    order by s.score desc, r.reached asc`;
 
   const list: BoardRow[] = rows.map((r, i) => ({
     id: r.id,
@@ -72,9 +79,14 @@ export async function leaderboard(): Promise<Board> {
   return board;
 }
 
-/** Drop the cached board so a player sees their own new points straight away. */
+/**
+ * Drop the cached board so new points show up sooner. At most once every 5 seconds per
+ * server: during a quiz round hundreds of answers a minute would otherwise rebuild it on
+ * every request. Players' own scores (myScore) are always live.
+ */
 export const invalidateBoard = () => {
-  cache.questBoard = undefined;
+  const hit = cache.questBoard;
+  if (hit && Date.now() - hit.at > 5_000) cache.questBoard = undefined;
 };
 
 /** A player's live score (uncached) and their total including points held over the cap. */

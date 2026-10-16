@@ -205,9 +205,14 @@ body {
   position: relative;
   isolation: isolate;
   background-color: #0a0a0a;
-  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1.3px);
+  background-image: radial-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1.3px);
   background-size: 22px 22px;
   color-scheme: dark;
+}
+@media (min-width: 1024px) {
+  .quest-night {
+    background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1.3px);
+  }
 }
 /* Overscroll and short pages stay dark too. */
 body:has(.quest-night) {

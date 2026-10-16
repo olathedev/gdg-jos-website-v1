@@ -101,7 +101,7 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     avatar: String(form.get("avatar") ?? ""),
     stack: form.getAll("stack").map(String),
     fun_fact: String(form.get("fun_fact") ?? ""),
-    is_adult: form.get("is_adult") === "on",
+    is_adult: true,
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check your details." };
   await savePlayer(me.id, parsed.data);

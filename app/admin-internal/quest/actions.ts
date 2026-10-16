@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/app/admin-internal/actions";
 import { requireAdmin } from "@/lib/admin/auth";
-import { markReportReviewed, matchCommunityMembers } from "@/lib/quest/admin";
+import { addPartner, markReportReviewed, matchCommunityMembers, removePartner, setRound } from "@/lib/quest/admin";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const uuid = /^[0-9a-f-]{36}$/i;
@@ -32,4 +32,32 @@ export async function reviewReportAction(_: ActionState, form: FormData): Promis
   await markReportReviewed(blocker, blocked);
   revalidatePath("/admin-internal/quest");
   return { ok: true, message: "Marked reviewed." };
+}
+
+export async function roundAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const round = Number(form.get("round"));
+  const op = form.get("op");
+  if (![1, 2, 3].includes(round) || (op !== "open" && op !== "close")) return { ok: false, message: "Invalid round." };
+  await setRound(round, op);
+  revalidatePath("/admin-internal/quest");
+  return { ok: true, message: op === "open" ? `Round ${round} is live.` : `Round ${round} closed.` };
+}
+
+export async function addPartnerAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const name = String(form.get("name") ?? "").trim();
+  if (name.length < 2 || name.length > 60) return { ok: false, message: "Enter the partner's name (2 to 60 characters)." };
+  await addPartner(name);
+  revalidatePath("/admin-internal/quest");
+  return { ok: true, message: `Added ${name}.` };
+}
+
+export async function removePartnerAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  if (!uuid.test(id)) return { ok: false, message: "Invalid partner." };
+  const ok = await removePartner(id);
+  revalidatePath("/admin-internal/quest");
+  return ok ? { ok: true, message: "Removed." } : { ok: false, message: "Players already scanned this partner, so it stays." };
 }

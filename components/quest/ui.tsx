@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { AVATAR_TINTS, STACKS } from "@/lib/quest/config";
+import { AVATAR_TINTS, avatarFor, STACKS } from "@/lib/quest/config";
+import { AvatarArt } from "./icons";
 
 export function Logo({ dark = false, className = "" }: { dark?: boolean; className?: string }) {
   return (
@@ -80,7 +81,7 @@ export function Blob({ children, className = "" }: { children: ReactNode; classN
 }
 
 export function PageTitle({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <h1 className={`type-heading text-[38px] leading-none font-bold sm:text-5xl ${className}`}>{children}</h1>;
+  return <h1 className={`type-heading text-[26px] leading-tight font-bold sm:text-[32px] ${className}`}>{children}</h1>;
 }
 
 export const pill =
@@ -91,3 +92,38 @@ export const pillOutline = `${pill} border-2 border-ink text-ink hover:bg-ink/5`
 
 export const input =
   "h-12 w-full rounded-full border border-[#D6D6D6] bg-white px-[18px] text-base outline-none focus:border-g-blue focus:ring-2 focus:ring-g-blue/25";
+
+/* ---------- stage game (dark) ---------- */
+
+/** Preset avatar: a geometric DevFest character. Falls back to initials. */
+export function GameAvatar({
+  avatar,
+  initials = "?",
+  size = 48,
+  className = "",
+}: {
+  avatar: string | null | undefined;
+  initials?: string;
+  size?: number;
+  className?: string;
+}) {
+  const a = avatarFor(avatar);
+  return (
+    <span aria-hidden className={`inline-flex shrink-0 overflow-hidden rounded-full ${className}`} style={{ width: size, height: size }}>
+      {a ? (
+        <AvatarArt spec={a} size={size} />
+      ) : (
+        <span className="flex size-full items-center justify-center bg-[#2A2A2A] font-bold text-white" style={{ fontSize: size * 0.34 }}>
+          {initials}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Chunky game button with a pressed-down feel. */
+export const gameBtn =
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-white px-7 text-base font-bold text-[#0A0A0A] transition-[transform,background-color] hover:bg-white/90 active:scale-[0.97] disabled:opacity-40 disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-h-yellow";
+export const gameBtnGhost =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 px-6 text-sm font-bold text-white transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-white";
+export const panel = "rounded-[24px] border border-white/[0.08] bg-[#121212]";

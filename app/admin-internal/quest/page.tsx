@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AdminChrome } from "@/components/admin/Chrome";
-import { CommunityImport, ReviewButton } from "@/components/admin/QuestForms";
+import QRCode from "qrcode";
+import { AddPartner, CommunityImport, RemovePartner, ReviewButton, RoundButton } from "@/components/admin/QuestForms";
+import { adminSiteUrl } from "@/lib/admin/site";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
-import { listReports, questStats } from "@/lib/quest/admin";
+import { listPartners, listReports, listRounds, questStats } from "@/lib/quest/admin";
 import { supabaseAuthEnabled } from "@/lib/quest/session";
 import { phase } from "@/lib/quest/time";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Agent Mode · Admin", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "DevFest Quest · Admin", robots: { index: false, follow: false } };
 
 const when = new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Lagos" });
 
@@ -27,7 +29,19 @@ export default async function QuestAdminPage() {
   const base = `/${adminPath()}`;
   const me = await currentAdmin();
   if (!me) redirect(base);
-  const [stats, reports] = await Promise.all([questStats(), listReports()]);
+  const [stats, reports, rounds, partnerRows, site] = await Promise.all([
+    questStats(),
+    listReports(),
+    listRounds(),
+    listPartners(),
+    adminSiteUrl(),
+  ]);
+  const partners = await Promise.all(
+    partnerRows.map(async (p) => {
+      const url = `${site}/quest/s/${p.code}`;
+      return { ...p, url, qr: await QRCode.toDataURL(url, { margin: 1, width: 600, errorCorrectionLevel: "M" }) };
+    }),
+  );
 
   const env = process.env;
   const setup = [
@@ -46,7 +60,7 @@ export default async function QuestAdminPage() {
 
   return (
     <AdminChrome base={base} user={me} active="quest">
-      <h1 className="text-2xl font-semibold tracking-tight">Agent Mode</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">DevFest Quest</h1>
       <p className="mt-1 text-sm text-zinc-500">
         Phase: <span className="font-medium text-ink">{phase() === "pre" ? "Before the event" : phase() === "event" ? "Event day" : "After the event"}</span>
         {env.QUEST_PHASE && <span className="text-yellow-700"> (forced by QUEST_PHASE)</span>}
@@ -63,6 +77,59 @@ export default async function QuestAdminPage() {
       </dl>
 
       <div className="mt-10 space-y-14">
+        <Section
+          title="Brain Blitz rounds"
+          sub="Stage 3. Open a round when you announce it; players get 60 seconds from the moment they tap Start, one attempt each. Close it when you're done to freeze the round leaderboard."
+        >
+          <ul className="divide-y divide-zinc-100 rounded-2xl border border-zinc-200/80">
+            {rounds.map((r) => {
+              const live = Boolean(r.opened_at) && !r.closed_at;
+              return (
+                <li key={r.round} className="flex flex-wrap items-center justify-between gap-4 px-4 py-3 text-sm">
+                  <span className="flex items-center gap-3">
+                    <span aria-hidden className={`size-2 rounded-full ${live ? "bg-emerald-500" : r.closed_at ? "bg-zinc-400" : "bg-zinc-200"}`} />
+                    <span className="font-medium">Round {r.round}</span>
+                    <span className="text-zinc-500">
+                      {live ? "Live" : r.closed_at ? `Closed ${when.format(new Date(r.closed_at))}` : "Not opened"} · {r.plays} played ·{" "}
+                      {r.questions} questions
+                    </span>
+                  </span>
+                  <span className="flex gap-2">
+                    {!live && <RoundButton round={r.round} op="open" label={r.closed_at ? "Reopen" : "Open round"} />}
+                    {live && <RoundButton round={r.round} op="close" label="Close round" />}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </Section>
+
+        <Section
+          title="Partners"
+          sub="Stage 4. Add each partner, then print their QR and give it to the people at their stand. Players scan it after asking about the partner. Remove only works before anyone has scanned."
+        >
+          <AddPartner />
+          {partners.length > 0 && (
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {partners.map((p) => (
+                <li key={p.id} className="flex gap-4 rounded-2xl border border-zinc-200/80 p-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
+                  <img src={p.qr} alt={`QR for ${p.name}`} className="size-24 shrink-0 rounded-lg border border-zinc-100" />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1 text-sm">
+                    <span className="truncate font-medium">{p.name}</span>
+                    <span className="text-zinc-500">{p.scans} scans</span>
+                    <a href={p.qr} download={`partner-${p.name.replace(/\W+/g, "-").toLowerCase()}.png`} className="text-xs font-medium text-ink underline">
+                      Download QR
+                    </a>
+                    <span className="truncate text-xs text-zinc-400">{p.url}</span>
+                  </div>
+                  <RemovePartner id={p.id} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
+
         <Section title="Connections" sub="What's configured on this server. Missing items are set as environment variables, then redeploy.">
           <ul className="divide-y divide-zinc-100 rounded-2xl border border-zinc-200/80">
             {setup.map((s) => (
@@ -84,7 +151,7 @@ export default async function QuestAdminPage() {
           <CommunityImport />
         </Section>
 
-        <Section title="Reports" sub="Agents reported from the Crew screen. Both people are already hidden from each other; check each report at least twice a day.">
+        <Section title="Reports" sub="Players reported from the Crew screen. Both people are already hidden from each other; check each report at least twice a day.">
           {reports.length === 0 ? (
             <p className="rounded-2xl border border-zinc-200/80 px-5 py-10 text-center text-sm text-zinc-500">No reports.</p>
           ) : (

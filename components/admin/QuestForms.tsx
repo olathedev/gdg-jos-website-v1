@@ -3,7 +3,13 @@
 import { Loading03Icon, Upload04Icon } from "@hugeicons/core-free-icons";
 import { useActionState } from "react";
 import type { ActionState } from "@/app/admin-internal/actions";
-import { communityImportAction, reviewReportAction } from "@/app/admin-internal/quest/actions";
+import {
+  addPartnerAction,
+  communityImportAction,
+  removePartnerAction,
+  reviewReportAction,
+  roundAction,
+} from "@/app/admin-internal/quest/actions";
 import Icon from "./Icon";
 
 export function CommunityImport() {
@@ -62,6 +68,66 @@ export function ReviewButton({ blocker, blocked }: { blocker: string; blocked: s
       >
         {state?.ok ? "Reviewed" : "Mark reviewed"}
       </button>
+    </form>
+  );
+}
+
+export function RoundButton({ round, op, label }: { round: number; op: "open" | "close"; label: string }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(roundAction, null);
+  return (
+    <form action={action} className="flex items-center gap-2">
+      <input type="hidden" name="round" value={round} />
+      <input type="hidden" name="op" value={op} />
+      <button
+        type="submit"
+        disabled={pending}
+        className={`inline-flex h-9 items-center rounded-full px-4 text-sm font-medium disabled:opacity-60 ${
+          op === "open" ? "bg-ink text-white hover:bg-ink/85" : "border border-zinc-200 bg-white hover:bg-zinc-50"
+        }`}
+      >
+        {pending ? "…" : label}
+      </button>
+      {state && !state.ok && <span className="text-xs text-rose-600">{state.message}</span>}
+    </form>
+  );
+}
+
+export function AddPartner() {
+  const [state, action, pending] = useActionState<ActionState, FormData>(addPartnerAction, null);
+  return (
+    <form action={action} className="flex max-w-xl flex-wrap items-center gap-3">
+      <input
+        name="name"
+        required
+        maxLength={60}
+        placeholder="Partner name"
+        className="h-10 min-w-0 flex-1 rounded-full border border-zinc-200 bg-white px-4 text-sm outline-none hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
+      />
+      <button
+        type="submit"
+        disabled={pending}
+        className="inline-flex h-10 items-center rounded-full bg-ink px-5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-60"
+      >
+        Add partner
+      </button>
+      {state && (
+        <span role="status" className={`w-full text-sm ${state.ok ? "text-emerald-600" : "text-rose-600"}`}>
+          {state.message}
+        </span>
+      )}
+    </form>
+  );
+}
+
+export function RemovePartner({ id }: { id: string }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(removePartnerAction, null);
+  return (
+    <form action={action} className="flex flex-col items-end gap-1">
+      <input type="hidden" name="id" value={id} />
+      <button type="submit" disabled={pending} className="text-xs font-medium text-zinc-500 hover:text-rose-600 disabled:opacity-60">
+        Remove
+      </button>
+      {state && !state.ok && <span className="max-w-40 text-right text-xs text-rose-600">{state.message}</span>}
     </form>
   );
 }

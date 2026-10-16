@@ -1,4 +1,4 @@
-// Agent Mode + Level Up game rules. All values are PROPOSED in the developer guide;
+// DevFest Quest + Level Up game rules. All values are PROPOSED in the developer guide;
 // tune them here.
 
 /** Event day in Africa/Lagos (WAT). Phase 2 features switch on for this date. */
@@ -15,13 +15,52 @@ export const POINTS = {
   community: 15,
   xPost: 5,
   checkin: 20,
-  meet: 15,
+  /** Squad up: each person you lock in. */
+  meet: 20,
   room: 5,
-  booth: 5,
+  /** Partners: each partner stand you scan. */
+  booth: 25,
   recap: 10,
   invite: 20,
   mission: 25,
+  /** Quiz rounds: each correct answer. */
+  roundAnswer: 10,
 } as const;
+
+/** The four stages, in unlock order. */
+export const STAGES = [
+  { id: "socials", num: 1, title: "Follow the Signal", short: "Socials", blurb: "Follow GDG Jos on every platform.", color: "#4285F4" },
+  { id: "squad", num: 2, title: "Squad Up", short: "Squad", blurb: "Meet people. Prove you know them. Scan to lock in.", color: "#EA4335" },
+  { id: "quiz", num: 3, title: "Brain Blitz", short: "Quiz", blurb: "10 questions. 60 seconds. 3 rounds.", color: "#F9AB00" },
+  { id: "partners", num: 4, title: "Partner Link-up", short: "Partners", blurb: "Visit 3 partner stands and scan their code.", color: "#34A853" },
+] as const;
+
+export type StageId = (typeof STAGES)[number]["id"];
+
+/** People to lock in before Brain Blitz unlocks. Every one after that still scores. */
+export const SQUAD_GOAL = 3;
+export const PARTNER_GOAL = 3;
+export const ROUND_SECONDS = 60;
+export const ROUND_QUESTIONS = 10;
+/** Seconds to wait after a wrong guess about someone before trying again. */
+export const SQUAD_RETRY_SECONDS = 30;
+
+/** Preset avatars: geometric DevFest characters (see AvatarArt). The id is stored on the profile. */
+const AV_COLORS = ["#4285F4", "#EA4335", "#F9AB00", "#34A853"] as const;
+const AV_HEADS = ["round", "square", "hex", "dome"] as const;
+const AV_EYES = ["dots", "visor", "code", "wink"] as const;
+export const AVATARS = Array.from({ length: 16 }, (_, i) => {
+  const row = Math.floor(i / 4);
+  return {
+    id: `a${i + 1}`,
+    head: AV_HEADS[i % 4],
+    eyes: AV_EYES[row],
+    bg: AV_COLORS[(i + row) % 4],
+    accent: AV_COLORS[(i + row + 2) % 4],
+  };
+});
+
+export const avatarFor = (id: string | null | undefined) => AVATARS.find((a) => a.id === id) ?? null;
 
 export const LIMITS = {
   xPostsPerDay: 3,

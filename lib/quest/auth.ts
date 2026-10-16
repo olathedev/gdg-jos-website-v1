@@ -18,10 +18,10 @@ export async function requireMe() {
   return me;
 }
 
-/** Signed in and finished "Build your agent". */
+/** Signed in with a finished player card: avatar and fun fact are needed for Squad Up. */
 export async function requireAgent() {
   const me = await requireMe();
-  if (!me.onboarded_at) redirect("/quest/setup");
+  if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/setup");
   return me;
 }
 

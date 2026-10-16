@@ -23,6 +23,7 @@ export type BoardRow = {
   name: string;
   initials: string;
   stack: string[];
+  avatar: string | null;
   score: number;
 };
 
@@ -40,7 +41,7 @@ export async function leaderboard(): Promise<Board> {
   if (hit && hit.phase === p && Date.now() - hit.at < BOARD_TTL) return hit;
 
   const capped = p === "pre";
-  const rows = await db()<{ id: string; full_name: string; is_adult: boolean; stack: string[]; score: number }[]>`
+  const rows = await db()<{ id: string; full_name: string; is_adult: boolean; stack: string[]; avatar: string | null; score: number }[]>`
     with t as (
       select user_id, at, sum(points) over (partition by user_id order by at, id) as cum
       from quest_points
@@ -50,7 +51,7 @@ export async function leaderboard(): Promise<Board> {
              case when ${capped} then least(max(cum), ${PRE_EVENT_CAP}) else max(cum) end as score
       from t group by user_id
     )
-    select p.id, p.full_name, p.is_adult, p.stack, s.score::int as score
+    select p.id, p.full_name, p.is_adult, p.stack, p.avatar, s.score::int as score
     from s
     join quest_profiles p on p.id = s.user_id
     where s.score > 0
@@ -63,6 +64,7 @@ export async function leaderboard(): Promise<Board> {
     name: displayName(r.full_name, r.is_adult),
     initials: initials(r.is_adult ? r.full_name : displayName(r.full_name, false)),
     stack: r.stack,
+    avatar: r.avatar,
     score: r.score,
   }));
   const board = { at: Date.now(), phase: p, rows: list, byId: new Map(list.map((r) => [r.id, r])) };

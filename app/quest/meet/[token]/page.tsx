@@ -1,56 +1,65 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import MeetConfirm from "@/components/quest/MeetConfirm";
-import { Avatar, Logo, StackTag } from "@/components/quest/ui";
+import { StageBadge } from "@/components/quest/icons";
+import SquadQuiz from "@/components/quest/SquadQuiz";
+import { GameAvatar, gameBtn } from "@/components/quest/ui";
 import { getMe } from "@/lib/quest/auth";
 import { POINTS } from "@/lib/quest/config";
-import { agentByToken, hasMet } from "@/lib/quest/game";
-import { phase } from "@/lib/quest/time";
-import { displayName, initials } from "@/lib/quest/validate";
+import { agentByToken } from "@/lib/quest/game";
+import { squadView } from "@/lib/quest/stages";
 
-export const metadata = { title: "Meet an agent", robots: { index: false } };
+export const metadata = { title: "Squad Up", robots: { index: false } };
 
-/** Opened by scanning someone's Agent QR with the phone camera. */
+function Message({ mark, title, text }: { mark: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-4 py-10 text-center">
+      <span aria-hidden>{mark}</span>
+      <h1 className="type-heading text-2xl font-bold">{title}</h1>
+      <p className="max-w-xs text-sm text-white/65">{text}</p>
+      <Link href="/quest/home" className={gameBtn}>
+        Back to the map
+      </Link>
+    </div>
+  );
+}
+
+/** Opened by scanning someone's Quest QR with the phone camera. */
 export default async function Meet({ params }: PageProps<"/quest/meet/[token]">) {
   const { token } = await params;
   if (!/^[A-Za-z0-9_-]{16,40}$/.test(token)) notFound();
   const me = await getMe();
   if (!me) redirect(`/quest?next=${encodeURIComponent(`/quest/meet/${token}`)}`);
-  if (!me.onboarded_at) redirect("/quest/setup");
+  if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/setup");
 
   const other = await agentByToken(token);
   if (!other) notFound();
-  const name = displayName(other.full_name, other.is_adult);
-  const self = other.id === me.id;
-  const met = !self && (await hasMet(me.id, other.id));
+  const view = await squadView(me, other);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 px-5 pt-5 pb-10">
-      <Logo />
-      <div className="flex flex-col items-center gap-3 rounded-[28px_72px_28px_28px] bg-white p-7 text-center">
-        <Avatar id={other.id} initials={initials(other.is_adult ? other.full_name : name)} size={72} />
-        <h1 className="type-heading text-3xl font-bold">{name}</h1>
-        {other.stack.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-1">
-            {other.stack.map((s) => (
-              <StackTag key={s} label={s} />
-            ))}
-          </div>
-        )}
-      </div>
-      {self ? (
-        <p className="rounded-3xl bg-p-yellow px-5 py-4 text-center text-[15px]">
-          That&apos;s your own code. Show it to another agent so they can scan it.
-        </p>
-      ) : phase() !== "event" ? (
-        <p className="rounded-3xl bg-p-blue px-5 py-4 text-center text-[15px]">
-          Meeting in person scores on 17 Oct at the venue. Scan {name} again then for +{POINTS.meet} each.
-        </p>
-      ) : met ? (
-        <p className="rounded-3xl bg-p-green px-5 py-4 text-center text-[15px] font-semibold">
-          You and {name} already met. Each pair scores once.
-        </p>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 px-4 pt-4 pb-12">
+      {view.kind === "self" ? (
+        <Message mark={<GameAvatar avatar={me.avatar} size={84} />} title="That's you!" text="Show your QR to other players so they can scan it." />
+      ) : view.kind === "locked" ? (
+        <Message mark={<StageBadge id="squad" color="#EA4335" size={80} locked />} title="Not yet" text={view.message} />
+      ) : view.kind === "blocked" ? (
+        <Message mark={<StageBadge id="squad" color="#EA4335" size={80} locked />} title="Can't lock in" text="You can't lock in this player." />
+      ) : view.kind === "done" ? (
+        <Message mark={<GameAvatar avatar={other.avatar} size={84} />} title="Already in your squad" text="Each player locks in once. Go find someone new." />
       ) : (
-        <MeetConfirm token={token} name={name} />
+        <SquadQuiz
+          token={token}
+          avatar={other.avatar}
+          questions={view.questions}
+          retryIn={view.retryIn}
+          header={
+            <div className="flex flex-col items-center gap-2 pt-2 text-center">
+              <span className="text-[11px] font-bold tracking-[0.2em] text-g-red">STAGE 2 · SQUAD UP</span>
+              <GameAvatar avatar={other.avatar} size={96} className="quest-pop shadow-[0_6px_0_rgb(0_0_0/0.35)]" />
+              <h1 className="type-heading text-2xl font-bold">Who&apos;s this player?</h1>
+              <p className="max-w-xs text-sm text-white/65">Get all 3 right to lock them into your squad for +{POINTS.meet}. Not sure? Ask them.</p>
+            </div>
+          }
+        />
       )}
     </main>
   );

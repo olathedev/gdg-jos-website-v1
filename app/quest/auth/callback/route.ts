@@ -24,8 +24,8 @@ export async function GET(req: Request) {
 
   const id = await upsertAuthUser(user.id, user.email, user.name, state.ref);
   await createSession(id);
-  const checkedIn = await completePendingCheckin(id);
+  await completePendingCheckin(id);
   const me = await getProfile(id);
-  const dest = !me?.onboarded_at ? "/quest/setup" : checkedIn ? "/quest/event" : (state.next ?? "/quest/home");
+  const dest = !me?.onboarded_at ? "/quest/setup" : (state.next ?? "/quest/home");
   return NextResponse.redirect(`${base}${dest}`);
 }

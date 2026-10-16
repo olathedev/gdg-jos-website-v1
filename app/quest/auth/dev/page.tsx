@@ -10,7 +10,7 @@ export default async function DevLogin({ searchParams }: PageProps<"/quest/auth/
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-6 px-6">
       <Logo />
-      <h1 className="type-heading text-3xl font-bold">Dev sign-in</h1>
+      <h1 className="type-heading text-2xl font-bold">Dev sign-in</h1>
       <p className="text-sm text-ink/70">Google sign-in isn&apos;t configured. This page only exists in development.</p>
       <form action={devLoginAction} className="flex flex-col gap-3">
         <input type="hidden" name="ref" value={String(sp.ref ?? "")} />

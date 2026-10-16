@@ -4,7 +4,7 @@ import { recheckXPosts, syncXPosts } from "@/lib/quest/x";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-// Background jobs for Agent Mode, called by a scheduler with
+// Background jobs for DevFest Quest, called by a scheduler with
 //   Authorization: Bearer <CRON_SECRET>
 //   GET /api/quest/cron?job=x        every 15 minutes (search + queued links)
 //   GET /api/quest/cron?job=recheck  once a day (deleted posts lose points)

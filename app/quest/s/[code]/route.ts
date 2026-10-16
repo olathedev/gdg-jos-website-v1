@@ -14,9 +14,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ code: st
 
   try {
     const res = await scanStation(me.id, code);
-    return NextResponse.redirect(`${base}/quest/event?r=${res.fresh ? res.kind : "again"}`);
+    const page = res.kind === "booth" ? "stage/partners" : "event";
+    return NextResponse.redirect(`${base}/quest/${page}?r=${res.fresh ? res.kind : "again"}${res.kind === "booth" ? `&n=${encodeURIComponent(res.name)}` : ""}`);
   } catch (e) {
-    if (e instanceof GameError) return NextResponse.redirect(`${base}/quest/event?r=${e.code ?? "unknown"}`);
+    if (e instanceof GameError) {
+      const page = e.code === "locked" ? "stage/partners" : "event";
+      return NextResponse.redirect(`${base}/quest/${page}?r=${e.code ?? "unknown"}`);
+    }
     throw e;
   }
 }

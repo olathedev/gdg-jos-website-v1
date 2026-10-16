@@ -28,7 +28,7 @@ export function AdminChrome({ base, user, active, children }: { base: string; us
   const tabs = [
     { id: "sales", label: "Sales", href: base },
     { id: "mail", label: "Mail", href: `${base}/mail` },
-    { id: "quest", label: "Agent Mode", href: `${base}/quest` },
+    { id: "quest", label: "DevFest Quest", href: `${base}/quest` },
     { id: "team", label: "Team", href: `${base}/team` },
   ] as const;
   return (

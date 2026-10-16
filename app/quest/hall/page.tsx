@@ -28,10 +28,10 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
       <div className="relative flex min-w-0 flex-col gap-[2.5vh]">
         <div className="flex items-center gap-3 text-2xl">
           <Logo dark className="[&>span:first-child]:text-2xl" />
-          <span className="ml-2 text-base font-bold tracking-wide text-h-blue">AGENT MODE</span>
+          <span className="ml-2 text-base font-bold tracking-wide text-h-blue">DEVFEST QUEST</span>
         </div>
         <h1 className="type-heading text-[clamp(40px,4.5vw,72px)] leading-none font-bold">
-          Top agents <span className="text-h-yellow">right now</span>
+          Top players <span className="text-h-yellow">right now</span>
         </h1>
         {top.length ? (
           <ol className="grid grid-cols-2 gap-x-7">
@@ -51,7 +51,7 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
             ))}
           </ol>
         ) : (
-          <p className="text-2xl text-[#BDBDBD]">The board fills up as agents score. Check in to be first.</p>
+          <p className="text-2xl text-[#BDBDBD]">The board fills up as players score. Check in to be first.</p>
         )}
         <p className="mt-auto self-start rounded-full bg-[#2A2A2A] px-[18px] py-2.5 text-[17px] text-[#E0E0E0]">
           Meet people: +{POINTS.meet} per scan · Scan room doors: +{POINTS.room} · Recap quizzes after each talk

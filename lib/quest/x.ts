@@ -93,7 +93,7 @@ export async function submitXPost(me: Profile, postId: string, handle: string) {
   const sql = db();
   const [existing] = await sql<{ user_id: string; status: string }[]>`
     select user_id, status from quest_x_posts where post_id = ${postId}`;
-  if (existing && existing.user_id !== me.id) throw new GameError("That post is linked to another agent.");
+  if (existing && existing.user_id !== me.id) throw new GameError("That post is linked to another player.");
   if (existing?.status === "counted") throw new GameError("Already counted.");
   if (existing?.status === "rejected" || existing?.status === "removed") throw new GameError("That post didn't qualify.");
 

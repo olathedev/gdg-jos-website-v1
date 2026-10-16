@@ -1,10 +1,11 @@
 import "server-only";
+import { randomBytes } from "node:crypto";
 import { db } from "@/lib/tickets/db";
 import { POINTS } from "./config";
 import { award, invalidateBoard } from "./points";
 import { displayName } from "./validate";
 
-// Organiser tools for Agent Mode (admin area only).
+// Organiser tools for DevFest Quest (admin area only).
 
 /**
  * GDG Community has no API: organisers export the GDG Jos member list as CSV and upload it.
@@ -68,4 +69,40 @@ export async function listReports() {
 
 export async function markReportReviewed(blocker: string, blocked: string) {
   await db()`update quest_blocks set status = 'reviewed' where blocker = ${blocker} and blocked = ${blocked} and reported`;
+}
+
+/* ---------- stage game: quiz rounds and partners ---------- */
+
+export async function listRounds() {
+  return db()<{ round: number; opened_at: Date | null; closed_at: Date | null; plays: number; questions: number }[]>`
+    select r.round, r.opened_at, r.closed_at,
+           (select count(*)::int from quest_round_plays p where p.round = r.round) as plays,
+           (select count(*)::int from quest_quiz_items i where i.quiz_round = r.round) as questions
+    from quest_rounds r order by r.round`;
+}
+
+/** open: starts now (reopening clears the close). close: ends now. */
+export async function setRound(round: number, op: "open" | "close") {
+  if (op === "open") await db()`update quest_rounds set opened_at = coalesce(opened_at, now()), closed_at = null where round = ${round}`;
+  else await db()`update quest_rounds set closed_at = now() where round = ${round} and opened_at is not null`;
+}
+
+export async function listPartners() {
+  return db()<{ id: string; name: string; code: string; scans: number }[]>`
+    select s.id, s.name, s.code, (select count(*)::int from quest_station_scans x where x.station_id = s.id) as scans
+    from quest_stations s where s.kind = 'booth' order by s.name`;
+}
+
+export async function addPartner(name: string) {
+  const code = `p-${randomBytes(6).toString("base64url")}`;
+  await db()`insert into quest_stations (kind, name, code) values ('booth', ${name}, ${code})`;
+}
+
+/** Only partners nobody has scanned yet can be removed, so nobody loses points. */
+export async function removePartner(id: string) {
+  const rows = await db()`
+    delete from quest_stations s where s.id = ${id} and s.kind = 'booth'
+      and not exists (select 1 from quest_station_scans x where x.station_id = s.id)
+    returning id`;
+  return rows.length > 0;
 }

@@ -4,7 +4,7 @@ import { FOLLOWS, LIMITS, POINTS } from "./config";
 import { award, invalidateBoard } from "./points";
 import { randomToken } from "./session";
 import { eventDate, lagosToday, phase } from "./time";
-import { displayName, initials, links, type ProfileInput } from "./validate";
+import { displayName, initials, links, type PlayerInput, type ProfileInput } from "./validate";
 
 // Every game rule lives here, on the server. Browsers send choices; this decides.
 
@@ -33,6 +33,8 @@ export type Profile = {
   quest_token: string;
   invite_code: string;
   onboarded_at: Date | null;
+  avatar: string | null;
+  fun_fact: string | null;
 };
 
 const order = (a: string, b: string) => (a < b ? [a, b] : [b, a]);
@@ -42,7 +44,7 @@ const order = (a: string, b: string) => (a < b ? [a, b] : [b, a]);
 export async function getProfile(id: string) {
   const [p] = await db()<Profile[]>`
     select id, email, full_name, stack, github, linkedin, x_handle, instagram, whatsapp,
-           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at
+           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at, avatar, fun_fact
     from quest_profiles where id = ${id}`;
   return p ?? null;
 }
@@ -84,10 +86,28 @@ export async function saveProfile(userId: string, input: ProfileInput) {
     if (!row) throw new GameError("Your session has ended. Sign in again.");
   } catch (e) {
     if (e instanceof Error && "code" in e && e.code === "23505") {
-      throw new GameError("That X handle is already linked to another agent.");
+      throw new GameError("That X handle is already linked to another player.");
     }
     throw e;
   }
+  if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
+}
+
+/** Onboarding for the stage game. Leaves socials and directory settings as they are. */
+export async function savePlayer(userId: string, input: PlayerInput) {
+  const sql = db();
+  const [row] = await sql`
+    update quest_profiles set
+      full_name = ${input.full_name},
+      avatar = ${input.avatar},
+      stack = ${input.stack},
+      fun_fact = ${input.fun_fact},
+      is_adult = ${input.is_adult},
+      listed = listed and ${input.is_adult},
+      onboarded_at = coalesce(onboarded_at, now())
+    where id = ${userId}
+    returning id`;
+  if (!row) throw new GameError("Your session has ended. Sign in again.");
   if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
 }
 
@@ -155,13 +175,13 @@ export async function directory(me: string) {
 /* ---------- connections ---------- */
 
 export async function requestConnection(me: Profile, otherId: string) {
-  if (!me.is_adult) throw new GameError("Connections are for agents 18 and over.");
+  if (!me.is_adult) throw new GameError("Connections are for players 18 and over.");
   if (otherId === me.id) throw new GameError("That's you.");
   const sql = db();
   const [other] = await sql`
     select p.id from quest_profiles p
     where p.id = ${otherId} and p.listed and p.is_adult and p.onboarded_at is not null ${notBlocked(me.id)}`;
-  if (!other) throw new GameError("That agent isn't available.");
+  if (!other) throw new GameError("That player isn't available.");
   const [{ n }] = await sql<{ n: number }[]>`
     select count(*)::int as n from quest_connections
     where requester = ${me.id} and created_at > now() - interval '1 hour'`;
@@ -470,7 +490,7 @@ export async function checkIn(userId: string) {
 
 export async function agentByToken(token: string) {
   const [p] = await db()<Profile[]>`
-    select id, full_name, stack, is_adult from quest_profiles where quest_token = ${token} and onboarded_at is not null`;
+    select id, full_name, stack, is_adult, avatar, fun_fact from quest_profiles where quest_token = ${token} and onboarded_at is not null`;
   return p ?? null;
 }
 
@@ -483,13 +503,13 @@ export async function hasMet(a: string, b: string) {
 export async function meet(me: Profile, token: string) {
   requireEventDay();
   const other = await agentByToken(token);
-  if (!other) throw new GameError("That QR isn't an agent code.");
+  if (!other) throw new GameError("That QR isn't a DevFest Quest code.");
   if (other.id === me.id) throw new GameError("That's your own code. Scan someone else's.");
   const sql = db();
   const [blocked] = await sql`
     select 1 from quest_blocks
     where (blocker = ${me.id} and blocked = ${other.id}) or (blocker = ${other.id} and blocked = ${me.id})`;
-  if (blocked) throw new GameError("You can't meet this agent.");
+  if (blocked) throw new GameError("You can't meet this player.");
   const day = eventDate();
   const [{ both }] = await sql<{ both: number }[]>`
     select count(*)::int as both from quest_checkins where day = ${day} and user_id in (${me.id}, ${other.id})`;
@@ -497,7 +517,7 @@ export async function meet(me: Profile, token: string) {
   const [{ recent }] = await sql<{ recent: number }[]>`
     select count(*)::int as recent from quest_meets
     where (user_a = ${me.id} or user_b = ${me.id}) and at > now() - interval '1 hour'`;
-  if (recent >= LIMITS.meetsPerHour) throw new GameError("Slow down, agent. Try again in a few minutes.");
+  if (recent >= LIMITS.meetsPerHour) throw new GameError("Slow down. Try again in a few minutes.");
 
   const [a, b] = order(me.id, other.id);
   const fresh = await sql.begin(async (tx) => {
@@ -524,14 +544,20 @@ export async function meet(me: Profile, token: string) {
 }
 
 export async function scanStation(userId: string, code: string) {
-  requireEventDay();
   const sql = db();
   const [s] = await sql<{ id: string; kind: "room" | "booth"; name: string; open: boolean }[]>`
     select id, kind, name,
            (coalesce(opens_at <= now(), true) and coalesce(closes_at > now(), true)) as open
     from quest_stations where code = ${code}`;
   if (!s) throw new GameError("That code isn't a DevFest station.", "unknown");
-  if (!(await checkedInAt(userId))) throw new GameError("Check in at the entrance screen first.", "notin");
+  if (s.kind === "booth") {
+    // Partner stands are Stage 4 of the game: gated by the stage, not by check-in.
+    const { requireStage } = await import("./stages");
+    await requireStage(userId, "partners");
+  } else {
+    requireEventDay();
+    if (!(await checkedInAt(userId))) throw new GameError("Check in at the entrance screen first.", "notin");
+  }
   if (!s.open) {
     throw new GameError(s.kind === "room" ? "This room's code only works during its session." : "This booth is closed.", "closed");
   }

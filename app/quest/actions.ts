@@ -14,10 +14,12 @@ import {
   requestConnection,
   respondConnection,
   saveProfile,
+  savePlayer,
   upsertAuthUser,
 } from "@/lib/quest/game";
+import { answerRound, finishRound, lockIn, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
-import { profileSchema, xPostId } from "@/lib/quest/validate";
+import { playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
 import { submitXPost } from "@/lib/quest/x";
 
 export type Result = { ok: boolean; message: string } | null;
@@ -88,6 +90,75 @@ export async function saveProfileAction(_: Result, form: FormData): Promise<Resu
   revalidatePath("/quest", "layout");
   if (!me.onboarded_at) redirect("/quest/missions?welcome=1");
   return { ok: true, message: "Saved." };
+}
+
+/** Onboarding for the stage game: avatar, name, stack, fun fact. */
+export async function savePlayerAction(_: Result, form: FormData): Promise<Result> {
+  const me = await getMe();
+  if (!me) redirect("/quest");
+  const parsed = playerSchema.safeParse({
+    full_name: String(form.get("full_name") ?? ""),
+    avatar: String(form.get("avatar") ?? ""),
+    stack: form.getAll("stack").map(String),
+    fun_fact: String(form.get("fun_fact") ?? ""),
+    is_adult: form.get("is_adult") === "on",
+  });
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check your details." };
+  await savePlayer(me.id, parsed.data);
+  revalidatePath("/quest", "layout");
+  if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/home?welcome=1");
+  return { ok: true, message: "Saved." };
+}
+
+/* ---------- stages ---------- */
+
+const token = z.string().regex(/^[A-Za-z0-9_-]{16,40}$/);
+const round = z.number().int().min(1).max(3);
+
+/** Squad Up: answers about the person whose QR you scanned. */
+export async function lockInAction(qrToken: string, answers: { name: string; stack: string; fact: string }) {
+  try {
+    const me = await agent();
+    const res = await lockIn(me, token.parse(qrToken), {
+      name: String(answers.name ?? ""),
+      stack: String(answers.stack ?? ""),
+      fact: String(answers.fact ?? ""),
+    });
+    revalidatePath("/quest", "layout");
+    return { ok: true as const, ...res };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false as const, message: e.message, code: e.code };
+    console.error("[quest]", e);
+    return { ok: false as const, message: "Something went wrong. Try again." };
+  }
+}
+
+export async function startRoundAction(r: number) {
+  try {
+    const me = await agent();
+    return { ok: true as const, view: await startRound(me.id, round.parse(r)) };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false as const, message: e.message };
+    console.error("[quest]", e);
+    return { ok: false as const, message: "Something went wrong. Try again." };
+  }
+}
+
+export async function answerRoundAction(r: number, itemId: string, choice: number) {
+  try {
+    const me = await agent();
+    return { ok: true as const, ...(await answerRound(me.id, round.parse(r), uuid.parse(itemId), choice)) };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false as const, message: e.message, code: e.code };
+    console.error("[quest]", e);
+    return { ok: false as const, message: "Something went wrong." };
+  }
+}
+
+export async function finishRoundAction(r: number) {
+  const me = await agent();
+  await finishRound(me.id, round.parse(r));
+  revalidatePath("/quest", "layout");
 }
 
 /* ---------- people ---------- */
@@ -163,7 +234,7 @@ export async function xPostAction(_: Result, form: FormData): Promise<Result> {
 export async function meetAction(token: string) {
   try {
     const me = await agent();
-    if (!/^[A-Za-z0-9_-]{16,40}$/.test(token)) throw new GameError("That QR isn't an agent code.");
+    if (!/^[A-Za-z0-9_-]{16,40}$/.test(token)) throw new GameError("That QR isn't a DevFest Quest code.");
     // No revalidate here: it would re-render this page as "already met" over the result.
     const res = await meet(me, token);
     return { ok: true as const, ...res };

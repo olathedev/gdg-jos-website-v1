@@ -1,6 +1,6 @@
-import Link from "next/link";
 import AutoRefresh from "@/components/quest/AutoRefresh";
-import { Avatar } from "@/components/quest/ui";
+import { PodiumGlyph } from "@/components/quest/icons";
+import { GameAvatar, panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { PRE_EVENT_CAP } from "@/lib/quest/config";
 import { leaderboard, myScore, type BoardRow } from "@/lib/quest/points";
@@ -8,26 +8,35 @@ import { phase } from "@/lib/quest/time";
 
 export const metadata = { title: "Leaderboard" };
 
+// Podium order on screen: 2nd, 1st, 3rd.
 const podium = [
-  { place: 1, bg: "bg-p-blue", h: "h-20" },
-  { place: 0, bg: "bg-h-yellow", h: "h-28" },
-  { place: 2, bg: "bg-p-red", h: "h-14" },
+  { place: 2, h: "h-20", color: "#BDC1C6" },
+  { place: 1, h: "h-28", color: "#F9AB00" },
+  { place: 3, h: "h-14", color: "#E8A87C" },
 ];
 
-function Step({ row, bg, h, rank }: { row?: BoardRow; bg: string; h: string; rank: number }) {
+function Step({ row, place, h, color }: { row?: BoardRow; place: number; h: string; color: string }) {
   return (
     <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
       {row ? (
         <>
-          <Avatar id={row.id} initials={row.initials} size={rank === 1 ? 56 : 46} className="border-[3px] border-white" />
+          <GameAvatar
+            avatar={row.avatar}
+            initials={row.initials}
+            size={place === 1 ? 64 : 52}
+            className={place === 1 ? "quest-float" : ""}
+          />
           <span className="max-w-full truncate text-sm font-bold">{row.name}</span>
         </>
       ) : (
-        <span className="text-sm text-[#5F5F5F]">Open</span>
+        <span className="pb-2 text-sm text-white/30">Open</span>
       )}
-      <div className={`flex w-full flex-col items-center justify-start gap-0.5 rounded-t-3xl pt-2.5 ${bg} ${h}`}>
-        <span className="type-heading text-2xl font-bold">{rank}</span>
-        {row && <span className="text-xs font-bold">{row.score} pts</span>}
+      <div
+        className={`flex w-full flex-col items-center justify-start gap-0.5 rounded-t-2xl pt-2 text-ink ${h}`}
+        style={{ background: row ? color : "rgb(255 255 255 / 0.06)" }}
+      >
+        <span className="type-heading text-xl font-bold">{place}</span>
+        {row && <span className="text-xs font-black tabular-nums">{row.score}</span>}
       </div>
     </div>
   );
@@ -39,58 +48,47 @@ export default async function Board() {
   const rows = board.rows;
   const you = board.byId.get(me.id);
   const rest = rows.slice(3, 50);
-  const pre = phase() === "pre";
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-10">
+    <div className="flex flex-col gap-6 pt-2">
       <AutoRefresh seconds={30} />
-      <div className="flex flex-col gap-4">
-        <h1 className="type-heading text-[38px] leading-none font-bold lg:text-5xl">
-          Top <span className="text-g-yellow">agents</span>
-        </h1>
-        <p className="text-sm leading-normal text-[#5F5F5F]">
-          Updated every 30 seconds.{" "}
-          {pre ? `Before 17 Oct points stop at ${PRE_EVENT_CAP}; ties go to whoever got there first.` : "Ties go to whoever got there first."}
+      <header className="flex flex-col items-center gap-1 text-center">
+        <span aria-hidden className="mb-1 flex size-14 items-center justify-center rounded-full bg-h-yellow text-[#0A0A0A]">
+          <PodiumGlyph size={28} />
+        </span>
+        <h1 className="type-heading text-[28px] font-bold">Leaderboard</h1>
+        <p className="text-xs text-white/50">
+          {phase() === "pre" ? `Before 17 Oct scores stop at ${PRE_EVENT_CAP}. ` : ""}Ties go to whoever got there first.
         </p>
-        <div className="flex items-end gap-2 rounded-3xl bg-white px-4 pt-5">
-          {podium.map((p) => (
-            <Step key={p.place} row={rows[p.place]} bg={p.bg} h={p.h} rank={p.place + 1} />
-          ))}
-        </div>
-        <div className="flex items-center gap-3 rounded-3xl bg-ink px-5 py-4 text-white lg:sticky lg:top-10">
-          <span className="type-heading text-3xl font-bold text-h-yellow">{you ? `#${you.rank}` : "–"}</span>
-          <span className="flex-1 text-[15px] font-semibold">You · {mine.score} points</span>
-          <Link href="/quest/level-up" className="flex min-h-10 items-center rounded-full bg-white px-4 text-sm font-bold text-ink">
-            Earn more
-          </Link>
-        </div>
-        <p className="text-[12.5px] leading-normal text-[#5F5F5F]">
-          Winners show their ticket on stage to collect prizes. Under-18 agents appear by first name only.
-        </p>
+      </header>
+
+      <div className="flex items-end gap-2">
+        {podium.map((p) => (
+          <Step key={p.place} row={rows[p.place - 1]} {...p} />
+        ))}
       </div>
 
-      {rest.length > 0 ? (
-        <ol start={4} className="self-start rounded-3xl bg-white px-[18px] py-1.5">
-          {rest.map((r, i) => (
-            <li
-              key={r.id}
-              className={`flex items-center gap-2.5 py-[11px] ${i ? "border-t border-[#EDEDED]" : ""} ${r.id === me.id ? "-mx-2 rounded-2xl bg-p-yellow px-2" : ""}`}
-            >
-              <span className="w-7 shrink-0 text-center text-[15px] font-bold text-[#5F5F5F]">{r.rank}</span>
-              <Avatar id={r.id} initials={r.initials} size={36} />
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-[15px] font-bold">{r.name}</span>
-                <span className="truncate text-xs text-[#5F5F5F]">{r.stack.join(" · ")}</span>
-              </span>
-              <span className="type-heading text-lg font-bold">{r.score}</span>
+      <div className={`${panel} flex items-center gap-3 border-h-yellow/40 bg-h-yellow/10 px-4 py-3`}>
+        <span className="type-heading w-12 text-xl font-bold text-h-yellow">{you ? `#${you.rank}` : "–"}</span>
+        <GameAvatar avatar={me.avatar} size={36} />
+        <span className="flex-1 text-sm font-bold">You</span>
+        <span className="text-sm font-black tabular-nums">{mine.score}</span>
+      </div>
+
+      {rest.length > 0 && (
+        <ol className={`${panel} flex flex-col divide-y divide-white/5 px-3`} start={4}>
+          {rest.map((r) => (
+            <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-h-yellow" : ""}`}>
+              <span className="w-8 text-center text-sm font-black text-white/50 tabular-nums">{r.rank}</span>
+              <GameAvatar avatar={r.avatar} initials={r.initials} size={32} />
+              <span className="flex-1 truncate text-sm font-bold">{r.name}</span>
+              <span className="text-sm font-black tabular-nums">{r.score}</span>
             </li>
           ))}
         </ol>
-      ) : (
-        <p className="self-start rounded-3xl bg-white px-5 py-8 text-center text-[15px] text-[#5F5F5F]">
-          {rows.length ? "Only the podium so far. Your spot is open." : "No points yet. Answer a Level Up card to get on the board."}
-        </p>
       )}
+      {rows.length === 0 && <p className={`${panel} px-5 py-8 text-center text-sm text-white/60`}>No scores yet. Clear Stage 1 to get on the board.</p>}
+      <p className="text-center text-xs text-white/40">Winners show their ticket on stage to collect prizes.</p>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { STACK_LABELS } from "./config";
+import { AVATARS, STACK_LABELS } from "./config";
 
 // Users type handles, never links; the app builds every link itself.
 
@@ -48,6 +48,25 @@ export const profileSchema = z.object({
 
 export type ProfileInput = z.infer<typeof profileSchema>;
 
+/** Onboarding for the stage game: the details other players are quizzed on. */
+export const playerSchema = z.object({
+  full_name: profileSchema.shape.full_name,
+  avatar: z.string().refine((v) => AVATARS.some((a) => a.id === v), "Pick an avatar."),
+  stack: z
+    .array(z.string().refine((s) => STACK_LABELS.includes(s)))
+    .min(1, "Pick at least one stack.")
+    .max(3, "Pick up to 3."),
+  fun_fact: z
+    .string()
+    .trim()
+    .min(8, "Add a fun fact about you, at least a few words.")
+    .max(90, "Keep your fun fact under 90 characters.")
+    .refine((v) => !/[<>{}\\]/.test(v) && !/https?:|www\./i.test(v), "No links in your fun fact."),
+  is_adult: z.boolean(),
+});
+
+export type PlayerInput = z.infer<typeof playerSchema>;
+
 export const links = {
   github: (h: string) => `https://github.com/${h}`,
   linkedin: (h: string) => `https://www.linkedin.com/in/${h}`,
@@ -59,7 +78,7 @@ export const links = {
 /** "Ada Okafor" → "Ada O."; under-18s show first name only. */
 export function displayName(fullName: string, isAdult = true) {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return "Agent";
+  if (!parts.length) return "Player";
   if (!isAdult || parts.length === 1) return parts[0];
   return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }

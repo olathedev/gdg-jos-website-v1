@@ -14,8 +14,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const { score } = await myScore(me.id);
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pb-32">
-      <header className="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-3 bg-[#0A0A0A]/85 px-4 py-3 backdrop-blur">
-        <Link href="/quest/me" className="flex min-w-0 items-center gap-2.5" aria-label="Your player card">
+      <header className="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-3 bg-[#0A0A0A] px-4 py-3">
+        <Link href="/quest/profile" className="flex min-w-0 items-center gap-2.5" aria-label="Your profile">
           <GameAvatar avatar={me.avatar} initials={initials(me.full_name)} size={36} />
           <span className="truncate text-sm font-bold">{displayName(me.full_name, me.is_adult)}</span>
         </Link>

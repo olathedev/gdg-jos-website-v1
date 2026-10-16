@@ -232,6 +232,20 @@ body:has(.quest-night) {
 }
 .quest-float { animation: quest-float 2.6s ease-in-out infinite; }
 
+@keyframes quest-hop {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-8px); opacity: 1; }
+}
+.quest-hop { animation: quest-hop 0.9s ease-in-out infinite; }
+
+/* Taps fire immediately (no double-tap zoom wait) and without the grey flash. */
+.quest-night a,
+.quest-night button,
+.quest-night label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .quest-pop, .quest-float { animation: none; }
+  .quest-pop, .quest-float, .quest-hop { animation: none; }
 }

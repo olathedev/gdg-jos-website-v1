@@ -1,8 +1,6 @@
-import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import QRCode from "qrcode";
-import { signOutAction } from "@/app/quest/actions";
-import { GameAvatar, gameBtnGhost, panel } from "@/components/quest/ui";
+import { GameAvatar, gameBtnGhost } from "@/components/quest/ui";
 import { adminSiteUrl } from "@/lib/admin/site";
 import { requireAgent } from "@/lib/quest/auth";
 import { POINTS } from "@/lib/quest/config";
@@ -41,42 +39,9 @@ export default async function Me() {
         Other players tap Scan and point at this. They answer questions about you to lock you in for +{POINTS.meet}.
       </p>
 
-      <section className={`${panel} flex w-full flex-col gap-3 p-4 text-left`} aria-labelledby="card-h">
-        <div className="flex items-center justify-between">
-          <h2 id="card-h" className="text-[11px] font-bold tracking-[0.2em] text-white/50">
-            WHAT PLAYERS GET QUIZZED ON
-          </h2>
-          <Link href="/quest/setup" className="flex min-h-9 items-center gap-1 text-xs font-bold text-h-yellow">
-            <Pencil aria-hidden className="size-3.5" /> Edit
-          </Link>
-        </div>
-        <dl className="flex flex-col gap-2.5 text-sm">
-          <div>
-            <dt className="text-xs text-white/50">Name</dt>
-            <dd className="font-bold">{displayName(me.full_name, me.is_adult)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-white/50">Stack</dt>
-            <dd className="flex flex-wrap gap-1.5 pt-1">
-              {me.stack.map((s) => (
-                <span key={s} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold">
-                  {s}
-                </span>
-              ))}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-white/50">Fun fact</dt>
-            <dd className="font-bold">{me.fun_fact ?? <span className="text-g-red">Add one so people can lock you in</span>}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <form action={signOutAction}>
-        <button type="submit" className={gameBtnGhost}>
-          <LogOut aria-hidden className="size-4" /> Sign out
-        </button>
-      </form>
+      <Link href="/quest/profile" className={gameBtnGhost}>
+        View my profile
+      </Link>
     </div>
   );
 }

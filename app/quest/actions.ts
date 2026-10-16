@@ -107,7 +107,7 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
   await savePlayer(me.id, parsed.data);
   revalidatePath("/quest", "layout");
   if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/home?welcome=1");
-  return { ok: true, message: "Saved." };
+  redirect("/quest/profile");
 }
 
 /* ---------- stages ---------- */
@@ -124,7 +124,8 @@ export async function lockInAction(qrToken: string, answers: { name: string; sta
       stack: String(answers.stack ?? ""),
       fact: String(answers.fact ?? ""),
     });
-    revalidatePath("/quest", "layout");
+    // No revalidate here: it would re-render the scan page as "already in your squad" over
+    // the lock-in celebration. The next page you open reads fresh data anyway.
     return { ok: true as const, ...res };
   } catch (e) {
     if (e instanceof GameError) return { ok: false as const, message: e.message, code: e.code };

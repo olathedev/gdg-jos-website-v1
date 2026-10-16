@@ -15,7 +15,7 @@ export default function Nav() {
   const path = usePathname();
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.9rem,env(safe-area-inset-bottom))]">
-      <ul className="flex w-full max-w-[340px] items-center rounded-full border border-white/[0.08] bg-[#141414]/95 p-1.5 shadow-[0_12px_40px_rgb(0_0_0/0.6)] backdrop-blur">
+      <ul className="flex w-full max-w-[340px] items-center rounded-full border border-white/[0.08] bg-[#141414] p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.5)]">
         {tabs.map((t) => {
           const on = path === t.href || t.also.some((a) => path.startsWith(a));
           const qr = t.href === "/quest/scan";

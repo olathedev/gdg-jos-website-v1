@@ -12,7 +12,7 @@ export default async function Setup() {
     <main className="mx-auto flex max-w-md flex-col gap-5 px-4 pt-4 pb-12">
       <div className="flex items-center justify-between">
         {ready ? (
-          <Link href="/quest/me" className="flex min-h-11 items-center text-sm font-bold text-white/60 hover:text-white">
+          <Link href="/quest/profile" className="flex min-h-11 items-center text-sm font-bold text-white/60 hover:text-white">
             Back
           </Link>
         ) : (

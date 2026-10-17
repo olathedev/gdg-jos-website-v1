@@ -1,9 +1,10 @@
 "use client";
 
-import { Camera } from "lucide-react";
+import { Camera, SlidersHorizontal } from "lucide-react";
 import { useActionState, useState } from "react";
 import { avatarUploadAction, savePlayerAction, type Result } from "@/app/quest/actions";
-import { UploadError, uploadImage } from "@/lib/upload-image";
+import { canvasBlob, readImage, UploadError, uploadBlob } from "@/lib/upload-image";
+import PhotoCropper from "./PhotoCropper";
 import { AVATARS, STACKS } from "@/lib/quest/config";
 import { AvatarArt } from "./icons";
 import { GameAvatar, gameBtn } from "./ui";
@@ -108,9 +109,15 @@ export default function PlayerForm({ initial, next, canUpload = false }: { initi
       className="flex flex-col gap-7"
     >
       {next && <input type="hidden" name="next" value={next} />}
+      <div className="sticky top-0 z-10 -mx-4 -mb-4 flex justify-end bg-bg/85 px-4 py-2 backdrop-blur">
+        <button type="submit" disabled={pending} className="inline-flex min-h-11 items-center rounded-full bg-fg px-5 text-sm font-bold text-on-fg hover:bg-fg/90 disabled:opacity-50">
+          {pending ? "Saving…" : "Save"}
+        </button>
+      </div>
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
+        {canUpload && <PhotoUpload photo={avatar.startsWith("https://") ? avatar : null} unsaved={avatar !== initial.avatar} onUploaded={setAvatar} />}
         <span className="type-heading text-2xl font-bold">{shown(name)}</span>
         <span className="flex flex-wrap justify-center gap-1.5">
           {(picked.length ? picked : ["Your stack"]).map((p) => (
@@ -142,7 +149,6 @@ export default function PlayerForm({ initial, next, canUpload = false }: { initi
             );
           })}
         </div>
-        {canUpload && <PhotoUpload photo={avatar.startsWith("https://") ? avatar : null} unsaved={avatar !== initial.avatar} onUploaded={setAvatar} />}
         <input type="hidden" name="avatar" value={avatar} />
       </fieldset>
 
@@ -292,43 +298,62 @@ export default function PlayerForm({ initial, next, canUpload = false }: { initi
   );
 }
 
-/** Or use a photo: uploaded to the player's own slot, then saved with the card. */
+/** Upload a photo, adjust it (move, zoom, rotate), then it's saved with the card. */
 function PhotoUpload({ photo, unsaved, onUploaded }: { photo: string | null; unsaved: boolean; onUploaded: (url: string) => void }) {
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  const upload = async (canvas: HTMLCanvasElement) => {
+    setBusy(true);
+    setError("");
+    try {
+      onUploaded(await uploadBlob(await canvasBlob(canvas), avatarUploadAction));
+      setEditing(false);
+    } catch (err) {
+      setError(err instanceof UploadError ? err.message : "Upload failed. Try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const pill =
+    "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-fg/20 px-4 text-sm font-bold transition-colors hover:bg-fg/[0.06] focus-within:outline-2 focus-within:outline-h-yellow";
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <label
-        className={`flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 text-sm font-bold transition-colors focus-within:outline-2 focus-within:outline-h-yellow ${
-          photo ? "border-fg bg-fg/[0.06]" : "border-fg/20 hover:bg-fg/[0.06]"
-        } ${busy ? "pointer-events-none opacity-60" : ""}`}
-      >
-        <Camera aria-hidden className="size-4" />
-        {busy ? "Uploading…" : photo ? "Change photo" : "Or use a photo"}
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
-          className="sr-only"
-          disabled={busy}
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            e.target.value = "";
-            if (!file) return;
-            setError("");
-            setBusy(true);
-            try {
-              onUploaded(await uploadImage(file, avatarUploadAction, 640));
-            } catch (err) {
-              setError(err instanceof UploadError ? err.message : "Upload failed. Try again.");
-            } finally {
-              setBusy(false);
-            }
-          }}
-        />
-      </label>
-      <p role="status" className={error ? "text-center text-xs font-bold text-bad" : "text-center text-xs text-fg/50"}>
-        {error || (photo && unsaved ? "Save your card to use this photo." : "A clear photo of your face helps padis find you.")}
+      <div className="flex flex-wrap justify-center gap-2">
+        <label className={pill}>
+          <Camera aria-hidden className="size-4" />
+          {photo ? "Change photo" : "Upload a photo"}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+            className="sr-only"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (!file) return;
+              setError("");
+              try {
+                setImage(await readImage(file));
+                setEditing(true);
+              } catch (err) {
+                setError(err instanceof UploadError ? err.message : "We couldn't read that image.");
+              }
+            }}
+          />
+        </label>
+        {image && photo && (
+          <button type="button" className={pill} onClick={() => setEditing(true)}>
+            <SlidersHorizontal aria-hidden className="size-4" /> Adjust
+          </button>
+        )}
+      </div>
+      <p role="status" className={error && !editing ? "text-center text-xs font-bold text-bad" : "text-center text-xs text-fg/50"}>
+        {error && !editing ? error : photo && unsaved ? "Save your card to use this photo." : photo ? "" : "Or pick an avatar below."}
       </p>
+      {editing && image && <PhotoCropper image={image} busy={busy} error={error} onCancel={() => setEditing(false)} onDone={upload} />}
     </div>
   );
 }

@@ -13,13 +13,19 @@ import { STAGES } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState } from "@/lib/quest/stages";
 import { displayName, initials, links } from "@/lib/quest/validate";
+import { db } from "@/lib/tickets/db";
 
 export const metadata = { title: "Profile" };
 
 export default async function Profile() {
   const me = await requireAgent();
   const [slug, site] = await Promise.all([ensureSlug(me), adminSiteUrl()]);
-  const [{ score }, board, g] = await Promise.all([myScore(me.id), leaderboard(), gameState(me.id)]);
+  const [{ score }, board, g, [{ joined }]] = await Promise.all([
+    myScore(me.id),
+    leaderboard(),
+    gameState(me.id),
+    db()<{ joined: boolean }[]>`select exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined`,
+  ]);
   const rank = board.byId.get(me.id)?.rank;
   const socials = [
     me.github && { id: "github", label: "GitHub", href: links.github(me.github) },
@@ -137,7 +143,7 @@ export default async function Profile() {
         <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
       </section>
 
-      <JoinGdg />
+      <JoinGdg claimed={joined} />
 
       <ThemeSwitch />
 

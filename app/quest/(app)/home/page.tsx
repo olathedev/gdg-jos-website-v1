@@ -25,15 +25,16 @@ export const metadata = { title: "Home" };
 export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const me = await requireAgent();
   const welcome = (await searchParams).welcome === "1";
-  const [{ score }, board, g, [{ pending, posted }]] = await Promise.all([
+  const [{ score }, board, g, [{ pending, posted, joined }]] = await Promise.all([
     myScore(me.id),
     leaderboard(),
     gameState(me.id),
-    db()<{ pending: number; posted: boolean }[]>`
+    db()<{ pending: number; posted: boolean; joined: boolean }[]>`
       select
         (select count(*)::int from quest_connections
           where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}) as pending,
-        exists (select 1 from quest_x_posts where user_id = ${me.id} and status = 'counted') as posted`,
+        exists (select 1 from quest_x_posts where user_id = ${me.id} and status = 'counted') as posted,
+        exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined`,
   ]);
   const rank = board.byId.get(me.id)?.rank;
   const top = board.rows.slice(0, 3);
@@ -214,7 +215,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
 
       <XPost posted={posted} handle={me.x_handle} points={POINTS.xPost} />
 
-      <JoinGdg />
+      <JoinGdg claimed={joined} />
       <JoinWhatsApp />
 
       {/* Mini board */}

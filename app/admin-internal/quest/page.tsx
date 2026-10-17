@@ -65,7 +65,7 @@ export default async function QuestAdminPage() {
   ];
   const figures = [
     { label: "Players", value: stats.players, sub: `${stats.listed} listed in Who's coming` },
-    { label: "Community claims", value: stats.claims, sub: `waiting · ${stats.matched} matched` },
+    { label: "Community claims", value: stats.claims, sub: `unverified · ${stats.matched} matched` },
     { label: "X posts", value: stats.xCounted, sub: `counted · ${stats.xPending} waiting for a check` },
     { label: "Open reports", value: stats.openReports, sub: `${stats.checkedIn} check-ins so far` },
   ];
@@ -201,7 +201,7 @@ export default async function QuestAdminPage() {
 
         <Section
           title="GDG Community members"
-          sub="Export the GDG Jos member list from gdg.community.dev and upload it here. Everyone who tapped Join and signed in with an email on the list gets their +15. Upload it again any time; nobody is paid twice."
+          sub="Players get their +15 as soon as they tap Join GDG Jos (taken on trust). To check prize winners, export the GDG Jos member list from gdg.community.dev and upload it here: claims whose sign-in email is on the list are marked matched. Upload it again any time; nobody is paid twice."
         >
           <CommunityImport />
         </Section>

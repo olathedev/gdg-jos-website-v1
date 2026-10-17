@@ -477,9 +477,15 @@ export async function claimFollow(userId: string, platform: string) {
   if (await award(sql, userId, "follow", platform, POINTS.follow)) invalidateBoard();
 }
 
-/** Points pay later, when organisers match the email against the GDG Community member list. */
+/**
+ * Taken on trust and paid now, like the follows. The claim stays 'claimed' (unverified) until
+ * organisers upload the GDG Community member list, which marks it 'matched' and pays nothing twice.
+ */
 export async function claimCommunity(userId: string) {
-  await db()`insert into quest_social_claims (user_id, platform) values (${userId}, 'community') on conflict do nothing`;
+  const sql = db();
+  await sql`insert into quest_social_claims (user_id, platform) values (${userId}, 'community') on conflict do nothing`;
+  if (!(await award(sql, userId, "community", "gdg-community", POINTS.community))) throw new GameError("You've already claimed this.");
+  invalidateBoard();
 }
 
 /* ---------- invites ---------- */

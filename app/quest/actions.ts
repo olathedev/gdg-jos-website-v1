@@ -18,6 +18,7 @@ import {
   upsertAuthUser,
 } from "@/lib/quest/game";
 import { markAllSeen } from "@/lib/quest/celebrate";
+import { POINTS } from "@/lib/quest/config";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
 import { hasSocial, playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
@@ -230,7 +231,7 @@ export async function communityAction() {
   return play(async () => {
     const me = await agent();
     await claimCommunity(me.id);
-    return "We'll match your email against the member list.";
+    return `+${POINTS.community} points. Welcome to the GDG Jos community!`;
   });
 }
 

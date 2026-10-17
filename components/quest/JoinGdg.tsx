@@ -1,26 +1,56 @@
-import { ArrowUpRight } from "lucide-react";
-import { WHATSAPP_URL } from "@/data/devfest26";
-import { COMMUNITY_JOIN_URL } from "@/lib/quest/config";
+"use client";
 
-/** "Join GDG Jos" on GDG Community. Opens in a new tab. */
-export default function JoinGdg() {
+import { ArrowUpRight, Check } from "lucide-react";
+import { useOptimistic, useState, useTransition } from "react";
+import { communityAction } from "@/app/quest/actions";
+import { WHATSAPP_URL } from "@/data/devfest26";
+import { COMMUNITY_JOIN_URL, POINTS } from "@/lib/quest/config";
+
+/** "Join GDG Jos" on GDG Community. Tap opens it in a new tab and claims the points, like the follows. */
+export default function JoinGdg({ claimed }: { claimed: boolean }) {
+  const [, start] = useTransition();
+  const [done, mark] = useOptimistic(claimed, () => true);
+  const [message, setMessage] = useState("");
+
   return (
-    <a
-      href={COMMUNITY_JOIN_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex min-h-14 items-center gap-3 rounded-[24px] border border-g-blue/40 bg-g-blue/10 px-4 py-3 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue active:scale-[0.98]"
-    >
-      <span aria-hidden className="type-heading flex size-10 shrink-0 items-center justify-center rounded-full bg-g-blue text-sm font-bold text-white">
-        {"{ }"}
-      </span>
-      <span className="flex flex-1 flex-col">
-        <span className="text-[15px] font-bold">Join GDG Jos</span>
-        <span className="text-xs text-fg/60">Meetups, events and people all year round</span>
-      </span>
-      <ArrowUpRight aria-hidden className="size-5 text-fg/60" />
-      <span className="sr-only">(opens in a new tab)</span>
-    </a>
+    <div className="flex flex-col gap-1.5">
+      <a
+        href={COMMUNITY_JOIN_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => {
+          if (done) return;
+          start(async () => {
+            mark(true);
+            const res = await communityAction();
+            setMessage(res?.message ?? "");
+          });
+        }}
+        className="flex min-h-14 items-center gap-3 rounded-[24px] border border-g-blue/40 bg-g-blue/10 px-4 py-3 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-blue active:scale-[0.98]"
+      >
+        <span aria-hidden className="type-heading flex size-10 shrink-0 items-center justify-center rounded-full bg-g-blue text-sm font-bold text-white">
+          {"{ }"}
+        </span>
+        <span className="flex flex-1 flex-col">
+          <span className="text-[15px] font-bold">Join GDG Jos</span>
+          <span className="text-xs text-fg/60">Meetups, events and people all year round</span>
+        </span>
+        <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${done ? "bg-g-green text-white" : "bg-h-yellow text-[#0A0A0A]"}`}>
+          {done ? (
+            <span className="flex items-center gap-1">
+              <Check aria-hidden className="size-3" strokeWidth={4} /> Done
+            </span>
+          ) : (
+            `+${POINTS.community}`
+          )}
+        </span>
+        <ArrowUpRight aria-hidden className="size-5 text-fg/60" />
+        <span className="sr-only">(opens in a new tab)</span>
+      </a>
+      <p role="status" className={message ? "px-4 text-xs font-bold text-fg/70" : "sr-only"}>
+        {message}
+      </p>
+    </div>
   );
 }
 

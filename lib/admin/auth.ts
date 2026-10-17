@@ -66,6 +66,8 @@ function owners() {
 }
 
 export const isOwnerEmail = (email: string) => owners().has(email.trim().toLowerCase());
+/** Owner emails (lowercase), e.g. to treat them as organisers in PadiUp. */
+export const ownerEmails = () => [...owners().keys()];
 
 export function adminEnabled() {
   return Boolean(adminPath() && secret() && owners().size > 0);

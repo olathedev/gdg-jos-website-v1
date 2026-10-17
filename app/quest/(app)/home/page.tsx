@@ -1,13 +1,15 @@
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from "@/components/quest/icons";
-import JoinGdg from "@/components/quest/JoinGdg";
+import JoinGdg, { JoinWhatsApp } from "@/components/quest/JoinGdg";
 import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
+import XPost from "@/components/quest/XPost";
 import { requireAgent } from "@/lib/quest/auth";
 import {
   FOLLOWS,
   PARTNER_GOAL,
   PARTNER_UNLOCK_PADIS,
+  POINTS,
   ROUND_QUESTIONS,
   ROUND_TIME,
   SQUAD_GOAL,
@@ -23,13 +25,15 @@ export const metadata = { title: "Home" };
 export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const me = await requireAgent();
   const welcome = (await searchParams).welcome === "1";
-  const [{ score }, board, g, [{ pending }]] = await Promise.all([
+  const [{ score }, board, g, [{ pending, posted }]] = await Promise.all([
     myScore(me.id),
     leaderboard(),
     gameState(me.id),
-    db()<{ pending: number }[]>`
-      select count(*)::int as pending from quest_connections
-      where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}`,
+    db()<{ pending: number; posted: boolean }[]>`
+      select
+        (select count(*)::int from quest_connections
+          where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}) as pending,
+        exists (select 1 from quest_x_posts where user_id = ${me.id} and status = 'counted') as posted`,
   ]);
   const rank = board.byId.get(me.id)?.rank;
   const top = board.rows.slice(0, 3);
@@ -208,7 +212,10 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
         </Link>
       </div>
 
+      <XPost posted={posted} handle={me.x_handle} points={POINTS.xPost} />
+
       <JoinGdg />
+      <JoinWhatsApp />
 
       {/* Mini board */}
       {top.length > 0 && (

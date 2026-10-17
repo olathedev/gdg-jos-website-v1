@@ -240,7 +240,7 @@ export async function xPostAction(_: Result, form: FormData): Promise<Result> {
     const post = xPostId(String(form.get("url") ?? ""));
     if (!post) throw new GameError("Paste a link like x.com/you/status/123…");
     const res = await submitXPost(me, post.id, post.handle);
-    return res.status === "counted" ? `Post counted. +${res.points}` : "Got it. We'll check it within 15 minutes.";
+    return `Post counted. +${res.points}`;
   });
 }
 

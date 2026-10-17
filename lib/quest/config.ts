@@ -69,7 +69,8 @@ export const AVATARS = Array.from({ length: 16 }, (_, i) => {
 export const avatarFor = (id: string | null | undefined) => AVATARS.find((a) => a.id === id) ?? null;
 
 export const LIMITS = {
-  xPostsPerDay: 3,
+  /** Counted X posts per player, in total. */
+  xPosts: 1,
   invitesPaid: 5,
   meetsPerHour: 40,
   connectsPerHour: 30,

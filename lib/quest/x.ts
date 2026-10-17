@@ -8,7 +8,8 @@ import { award, invalidateBoard } from "./points";
 //   X_BEARER_TOKEN  app-only token from developer.x.com
 // A post counts when it is from the handle on the player's profile, contains both
 // hashtags and the mention, was posted after launch and after the handle was added,
-// and the player has fewer than 3 counted posts that day (WAT).
+// and the player has no counted post yet (LIMITS.xPosts).
+// Without a token, pasted links are taken on trust and count straight away.
 
 const API = process.env.X_API_BASE ?? "https://api.x.com/2"; // override only for local testing
 const LAUNCH = "2026-10-13T00:00:00+01:00";
@@ -65,9 +66,8 @@ async function countPost(owner: Owner, tweet: Tweet, author: string): Promise<st
   if (!reason) {
     const [{ n }] = await sql<{ n: number }[]>`
       select count(*)::int as n from quest_x_posts
-      where user_id = ${owner.id} and status = 'counted' and post_id <> ${tweet.id}
-        and (posted_at at time zone 'Africa/Lagos')::date = (${posted}::timestamptz at time zone 'Africa/Lagos')::date`;
-    if (n >= LIMITS.xPostsPerDay) reason = "3 posts already counted that day";
+      where user_id = ${owner.id} and status = 'counted' and post_id <> ${tweet.id}`;
+    if (n >= LIMITS.xPosts) reason = "you already have a post counted";
   }
 
   await sql`
@@ -86,20 +86,38 @@ async function ownerById(userId: string) {
   return o ?? null;
 }
 
-/** A link pasted on the Missions screen. Checked now when the API is configured, else queued. */
+/** A link pasted on Home. Checked against X when the API is configured, else taken on trust. */
 export async function submitXPost(me: Profile, postId: string, handle: string) {
-  if (!me.x_handle) throw new GameError("Add your X handle to your profile first.");
-  if (handle.toLowerCase() !== me.x_handle.toLowerCase()) throw new GameError(`That post isn't from @${me.x_handle}.`);
+  const trusted = !xEnabled();
+  if (!me.x_handle && !trusted) throw new GameError("Add your X handle to your profile first.");
+  if (me.x_handle && handle.toLowerCase() !== me.x_handle.toLowerCase()) throw new GameError(`That post isn't from @${me.x_handle}.`);
   const sql = db();
   const [existing] = await sql<{ user_id: string; status: string }[]>`
     select user_id, status from quest_x_posts where post_id = ${postId}`;
   if (existing && existing.user_id !== me.id) throw new GameError("That post is linked to another player.");
   if (existing?.status === "counted") throw new GameError("Already counted.");
   if (existing?.status === "rejected" || existing?.status === "removed") throw new GameError("That post didn't qualify.");
+  const [{ n }] = await sql<{ n: number }[]>`
+    select count(*)::int as n from quest_x_posts where user_id = ${me.id} and status = 'counted'`;
+  if (n >= LIMITS.xPosts) throw new GameError("You've already posted. Your points are in.");
 
-  if (!xEnabled()) {
-    await sql`insert into quest_x_posts (post_id, user_id) values (${postId}, ${me.id}) on conflict do nothing`;
-    return { status: "pending" as const, points: 0 };
+  if (trusted) {
+    // The post's handle becomes the player's X handle, so nobody else can claim their posts.
+    if (!me.x_handle) {
+      try {
+        await sql`update quest_profiles set x_handle = ${handle}, x_handle_at = now() where id = ${me.id} and x_handle is null`;
+      } catch (e) {
+        if ((e as { code?: string })?.code === "23505") throw new GameError(`@${handle} is on another player's profile.`);
+        throw e;
+      }
+    }
+    await sql`
+      insert into quest_x_posts (post_id, user_id, status, reason, checked_at)
+      values (${postId}, ${me.id}, 'counted', 'trusted', now())
+      on conflict (post_id) do update set status = 'counted', reason = 'trusted', checked_at = now()
+        where quest_x_posts.user_id = excluded.user_id`;
+    if (await award(sql, me.id, "x_post", postId, POINTS.xPost)) invalidateBoard();
+    return { status: "counted" as const, points: POINTS.xPost };
   }
 
   const res = await x(`/tweets/${postId}`, {});

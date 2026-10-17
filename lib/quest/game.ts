@@ -458,9 +458,7 @@ export async function missions(userId: string) {
     select platform, status from quest_social_claims where user_id = ${userId}`;
   const [{ postsToday, earned }] = await sql<{ postsToday: number; earned: number }[]>`
     select
-      (select count(*)::int from quest_x_posts
-        where user_id = ${userId} and status = 'counted'
-          and (posted_at at time zone 'Africa/Lagos')::date = ${lagosToday()}) as "postsToday",
+      (select count(*)::int from quest_x_posts where user_id = ${userId} and status = 'counted') as "postsToday",
       (select coalesce(sum(points), 0)::int from quest_points
         where user_id = ${userId} and source_type in ('follow', 'community', 'x_post')) as earned`;
   const [{ pendingPosts }] = await sql<{ pendingPosts: number }[]>`
@@ -468,7 +466,7 @@ export async function missions(userId: string) {
   const by = new Map(claims.map((c) => [c.platform, c.status]));
   const followed = FOLLOWS.filter((f) => by.has(f.id)).map((f) => f.id as string);
   const community = by.get("community") ?? null;
-  const left = FOLLOWS.length - followed.length + (community ? 0 : 1) + (postsToday < LIMITS.xPostsPerDay ? 1 : 0);
+  const left = FOLLOWS.length - followed.length + (community ? 0 : 1) + (postsToday < LIMITS.xPosts ? 1 : 0);
   return { followed, community, postsToday, pendingPosts, earned, left };
 }
 

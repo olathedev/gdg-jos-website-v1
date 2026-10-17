@@ -36,7 +36,7 @@ export default async function Me() {
       </div>
 
       <p className="max-w-xs text-sm text-white/65">
-        Other players tap Scan and point at this. They answer questions about you to lock you in for +{POINTS.meet}.
+        Let other players scan this. You&apos;re connected instantly and you both get +{POINTS.meet}.
       </p>
 
       <Link href="/quest/profile" className={gameBtnGhost}>

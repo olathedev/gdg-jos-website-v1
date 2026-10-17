@@ -17,9 +17,8 @@ import { agentByToken, GameError, type Profile } from "./game";
 import { award, invalidateBoard } from "./points";
 import { displayName } from "./validate";
 
-// The 4-stage game. Stages unlock in order: Socials → Squad Up → Brain Blitz → Partners.
-// Brain Blitz runs in rounds that organisers open, so Partners unlocks with it once Squad Up
-// is cleared; nobody gets stuck waiting for a round.
+// The 4-stage game. Socials and Squad Up are always open; Brain Blitz and Partners unlock once
+// you've connected with SQUAD_GOAL people. Brain Blitz runs in rounds organisers open.
 
 export type StageState = "locked" | "open" | "live" | "done";
 
@@ -38,7 +37,7 @@ export async function gameState(userId: string) {
       select
         (select count(*)::int from quest_social_claims
           where user_id = ${userId} and platform = any(${FOLLOWS.map((f) => f.id)})) as follows,
-        (select count(*)::int from quest_lockins where user_id = ${userId}) as squad,
+        (select count(*)::int from quest_meets where user_a = ${userId} or user_b = ${userId}) as squad,
         (select count(*)::int from quest_station_scans x join quest_stations s on s.id = x.station_id
           where x.user_id = ${userId} and s.kind = 'booth') as partners`,
     sql<{ round: number; opened: boolean; closed: boolean; started: boolean; finished: boolean; score: number }[]>`
@@ -69,7 +68,8 @@ export async function gameState(userId: string) {
 
   const states: Record<StageId, StageState> = {
     socials: socialsDone ? "done" : "open",
-    squad: !socialsDone ? "locked" : squadDone ? "done" : "open",
+    // Scanning people is never locked: it's the heart of the event.
+    squad: squadDone ? "done" : "open",
     quiz: !squadDone ? "locked" : liveUnplayed ? "live" : quizDone ? "done" : "open",
     partners: !squadDone ? "locked" : partnersDone ? "done" : "open",
   };
@@ -87,171 +87,21 @@ export async function gameState(userId: string) {
 export async function requireStage(userId: string, stage: StageId) {
   const s = await gameState(userId);
   if (s.states[stage] === "locked") {
-    throw new GameError(
-      stage === "squad" ? "Finish Follow the Signal first to unlock Squad Up." : "Lock in your squad first to unlock this stage.",
-      "locked",
-    );
+    throw new GameError("Connect with your squad first to unlock this stage.", "locked");
   }
   return s;
 }
 
 /* ---------- Squad Up ---------- */
 
-const seeded = (seed: string) => {
-  let i = 0;
-  return () => {
-    const h = createHash("sha256").update(`${seed}:${i++}`).digest();
-    return h.readUInt32BE(0) / 0x1_0000_0000;
-  };
-};
-
-function shuffle<T>(items: T[], rand: () => number) {
-  const a = [...items];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-const FALLBACK_NAMES = ["Ada O.", "Tunde B.", "Zainab M.", "Chidi E.", "Ngozi A.", "Musa D.", "Kemi S.", "Ibrahim Y."];
-const FALLBACK_FACTS = [
-  "I have never missed a DevFest",
-  "I can solve a Rubik's cube in under a minute",
-  "I once built an app in one night",
-  "I speak four languages",
-  "I've climbed Shere Hills twice",
-  "I make the best jollof in my street",
-  "I learnt to code on my phone",
-  "I collect old keyboards",
-];
-
-function pickDistinct(pool: string[], fallback: string[], exclude: string, rand: () => number, n = 3) {
-  const seen = new Set([exclude.toLowerCase()]);
-  const out: string[] = [];
-  for (const v of [...shuffle(pool, rand), ...shuffle(fallback, rand)]) {
-    const k = v.trim().toLowerCase();
-    if (!k || seen.has(k)) continue;
-    seen.add(k);
-    out.push(v);
-    if (out.length === n) break;
-  }
-  return out;
-}
-
-export type SquadQuestion = { key: "name" | "stack" | "fact"; prompt: string; options: string[] };
-
-/**
- * Three questions about the person whose QR you scanned. Options stay the same for this pair
- * every time, and answers are checked as text, so new sign-ups never change the right answer.
- */
-async function squadQuestions(me: Profile, target: Profile): Promise<SquadQuestion[]> {
-  const rand = seeded(`${me.id}:${target.id}`);
-  const others = await db()<{ full_name: string; is_adult: boolean; fun_fact: string | null }[]>`
-    select full_name, is_adult, fun_fact from quest_profiles
-    where onboarded_at is not null and id <> ${me.id} and id <> ${target.id}
-    order by md5(id::text || ${me.id} || ${target.id})
-    limit 12`;
-  const name = displayName(target.full_name, target.is_adult);
-  const stackAnswer = target.stack.length ? target.stack[Math.floor(rand() * target.stack.length)] : "Just exploring";
-  const fact = target.fun_fact ?? "";
-
-  const names = pickDistinct(
-    others.map((o) => displayName(o.full_name, o.is_adult)),
-    FALLBACK_NAMES,
-    name,
-    rand,
-  );
-  const stacks = shuffle(
-    STACK_LABELS.filter((s) => !target.stack.includes(s)),
-    rand,
-  ).slice(0, 3);
-  const facts = pickDistinct(
-    others.map((o) => o.fun_fact ?? "").filter(Boolean),
-    FALLBACK_FACTS,
-    fact,
-    rand,
-  );
-
-  return [
-    { key: "name", prompt: "What's their name?", options: shuffle([name, ...names], rand) },
-    { key: "stack", prompt: "Which of these is in their stack?", options: shuffle([stackAnswer, ...stacks], rand) },
-    { key: "fact", prompt: "What's their fun fact?", options: shuffle([fact, ...facts], rand) },
-  ];
-}
-
-export type SquadView =
-  | { kind: "self" }
-  | { kind: "locked"; message: string }
-  | { kind: "done" }
-  | { kind: "blocked" }
-  | { kind: "play"; questions: SquadQuestion[]; retryIn: number };
-
-async function lockinStatus(me: Profile, target: Profile) {
-  const sql = db();
-  const [row] = await sql<{ done: boolean; blocked: boolean; retry: number }[]>`
-    select
-      exists (select 1 from quest_lockins where user_id = ${me.id} and target_id = ${target.id}) as done,
-      exists (select 1 from quest_blocks
-        where (blocker = ${me.id} and blocked = ${target.id}) or (blocker = ${target.id} and blocked = ${me.id})) as blocked,
-      coalesce((select greatest(0, ceil(${SQUAD_RETRY_SECONDS} - extract(epoch from now() - max(at))))::int
-        from quest_lockin_misses where user_id = ${me.id} and target_id = ${target.id}), 0) as retry`;
-  return row;
-}
-
-export async function squadView(me: Profile, target: Profile): Promise<SquadView> {
-  if (target.id === me.id) return { kind: "self" };
-  const s = await gameState(me.id);
-  if (s.states.squad === "locked") {
-    return { kind: "locked", message: "Finish Stage 1, Follow the Signal, to unlock Squad Up. Then scan this code again." };
-  }
-  if (!target.fun_fact) return { kind: "locked", message: "This player hasn't finished their card yet. Ask them to add a fun fact, then scan again." };
-  const st = await lockinStatus(me, target);
-  if (st.blocked) return { kind: "blocked" };
-  if (st.done) return { kind: "done" };
-  return { kind: "play", questions: await squadQuestions(me, target), retryIn: st.retry };
-}
-
-export async function lockIn(me: Profile, token: string, answers: { name: string; stack: string; fact: string }) {
-  const target = await agentByToken(token);
-  if (!target) throw new GameError("That QR isn't a DevFest Quest code.");
-  if (target.id === me.id) throw new GameError("That's your own code. Scan someone else's.");
-  await requireStage(me.id, "squad");
-  const full = target;
-  const st = await lockinStatus(me, full);
-  if (st.blocked) throw new GameError("You can't lock in this player.");
-  if (st.done) return { fresh: false, name: displayName(full.full_name, full.is_adult) };
-  if (st.retry > 0) throw new GameError(`Talk to them a bit more. Try again in ${st.retry}s.`, "cooldown");
-
-  const sql = db();
-  const [{ recent }] = await sql<{ recent: number }[]>`
-    select count(*)::int as recent from quest_lockins where user_id = ${me.id} and at > now() - interval '1 hour'`;
-  if (recent >= LIMITS.meetsPerHour) throw new GameError("Slow down. Try again in a few minutes.");
-
-  const name = displayName(full.full_name, full.is_adult);
-  const ok =
-    answers.name === name &&
-    full.stack.includes(answers.stack) &&
-    (full.fun_fact ?? "").trim().length > 0 &&
-    answers.fact === full.fun_fact;
-  if (!ok) {
-    await sql`insert into quest_lockin_misses (user_id, target_id) values (${me.id}, ${full.id})`;
-    throw new GameError(`Not quite. At least one answer is wrong. Ask them, then try again in ${SQUAD_RETRY_SECONDS}s.`, "miss");
-  }
-
-  const rows = await sql`
-    insert into quest_lockins (user_id, target_id) values (${me.id}, ${full.id})
-    on conflict do nothing returning user_id`;
-  if (rows.length && (await award(sql, me.id, "lockin", full.id, POINTS.meet))) invalidateBoard();
-  return { fresh: rows.length > 0, name };
-}
-
+/** Everyone you've connected with by scanning, newest first. */
 export async function squadList(userId: string) {
   const rows = await db()<{ id: string; full_name: string; is_adult: boolean; avatar: string | null; stack: string[] }[]>`
     select p.id, p.full_name, p.is_adult, p.avatar, p.stack
-    from quest_lockins l join quest_profiles p on p.id = l.target_id
-    where l.user_id = ${userId}
-    order by l.at desc`;
+    from quest_meets m
+    join quest_profiles p on p.id = case when m.user_a = ${userId} then m.user_b else m.user_a end
+    where m.user_a = ${userId} or m.user_b = ${userId}
+    order by m.at desc`;
   return rows.map((r) => ({ id: r.id, name: displayName(r.full_name, r.is_adult), avatar: r.avatar, stack: r.stack }));
 }
 

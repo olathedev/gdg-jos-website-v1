@@ -1,13 +1,13 @@
 import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
-import { QrGlyph, Spark, StageBadge } from "@/components/quest/icons";
+import { BrandMark, QrGlyph, Spark, StageBadge } from "@/components/quest/icons";
 import { GameAvatar, gameBtn, gameBtnGhost, panel, stackStyle } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { STAGES } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState } from "@/lib/quest/stages";
-import { displayName, initials } from "@/lib/quest/validate";
+import { displayName, initials, links } from "@/lib/quest/validate";
 
 export const metadata = { title: "Profile" };
 
@@ -15,6 +15,13 @@ export default async function Profile() {
   const me = await requireAgent();
   const [{ score }, board, g] = await Promise.all([myScore(me.id), leaderboard(), gameState(me.id)]);
   const rank = board.byId.get(me.id)?.rank;
+  const socials = [
+    me.github && { id: "github", label: "GitHub", href: links.github(me.github) },
+    me.linkedin && { id: "linkedin", label: "LinkedIn", href: links.linkedin(me.linkedin) },
+    me.x_handle && { id: "x", label: "X", href: links.x_handle(me.x_handle) },
+    me.instagram && { id: "instagram", label: "Instagram", href: links.instagram(me.instagram) },
+    me.whatsapp && { id: "whatsapp", label: "WhatsApp", href: links.whatsapp(me.whatsapp) },
+  ].filter((x): x is { id: string; label: string; href: string } => Boolean(x));
   const cleared = STAGES.filter((s) => g.states[s.id] === "done").length;
   const stats = [
     { label: "Score", value: score },
@@ -50,6 +57,27 @@ export default async function Profile() {
             <span className="text-g-yellow">{" }"}</span>
           </p>
         )}
+        {socials.length > 0 && (
+          <ul className="flex flex-wrap justify-center gap-2" aria-label="Your socials">
+            {socials.map((c) => (
+              <li key={c.id}>
+                <a
+                  href={c.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-9 items-center gap-1.5 rounded-full border border-white/[0.12] px-3 text-xs font-bold text-white/80 hover:bg-white/[0.05]"
+                >
+                  <BrandMark id={c.id} size={14} />
+                  {c.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="text-xs text-white/45">
+          {me.listed ? "You're listed in People." : "You're hidden from People."}{" "}
+          {me.whatsapp && me.share_whatsapp ? "Padis see your WhatsApp." : ""}
+        </p>
         <Link href="/quest/setup" className="mt-1 flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-h-yellow hover:bg-white/[0.05]">
           <Pencil aria-hidden className="size-3.5" /> Edit player card
         </Link>

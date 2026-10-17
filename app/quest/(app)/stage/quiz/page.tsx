@@ -13,7 +13,7 @@ export default async function QuizStage() {
   const me = await requireAgent();
   const g = await gameState(me.id);
   if (g.states.quiz === "locked") {
-    return <LockedStage id="quiz" message="Lock in your squad in Stage 2 to unlock Brain Blitz." />;
+    return <LockedStage id="quiz" message="Scan 3 people in Squad Up to unlock Brain Blitz." />;
   }
   // Show the board for the live round, or else the latest one that has opened.
   const shown = g.rounds.find((r) => r.status === "live") ?? [...g.rounds].reverse().find((r) => r.status === "closed");

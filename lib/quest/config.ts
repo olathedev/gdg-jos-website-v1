@@ -15,7 +15,7 @@ export const POINTS = {
   community: 15,
   xPost: 5,
   checkin: 20,
-  /** Squad up: each person you lock in. */
+  /** Squad Up: each person you connect with by scanning (both of you). */
   meet: 20,
   room: 5,
   /** Partners: each partner stand you scan. */
@@ -30,14 +30,14 @@ export const POINTS = {
 /** The four stages, in unlock order. */
 export const STAGES = [
   { id: "socials", num: 1, title: "Follow the Signal", short: "Socials", blurb: "Follow GDG Jos on every platform.", color: "#4285F4" },
-  { id: "squad", num: 2, title: "Squad Up", short: "Squad", blurb: "Meet people. Prove you know them. Scan to lock in.", color: "#EA4335" },
+  { id: "squad", num: 2, title: "Squad Up", short: "Squad", blurb: "Meet people and scan their QR. You both score.", color: "#EA4335" },
   { id: "quiz", num: 3, title: "Brain Blitz", short: "Quiz", blurb: "10 questions. 60 seconds. 3 rounds.", color: "#F9AB00" },
   { id: "partners", num: 4, title: "Partner Link-up", short: "Partners", blurb: "Visit 3 partner stands and scan their code.", color: "#34A853" },
 ] as const;
 
 export type StageId = (typeof STAGES)[number]["id"];
 
-/** People to lock in before Brain Blitz unlocks. Every one after that still scores. */
+/** People to connect with before Brain Blitz and Partners unlock. Every one after that still scores. */
 export const SQUAD_GOAL = 3;
 export const PARTNER_GOAL = 3;
 export const ROUND_SECONDS = 60;

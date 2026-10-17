@@ -106,3 +106,29 @@ export async function removePartner(id: string) {
     returning id`;
   return rows.length > 0;
 }
+
+export type RoundQuestion = { id: string; question: string; options: string[]; correct: number; answers: number };
+
+export async function listRoundQuestions() {
+  const rows = await db()<(RoundQuestion & { quiz_round: number })[]>`
+    select i.id, i.question, i.options, i.correct, i.quiz_round,
+           (select count(*)::int from quest_round_answers a where a.item_id = i.id) as answers
+    from quest_quiz_items i where i.quiz_round is not null
+    order by i.quiz_round, i.sort, i.slug`;
+  const by: Record<number, RoundQuestion[]> = { 1: [], 2: [], 3: [] };
+  for (const { quiz_round, ...q } of rows) by[quiz_round]?.push(q);
+  return by;
+}
+
+/** A custom question for a Brain Blitz round, e.g. from a talk that just ended. */
+export async function addRoundQuestion(round: number, question: string, options: string[], correct: number) {
+  const slug = `custom-${randomBytes(5).toString("hex")}`;
+  await db()`
+    insert into quest_quiz_items (slug, round, track, learn, question, options, correct, explanation, sort, quiz_round)
+    values (${slug}, 'anytime', 'Talks', ${question}, ${question}, ${JSON.stringify(options)}::jsonb, ${correct}, '', 100, ${round})`;
+}
+
+/** Takes a question out of its round. Nothing is deleted, so answers and points already given stay. */
+export async function unassignRoundQuestion(id: string) {
+  await db()`update quest_quiz_items set quiz_round = null where id = ${id}`;
+}

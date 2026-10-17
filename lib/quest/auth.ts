@@ -18,10 +18,10 @@ export async function requireMe() {
   return me;
 }
 
-/** Signed in with a finished player card: avatar and fun fact are needed for Squad Up. */
+/** Signed in with a finished player card (an avatar picked). */
 export async function requireAgent() {
   const me = await requireMe();
-  if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/setup");
+  if (!me.onboarded_at || !me.avatar) redirect("/quest/setup");
   return me;
 }
 

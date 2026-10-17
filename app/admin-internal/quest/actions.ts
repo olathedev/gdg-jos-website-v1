@@ -3,7 +3,15 @@
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/app/admin-internal/actions";
 import { requireAdmin } from "@/lib/admin/auth";
-import { addPartner, markReportReviewed, matchCommunityMembers, removePartner, setRound } from "@/lib/quest/admin";
+import {
+  addPartner,
+  addRoundQuestion,
+  markReportReviewed,
+  matchCommunityMembers,
+  removePartner,
+  setRound,
+  unassignRoundQuestion,
+} from "@/lib/quest/admin";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const uuid = /^[0-9a-f-]{36}$/i;
@@ -60,4 +68,29 @@ export async function removePartnerAction(_: ActionState, form: FormData): Promi
   const ok = await removePartner(id);
   revalidatePath("/admin-internal/quest");
   return ok ? { ok: true, message: "Removed." } : { ok: false, message: "Players already scanned this partner, so it stays." };
+}
+
+export async function addQuestionAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const round = Number(form.get("round"));
+  const question = String(form.get("question") ?? "").trim();
+  const options = [0, 1, 2, 3].map((i) => String(form.get(`option${i}`) ?? "").trim());
+  const correct = Number(form.get("correct"));
+  if (![1, 2, 3].includes(round)) return { ok: false, message: "Pick a round." };
+  if (question.length < 5 || question.length > 200) return { ok: false, message: "Write the question (5 to 200 characters)." };
+  if (options.some((o) => !o || o.length > 120)) return { ok: false, message: "Fill in all 4 answers (up to 120 characters each)." };
+  if (new Set(options.map((o) => o.toLowerCase())).size < 4) return { ok: false, message: "The 4 answers must be different." };
+  if (![0, 1, 2, 3].includes(correct)) return { ok: false, message: "Mark the right answer." };
+  await addRoundQuestion(round, question, options, correct);
+  revalidatePath("/admin-internal/quest");
+  return { ok: true, message: `Added to Round ${round}.` };
+}
+
+export async function removeQuestionAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  if (!uuid.test(id)) return { ok: false, message: "Invalid question." };
+  await unassignRoundQuestion(id);
+  revalidatePath("/admin-internal/quest");
+  return { ok: true, message: "Removed from round." };
 }

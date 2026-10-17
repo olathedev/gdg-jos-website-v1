@@ -11,15 +11,67 @@ type Initial = {
   avatar: string | null;
   stack: string[];
   fun_fact: string | null;
+  github: string | null;
+  linkedin: string | null;
+  x_handle: string | null;
+  instagram: string | null;
+  whatsapp: string | null;
+  is_adult: boolean;
+  listed: boolean;
+  share_whatsapp: boolean;
   onboarded: boolean;
 };
 
+const SOCIALS = [
+  { id: "github", label: "GitHub", prefix: "github.com/", placeholder: "yourname" },
+  { id: "linkedin", label: "LinkedIn", prefix: "linkedin.com/in/", placeholder: "your-name" },
+  { id: "x_handle", label: "X", prefix: "x.com/", placeholder: "yourhandle" },
+  { id: "instagram", label: "Instagram", prefix: "instagram.com/", placeholder: "yourname" },
+] as const;
+
+function Toggle({
+  name,
+  checked,
+  onChange,
+  disabled = false,
+  title,
+  hint,
+}: {
+  name: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  disabled?: boolean;
+  title: string;
+  hint?: string;
+}) {
+  return (
+    <label className={`flex min-h-14 items-center gap-3 px-4 py-3 ${disabled ? "opacity-40" : "cursor-pointer"}`}>
+      <span className="flex flex-1 flex-col">
+        <span className="text-[15px] font-bold">{title}</span>
+        {hint && <span className="text-xs text-white/50">{hint}</span>}
+      </span>
+      <input
+        type="checkbox"
+        name={name}
+        checked={checked && !disabled}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden
+        className="relative h-7 w-12 shrink-0 rounded-full bg-white/15 transition-colors peer-checked:bg-g-green peer-focus-visible:outline-2 peer-focus-visible:outline-h-yellow after:absolute after:top-1 after:left-1 after:size-5 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5"
+      />
+    </label>
+  );
+}
+
 const FACT_IDEAS = ["I've never seen snow", "I can name every Pokémon", "I code with my left hand only", "I've been to 9 states"];
 
-const shown = (name: string) => {
+const shown = (name: string, adult = true) => {
   const p = name.trim().split(/\s+/).filter(Boolean);
   if (!p.length) return "Your name";
-  return p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
+  return adult && p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
 };
 
 const label = "text-[11px] font-bold tracking-[0.2em] text-white/50";
@@ -32,6 +84,9 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
   const [name, setName] = useState(initial.full_name);
   const [picked, setPicked] = useState<string[]>(initial.stack);
   const [fact, setFact] = useState(initial.fun_fact ?? "");
+  const [adult, setAdult] = useState(initial.is_adult);
+  const [listed, setListed] = useState(initial.listed);
+  const [shareWa, setShareWa] = useState(initial.share_whatsapp);
 
   const toggle = (l: string) => setPicked((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : cur.length < 3 ? [...cur, l] : cur));
 
@@ -40,7 +95,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
-        <span className="type-heading text-2xl font-bold">{shown(name)}</span>
+        <span className="type-heading text-2xl font-bold">{shown(name, adult)}</span>
         <span className="flex flex-wrap justify-center gap-1.5">
           {(picked.length ? picked : ["Your stack"]).map((p) => (
             <span key={p} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold">
@@ -89,7 +144,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
           className={`${field} h-14`}
         />
         <p className="text-xs text-white/50">
-          Players see &quot;{shown(name)}&quot;. They&apos;ll need to know it to lock you in.
+          The leaderboard shows &quot;{shown(name, adult)}&quot;. Padis you accept see your full name.
         </p>
       </div>
 
@@ -126,23 +181,84 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
 
       <div className="flex flex-col gap-2">
         <label htmlFor="fun_fact" className={label}>
-          A FUN FACT ABOUT YOU
+          A FUN FACT ABOUT YOU <span className="text-white/30">(OPTIONAL)</span>
         </label>
         <textarea
           id="fun_fact"
           name="fun_fact"
           value={fact}
           onChange={(e) => setFact(e.target.value)}
-          required
           rows={2}
           maxLength={90}
           placeholder={`e.g. ${FACT_IDEAS[0]}`}
           className={`${field} resize-none py-3`}
         />
         <p className="flex justify-between text-xs text-white/50">
-          <span>Players who scan you get quizzed on this. Make it memorable.</span>
+          <span>Shown on your card. A great conversation starter.</span>
           <span className="tabular-nums">{fact.length}/90</span>
         </p>
+      </div>
+
+      <fieldset className="flex flex-col gap-3">
+        <legend className={`${label} mb-3`}>
+          SOCIALS <span className="text-white/30">(USERNAMES ONLY)</span>
+        </legend>
+        {SOCIALS.map((f) => (
+          <div key={f.id} className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
+            <label htmlFor={f.id} className="w-24 shrink-0 pl-4 text-sm font-bold">
+              {f.label}
+            </label>
+            <span className="text-sm text-white/35">{f.prefix}</span>
+            <input
+              id={f.id}
+              name={f.id}
+              defaultValue={initial[f.id] ?? ""}
+              placeholder={f.placeholder}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              maxLength={100}
+              className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-white outline-none placeholder:text-white/25"
+            />
+          </div>
+        ))}
+        <div className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
+          <label htmlFor="whatsapp" className="w-24 shrink-0 pl-4 text-sm font-bold">
+            WhatsApp
+          </label>
+          <input
+            id="whatsapp"
+            name="whatsapp"
+            type="tel"
+            inputMode="tel"
+            defaultValue={initial.whatsapp ? `+${initial.whatsapp}` : ""}
+            placeholder="0803 000 0000"
+            className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-white outline-none placeholder:text-white/25"
+          />
+        </div>
+        <p className="text-xs leading-relaxed text-white/50">
+          We build every link ourselves, so nobody can hide a dodgy link. Socials are only shown to padis you accept.
+        </p>
+      </fieldset>
+
+      <div className="flex flex-col divide-y divide-white/[0.06] rounded-[24px] border border-white/[0.12] bg-[#121212]">
+        <Toggle name="is_adult" checked={adult} onChange={setAdult} title="I am 18 or over" />
+        <Toggle
+          name="listed"
+          checked={listed}
+          onChange={setListed}
+          disabled={!adult}
+          title="Show me in the directory"
+          hint={adult ? "Others can find you and send a padi request" : "Only for players 18 and over"}
+        />
+        <Toggle
+          name="share_whatsapp"
+          checked={shareWa}
+          onChange={setShareWa}
+          disabled={!adult}
+          title="Share my WhatsApp with padis"
+          hint="Only people you accept or scan see it"
+        />
       </div>
 
       {state && (

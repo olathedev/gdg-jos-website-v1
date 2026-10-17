@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import AutoRefresh from "@/components/quest/AutoRefresh";
 import HallQr from "@/components/quest/HallQr";
-import { Logo } from "@/components/quest/ui";
+import { GameAvatar, Logo } from "@/components/quest/ui";
 import { POINTS } from "@/lib/quest/config";
 import { hallKeyValid } from "@/lib/quest/entrance";
 import { leaderboard } from "@/lib/quest/points";
@@ -18,8 +18,8 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
   const top = rows.slice(0, 10);
 
   return (
-    <main className="relative grid min-h-dvh grid-cols-[minmax(0,1fr)_minmax(320px,30vw)] gap-[4vw] overflow-hidden bg-ink px-[4.4vw] py-[6vh] text-white">
-      <AutoRefresh seconds={30} />
+    <main className="relative grid min-h-dvh grid-cols-[minmax(0,1fr)_minmax(320px,30vw)] gap-[4vw] overflow-hidden bg-[#0A0A0A] px-[4.4vw] py-[6vh] text-white">
+      <AutoRefresh seconds={15} />
       <span aria-hidden className="absolute -top-5 left-[47%] h-11 w-[150px] -rotate-16 rounded-full bg-g-blue" />
       <span aria-hidden className="absolute top-6 left-[61%] size-10 rounded-full bg-g-yellow" />
       <span aria-hidden className="absolute -bottom-6 left-[42%] h-10 w-[120px] rotate-12 rounded-full bg-g-red" />
@@ -42,6 +42,7 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
                 >
                   {r.rank}
                 </span>
+                <GameAvatar avatar={r.avatar} initials={r.initials} size={46} />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-[clamp(16px,1.6vw,24px)] font-bold">{r.name}</span>
                   <span className="truncate text-sm text-[#BDBDBD]">{r.stack.join(" · ")}</span>
@@ -51,10 +52,10 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
             ))}
           </ol>
         ) : (
-          <p className="text-2xl text-[#BDBDBD]">The board fills up as players score. Check in to be first.</p>
+          <p className="text-2xl text-[#BDBDBD]">The board fills up as players score. Scan to join and be first.</p>
         )}
         <p className="mt-auto self-start rounded-full bg-[#2A2A2A] px-[18px] py-2.5 text-[17px] text-[#E0E0E0]">
-          Meet people: +{POINTS.meet} per scan · Scan room doors: +{POINTS.room} · Recap quizzes after each talk
+          Scan a player: +{POINTS.meet} each · Partner stands: +{POINTS.booth} · Brain Blitz: +{POINTS.roundAnswer} per right answer
         </p>
       </div>
 
@@ -62,7 +63,7 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
         <span className="type-heading text-[32px] leading-none font-bold">
           Just <span className="text-g-green">arrived?</span>
         </span>
-        <span className="text-[17px] leading-snug text-textDark">Scan with your phone camera to check in and start playing.</span>
+        <span className="text-[17px] leading-snug text-textDark">Scan with your phone camera to join DevFest Quest and start playing.</span>
         <HallQr hallKey={key} />
       </div>
     </main>

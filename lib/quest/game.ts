@@ -93,21 +93,36 @@ export async function saveProfile(userId: string, input: ProfileInput) {
   if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
 }
 
-/** Onboarding for the stage game. Leaves socials and directory settings as they are. */
+/** The player card: avatar, name, stack, fun fact, socials and directory choices. */
 export async function savePlayer(userId: string, input: PlayerInput) {
   const sql = db();
-  const [row] = await sql`
-    update quest_profiles set
-      full_name = ${input.full_name},
-      avatar = ${input.avatar},
-      stack = ${input.stack},
-      fun_fact = ${input.fun_fact},
-      is_adult = ${input.is_adult},
-      listed = listed and ${input.is_adult},
-      onboarded_at = coalesce(onboarded_at, now())
-    where id = ${userId}
-    returning id`;
-  if (!row) throw new GameError("Your session has ended. Sign in again.");
+  const adult = input.is_adult;
+  try {
+    const [row] = await sql`
+      update quest_profiles set
+        full_name = ${input.full_name},
+        avatar = ${input.avatar},
+        stack = ${input.stack},
+        fun_fact = ${input.fun_fact},
+        github = ${input.github},
+        linkedin = ${input.linkedin},
+        x_handle = ${input.x_handle},
+        x_handle_at = case when x_handle is distinct from ${input.x_handle} then now() else x_handle_at end,
+        instagram = ${input.instagram},
+        whatsapp = ${input.whatsapp},
+        is_adult = ${adult},
+        listed = ${adult && input.listed},
+        share_whatsapp = ${adult && input.share_whatsapp && Boolean(input.whatsapp)},
+        onboarded_at = coalesce(onboarded_at, now())
+      where id = ${userId}
+      returning id`;
+    if (!row) throw new GameError("Your session has ended. Sign in again.");
+  } catch (e) {
+    if (e instanceof Error && "code" in e && e.code === "23505") {
+      throw new GameError("That X handle is already linked to another player.");
+    }
+    throw e;
+  }
   if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
 }
 
@@ -127,7 +142,8 @@ export type Agent = {
   name: string;
   initials: string;
   stack: string[];
-  socials: { label: string; href: string }[];
+  avatar: string | null;
+  funFact: string | null;
   state: ConnState;
 };
 
@@ -140,18 +156,16 @@ function publicSocials(p: Pick<Profile, "github" | "linkedin" | "x_handle" | "in
   return out;
 }
 
-/** Who's coming (before 17 Oct) or Who's here (only people checked in today). */
+/** Everyone who chose to be listed (18+ only). Socials stay hidden until a padi request is accepted. */
 export async function directory(me: string) {
   const sql = db();
-  const here = phase() === "event";
   const rows = await sql<(Profile & { status: string | null; requester: string | null })[]>`
-    select p.id, p.full_name, p.stack, p.github, p.linkedin, p.x_handle, p.instagram, p.is_adult,
+    select p.id, p.full_name, p.stack, p.is_adult, p.avatar, p.fun_fact,
            c.status, c.requester
     from quest_profiles p
     left join quest_connections c
       on (c.user_a = least(p.id, ${me}::uuid) and c.user_b = greatest(p.id, ${me}::uuid))
     where p.id <> ${me} and p.listed and p.is_adult and p.onboarded_at is not null
-      ${here ? sql`and exists (select 1 from quest_checkins k where k.user_id = p.id and k.day = ${eventDate()})` : sql``}
       ${notBlocked(me)}
     order by p.onboarded_at desc
     limit 1000`;
@@ -160,7 +174,8 @@ export async function directory(me: string) {
     name: displayName(r.full_name),
     initials: initials(r.full_name),
     stack: r.stack,
-    socials: publicSocials(r),
+    avatar: r.avatar,
+    funFact: r.fun_fact,
     state:
       r.status === "accepted"
         ? "connected"
@@ -225,6 +240,8 @@ export type CrewMember = {
   fullName: string;
   initials: string;
   stack: string[];
+  avatar: string | null;
+  funFact: string | null;
   contacts: { label: string; href: string }[];
   met: boolean;
 };
@@ -233,7 +250,7 @@ export async function crew(me: string) {
   const sql = db();
   const rows = await sql<(Profile & { status: string; requester: string; met: boolean })[]>`
     select p.id, p.full_name, p.stack, p.github, p.linkedin, p.x_handle, p.instagram, p.whatsapp,
-           p.share_whatsapp, p.is_adult, c.status, c.requester,
+           p.share_whatsapp, p.is_adult, p.avatar, p.fun_fact, c.status, c.requester,
            exists (select 1 from quest_meets m where m.user_a = c.user_a and m.user_b = c.user_b) as met
     from quest_connections c
     join quest_profiles p on p.id = case when c.user_a = ${me} then c.user_b else c.user_a end
@@ -252,6 +269,8 @@ export async function crew(me: string) {
       fullName: withContacts && r.is_adult ? r.full_name : displayName(r.full_name, r.is_adult),
       initials: initials(r.is_adult ? r.full_name : displayName(r.full_name, false)),
       stack: r.stack,
+      avatar: r.avatar,
+      funFact: r.fun_fact,
       contacts,
       met: r.met,
     };
@@ -500,8 +519,11 @@ export async function hasMet(a: string, b: string) {
   return Boolean(row);
 }
 
+/**
+ * Scanning someone's QR: connects you both at once (18+ pairs) and pays both of you.
+ * Each pair scores once, whoever scans whom.
+ */
 export async function meet(me: Profile, token: string) {
-  requireEventDay();
   const other = await agentByToken(token);
   if (!other) throw new GameError("That QR isn't a DevFest Quest code.");
   if (other.id === me.id) throw new GameError("That's your own code. Scan someone else's.");
@@ -509,11 +531,7 @@ export async function meet(me: Profile, token: string) {
   const [blocked] = await sql`
     select 1 from quest_blocks
     where (blocker = ${me.id} and blocked = ${other.id}) or (blocker = ${other.id} and blocked = ${me.id})`;
-  if (blocked) throw new GameError("You can't meet this player.");
-  const day = eventDate();
-  const [{ both }] = await sql<{ both: number }[]>`
-    select count(*)::int as both from quest_checkins where day = ${day} and user_id in (${me.id}, ${other.id})`;
-  if (both < 2) throw new GameError("You both need to be checked in at the venue first.");
+  if (blocked) throw new GameError("You can't connect with this player.");
   const [{ recent }] = await sql<{ recent: number }[]>`
     select count(*)::int as recent from quest_meets
     where (user_a = ${me.id} or user_b = ${me.id}) and at > now() - interval '1 hour'`;
@@ -540,7 +558,12 @@ export async function meet(me: Profile, token: string) {
     await checkMissions(other.id);
     invalidateBoard();
   }
-  return { fresh, name: displayName(other.full_name, other.is_adult) };
+  return {
+    fresh,
+    name: displayName(other.full_name, other.is_adult),
+    avatar: other.avatar,
+    connected: me.is_adult && other.is_adult,
+  };
 }
 
 export async function scanStation(userId: string, code: string) {

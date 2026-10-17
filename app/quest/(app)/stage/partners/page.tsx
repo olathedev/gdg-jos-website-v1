@@ -18,7 +18,7 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
   const n = typeof sp.n === "string" ? sp.n.slice(0, 60) : undefined;
   const g = await gameState(me.id);
   if (g.states.partners === "locked") {
-    return <LockedStage id="partners" message="Lock in your squad in Stage 2 to unlock Partner Link-up." />;
+    return <LockedStage id="partners" message="Scan 3 people in Squad Up to unlock Partner Link-up." />;
   }
   const list = await partners(me.id);
   const visited = list.filter((p) => p.visited);

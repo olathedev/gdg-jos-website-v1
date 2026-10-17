@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const status = (id: StageId, s: StageState) => {
     if (s === "locked") return "Locked";
     if (id === "socials") return s === "done" ? "Cleared" : `${g.counts.follows}/${FOLLOWS.length} followed`;
-    if (id === "squad") return s === "done" ? `${g.counts.squad} locked in` : `${g.counts.squad}/${SQUAD_GOAL} locked in`;
+    if (id === "squad") return s === "done" ? `${g.counts.squad} connected` : `${g.counts.squad}/${SQUAD_GOAL} connected`;
     if (id === "quiz") {
       if (s === "live") return `Round ${liveRound?.round} is LIVE`;
       const played = g.rounds.filter((r) => r.played).length;

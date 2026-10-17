@@ -48,7 +48,7 @@ export const profileSchema = z.object({
 
 export type ProfileInput = z.infer<typeof profileSchema>;
 
-/** Onboarding for the stage game: the details other players are quizzed on. */
+/** The player card. Socials are usernames; the app builds every link itself. */
 export const playerSchema = z.object({
   full_name: profileSchema.shape.full_name,
   avatar: z.string().refine((v) => AVATARS.some((a) => a.id === v), "Pick an avatar."),
@@ -59,10 +59,14 @@ export const playerSchema = z.object({
   fun_fact: z
     .string()
     .trim()
-    .min(8, "Add a fun fact about you, at least a few words.")
     .max(90, "Keep your fun fact under 90 characters.")
-    .refine((v) => !/[<>{}\\]/.test(v) && !/https?:|www\./i.test(v), "No links in your fun fact."),
+    .refine((v) => !/[<>{}\\]/.test(v) && !/https?:|www\./i.test(v), "No links in your fun fact.")
+    .transform((v) => v || null),
+  ...handles,
+  whatsapp: profileSchema.shape.whatsapp,
   is_adult: z.boolean(),
+  listed: z.boolean(),
+  share_whatsapp: z.boolean(),
 });
 
 export type PlayerInput = z.infer<typeof playerSchema>;
@@ -76,15 +80,15 @@ export const links = {
 };
 
 /** "Ada Okafor" → "Ada O."; under-18s show first name only. */
-export function displayName(fullName: string, isAdult = true) {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+export function displayName(fullName: string | null | undefined, isAdult = true) {
+  const parts = (fullName ?? "").trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "Player";
   if (!isAdult || parts.length === 1) return parts[0];
   return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }
 
-export function initials(fullName: string) {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+export function initials(fullName: string | null | undefined) {
+  const parts = (fullName ?? "").trim().split(/\s+/).filter(Boolean);
   return ((parts[0]?.[0] ?? "A") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 

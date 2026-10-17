@@ -4,6 +4,7 @@ import { QrGlyph, Spark } from "@/components/quest/icons";
 import { GameAvatar } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { myScore } from "@/lib/quest/points";
+import { db } from "@/lib/tickets/db";
 import { displayName, initials } from "@/lib/quest/validate";
 
 export const metadata = { robots: { index: false } };
@@ -11,7 +12,12 @@ export const metadata = { robots: { index: false } };
 /** Signed-in game screens: one centred column, a slim top bar and a bottom bar. */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const me = await requireAgent();
-  const { score } = await myScore(me.id);
+  const [{ score }, [{ pending }]] = await Promise.all([
+    myScore(me.id),
+    db()<{ pending: number }[]>`
+      select count(*)::int as pending from quest_connections
+      where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}`,
+  ]);
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pb-32">
       <header className="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-3 bg-[#0A0A0A] px-4 py-3">
@@ -35,7 +41,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </span>
       </header>
       <main className="flex flex-1 flex-col">{children}</main>
-      <Nav />
+      <Nav pending={pending} />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
   const me = await requireAgent();
   const view = await roundView(me.id, round);
 
-  if (view.kind === "locked") return <LockedStage id="quiz" message="Lock in your squad in Stage 2 to unlock Brain Blitz." />;
+  if (view.kind === "locked") return <LockedStage id="quiz" message="Scan 3 people in Squad Up to unlock Brain Blitz." />;
 
   if (view.kind === "ready" || view.kind === "playing") return <RoundPlayer round={round} initial={view} />;
 

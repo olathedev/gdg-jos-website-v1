@@ -17,7 +17,7 @@ import {
   savePlayer,
   upsertAuthUser,
 } from "@/lib/quest/game";
-import { answerRound, finishRound, lockIn, startRound } from "@/lib/quest/stages";
+import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
 import { playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
 import { submitXPost } from "@/lib/quest/x";
@@ -101,38 +101,30 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     avatar: String(form.get("avatar") ?? ""),
     stack: form.getAll("stack").map(String),
     fun_fact: String(form.get("fun_fact") ?? ""),
-    is_adult: true,
+    github: String(form.get("github") ?? ""),
+    linkedin: String(form.get("linkedin") ?? ""),
+    x_handle: String(form.get("x_handle") ?? ""),
+    instagram: String(form.get("instagram") ?? ""),
+    whatsapp: String(form.get("whatsapp") ?? ""),
+    is_adult: form.get("is_adult") === "on",
+    listed: form.get("listed") === "on",
+    share_whatsapp: form.get("share_whatsapp") === "on",
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check your details." };
-  await savePlayer(me.id, parsed.data);
+  try {
+    await savePlayer(me.id, parsed.data);
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false, message: e.message };
+    throw e;
+  }
   revalidatePath("/quest", "layout");
-  if (!me.onboarded_at || !me.avatar || !me.fun_fact) redirect("/quest/home?welcome=1");
+  if (!me.onboarded_at || !me.avatar) redirect("/quest/home?welcome=1");
   redirect("/quest/profile");
 }
 
 /* ---------- stages ---------- */
 
-const token = z.string().regex(/^[A-Za-z0-9_-]{16,40}$/);
 const round = z.number().int().min(1).max(3);
-
-/** Squad Up: answers about the person whose QR you scanned. */
-export async function lockInAction(qrToken: string, answers: { name: string; stack: string; fact: string }) {
-  try {
-    const me = await agent();
-    const res = await lockIn(me, token.parse(qrToken), {
-      name: String(answers.name ?? ""),
-      stack: String(answers.stack ?? ""),
-      fact: String(answers.fact ?? ""),
-    });
-    // No revalidate here: it would re-render the scan page as "already in your squad" over
-    // the lock-in celebration. The next page you open reads fresh data anyway.
-    return { ok: true as const, ...res };
-  } catch (e) {
-    if (e instanceof GameError) return { ok: false as const, message: e.message, code: e.code };
-    console.error("[quest]", e);
-    return { ok: false as const, message: "Something went wrong. Try again." };
-  }
-}
 
 export async function startRoundAction(r: number) {
   try {

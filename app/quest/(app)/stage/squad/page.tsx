@@ -10,16 +10,15 @@ export const metadata = { title: "Squad Up" };
 
 const steps = [
   "Find someone and say hi",
-  "Learn their name, stack and fun fact",
-  "Tap Scan and point at their QR",
-  "Answer 3 questions about them to lock in",
+  "Tap Scan and point at their QR (or let them scan yours)",
+  "You're connected instantly and you both score",
 ];
 
 export default async function SquadPage() {
   const me = await requireAgent();
   const g = await gameState(me.id);
   if (g.states.squad === "locked") {
-    return <LockedStage id="squad" message="Clear Stage 1, Follow the Signal, to unlock Squad Up." />;
+    return <LockedStage id="squad" message="Squad Up is opening up. Try again in a moment." />;
   }
   const squad = await squadList(me.id);
   const done = squad.length >= SQUAD_GOAL;
@@ -27,11 +26,11 @@ export default async function SquadPage() {
   return (
     <div className="flex flex-col gap-6">
       <StageHeader id="squad" progress={squad.length} goal={SQUAD_GOAL} done={done}>
-        <span className="rounded-full bg-h-yellow px-3 py-1 text-xs font-black text-ink">+{POINTS.meet} per person · no limit</span>
+        <span className="rounded-full bg-h-yellow px-3 py-1 text-xs font-black text-ink">+{POINTS.meet} each · no limit</span>
       </StageHeader>
 
       <Steps id="squad" steps={steps} />
-      <p className="-mt-3 text-center text-xs text-white/50">Get any answer wrong and you&apos;ll have to wait a bit, so really talk to them.</p>
+      <p className="-mt-3 text-center text-xs text-white/50">Each pair scores once, whoever scans whom.</p>
 
       <div className="flex flex-col gap-3">
         <Link href="/quest/scan" className={gameBtn}>
@@ -51,7 +50,7 @@ export default async function SquadPage() {
             <span aria-hidden className="flex size-12 items-center justify-center rounded-full border-2 border-dashed border-white/20 text-white/40">
               <StageGlyph id="squad" size={24} ink="currentColor" fill="transparent" />
             </span>
-            <span className="text-sm text-white/60">No one locked in yet. Your first squad member is out there.</span>
+            <span className="text-sm text-white/60">No one yet. Your first squad member is out there.</span>
           </div>
         ) : (
           <ul className="grid grid-cols-3 gap-3">

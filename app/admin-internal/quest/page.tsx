@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AdminChrome } from "@/components/admin/Chrome";
 import QRCode from "qrcode";
-import { AddPartner, CommunityImport, RemovePartner, ReviewButton, RoundButton } from "@/components/admin/QuestForms";
+import { AddPartner, AddQuestion, CommunityImport, RemovePartner, RemoveQuestion, ReviewButton, RoundButton } from "@/components/admin/QuestForms";
 import { adminSiteUrl } from "@/lib/admin/site";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
-import { listPartners, listReports, listRounds, questStats } from "@/lib/quest/admin";
+import { listPartners, listReports, listRoundQuestions, listRounds, questStats } from "@/lib/quest/admin";
 import { supabaseAuthEnabled } from "@/lib/quest/session";
 import { phase } from "@/lib/quest/time";
 
@@ -29,12 +29,13 @@ export default async function QuestAdminPage() {
   const base = `/${adminPath()}`;
   const me = await currentAdmin();
   if (!me) redirect(base);
-  const [stats, reports, rounds, partnerRows, site] = await Promise.all([
+  const [stats, reports, rounds, partnerRows, site, questions] = await Promise.all([
     questStats(),
     listReports(),
     listRounds(),
     listPartners(),
     adminSiteUrl(),
+    listRoundQuestions(),
   ]);
   const partners = await Promise.all(
     partnerRows.map(async (p) => {
@@ -102,6 +103,34 @@ export default async function QuestAdminPage() {
               );
             })}
           </ul>
+        </Section>
+
+        <Section
+          title="Brain Blitz questions"
+          sub="Add questions from the talks before you open a round. Each player gets 10 questions from the round, picked at random if it has more than 10. Remove only takes a question out of its round; answers and points already given stay."
+        >
+          <AddQuestion />
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
+            {[1, 2, 3].map((r) => (
+              <div key={r} className="rounded-2xl border border-zinc-200/80 p-4">
+                <p className="mb-3 text-sm font-medium">
+                  Round {r} <span className="text-zinc-400">· {questions[r].length} questions</span>
+                </p>
+                <ol className="space-y-2.5">
+                  {questions[r].map((q) => (
+                    <li key={q.id} className="flex items-start justify-between gap-3 text-sm">
+                      <span className="min-w-0">
+                        <span className="block">{q.question}</span>
+                        <span className="block text-xs text-emerald-700">{q.options[q.correct]}</span>
+                        {q.answers > 0 && <span className="block text-xs text-zinc-400">{q.answers} answers</span>}
+                      </span>
+                      <RemoveQuestion id={q.id} />
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </div>
         </Section>
 
         <Section

@@ -7,7 +7,7 @@ export const metadata = { title: "Your player card", robots: { index: false } };
 
 export default async function Setup() {
   const me = await requireMe();
-  const ready = Boolean(me.onboarded_at && me.avatar && me.fun_fact);
+  const ready = Boolean(me.onboarded_at && me.avatar);
   return (
     <main className="mx-auto flex max-w-md flex-col gap-5 px-4 pt-4 pb-12">
       <div className="flex items-center justify-between">
@@ -28,6 +28,14 @@ export default async function Setup() {
           avatar: me.avatar,
           stack: me.stack,
           fun_fact: me.fun_fact,
+          github: me.github,
+          linkedin: me.linkedin,
+          x_handle: me.x_handle,
+          instagram: me.instagram,
+          whatsapp: me.whatsapp,
+          is_adult: me.is_adult,
+          listed: me.listed,
+          share_whatsapp: me.share_whatsapp,
           onboarded: ready,
         }}
       />

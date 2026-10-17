@@ -30,3 +30,6 @@ export function daysUntilEvent() {
 export function timeLabel(d: Date | string) {
   return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" }).format(new Date(d));
 }
+
+/** One timestamp per render, so server and browser agree on "N min ago". */
+export const serverNow = () => Date.now();

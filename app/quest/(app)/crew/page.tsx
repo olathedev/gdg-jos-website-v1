@@ -1,6 +1,7 @@
 import CrewList from "@/components/quest/CrewList";
 import { requireAgent } from "@/lib/quest/auth";
 import { crew } from "@/lib/quest/game";
+import { serverNow } from "@/lib/quest/time";
 
 export const metadata = { title: "Padis" };
 
@@ -13,7 +14,7 @@ export default async function Crew() {
         <h1 className="type-heading text-[26px] leading-tight font-bold">Padis</h1>
         <p className="text-sm text-white/60">People you&apos;ve connected with. Their socials show here once you&apos;re padis.</p>
       </header>
-      <CrewList pending={pending} connected={connected} />
+      <CrewList pending={pending} connected={connected} now={serverNow()} />
     </div>
   );
 }

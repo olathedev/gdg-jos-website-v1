@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { touchActive } from "./active";
 import { checkIn, GameError, getProfile } from "./game";
 import { CHECKIN_COOKIE, sessionUserId, unseal } from "./session";
 import { phase } from "./time";
@@ -9,7 +10,10 @@ import { phase } from "./time";
 /** The signed-in attendee, once per request. */
 export const getMe = cache(async () => {
   const id = await sessionUserId();
-  return id ? getProfile(id) : null;
+  if (!id) return null;
+  const me = await getProfile(id);
+  if (me) await touchActive(me.id);
+  return me;
 });
 
 export async function requireMe() {

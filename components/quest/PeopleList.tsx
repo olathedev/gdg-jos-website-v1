@@ -6,13 +6,16 @@ import { useMemo, useState, useTransition } from "react";
 import { connectAction } from "@/app/quest/actions";
 import { STACKS } from "@/lib/quest/config";
 import type { Agent, ConnState } from "@/lib/quest/game";
+import { isHereNow } from "@/lib/quest/presence";
+import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
 import { GameAvatar, stackStyle } from "./ui";
 
 /** Directory: search by name, filter by stack, one tap to send a padi request. */
-export default function PeopleList({ people, canConnect }: { people: Agent[]; canConnect: boolean }) {
+export default function PeopleList({ people, canConnect, now }: { people: Agent[]; canConnect: boolean; now: number }) {
   const [query, setQuery] = useState("");
   const [stack, setStack] = useState<string | null>(null);
+  const [hereNow, setHereNow] = useState(false);
   const [states, setStates] = useState<Record<string, ConnState>>({});
   const [gone, setGone] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -21,10 +24,17 @@ export default function PeopleList({ people, canConnect }: { people: Agent[]; ca
   const stacks = useMemo(() => STACKS.filter((s) => people.some((p) => p.stack.includes(s.label))), [people]);
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return people.filter(
-      (p) => !gone.has(p.id) && (!q || p.name.toLowerCase().includes(q)) && (!stack || p.stack.includes(stack)),
+    const list = people.filter(
+      (p) =>
+        !gone.has(p.id) &&
+        (!q || p.name.toLowerCase().includes(q)) &&
+        (!stack || p.stack.includes(stack)) &&
+        (!hereNow || isHereNow(p.lastActive, now)),
     );
-  }, [people, query, stack, gone]);
+    // Here now: most recently active first.
+    return hereNow ? [...list].sort((a, b) => (b.lastActive ?? "").localeCompare(a.lastActive ?? "")) : list;
+  }, [people, query, stack, gone, hereNow, now]);
+  const hereCount = useMemo(() => people.filter((p) => isHereNow(p.lastActive, now)).length, [people, now]);
 
   const ask = (id: string, current: ConnState) =>
     start(async () => {
@@ -39,6 +49,26 @@ export default function PeopleList({ people, canConnect }: { people: Agent[]; ca
 
   return (
     <div className="flex flex-col gap-4">
+      <div role="group" aria-label="Show" className="grid grid-cols-2 gap-1 rounded-full border border-white/[0.12] bg-[#121212] p-1">
+        {[
+          { on: !hereNow, label: `Everyone · ${people.length}`, set: false },
+          { on: hereNow, label: `Here now · ${hereCount}`, set: true },
+        ].map((t) => (
+          <button
+            key={t.label}
+            type="button"
+            aria-pressed={t.on}
+            onClick={() => setHereNow(t.set)}
+            className={`flex min-h-11 items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors ${
+              t.on ? "bg-white text-[#0A0A0A]" : "text-white/70 hover:text-white"
+            }`}
+          >
+            {t.set && <span aria-hidden className="size-2 rounded-full bg-[#34A853]" />}
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       <label className="flex h-13 items-center gap-2.5 rounded-full border border-white/[0.12] bg-[#121212] px-4 focus-within:border-h-yellow">
         <Search aria-hidden className="size-4 text-white/40" />
         <span className="sr-only">Search by name</span>
@@ -82,7 +112,7 @@ export default function PeopleList({ people, canConnect }: { people: Agent[]; ca
 
       {shown.length === 0 ? (
         <p className="rounded-[24px] border border-white/[0.08] bg-[#121212] px-5 py-10 text-center text-sm text-white/60">
-          {people.length === 0 ? "No one else is here yet. Share your QR and get people playing." : "No one matches that."}
+          {people.length === 0 ? "No one else is here yet. Share your QR and get people playing." : hereNow ? "No one matching is active right now." : "No one matches that."}
         </p>
       ) : (
         <ul className="flex flex-col gap-2.5">
@@ -103,6 +133,7 @@ export default function PeopleList({ people, canConnect }: { people: Agent[]; ca
                       ))}
                     </span>
                     {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
+                    <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
                 </div>

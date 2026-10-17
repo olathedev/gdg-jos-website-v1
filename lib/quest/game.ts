@@ -33,6 +33,7 @@ export type Profile = {
   quest_token: string;
   invite_code: string;
   onboarded_at: Date | null;
+  last_active_at?: Date | null;
   avatar: string | null;
   fun_fact: string | null;
 };
@@ -143,6 +144,7 @@ export type Agent = {
   stack: string[];
   avatar: string | null;
   funFact: string | null;
+  lastActive: string | null;
   state: ConnState;
 };
 
@@ -159,7 +161,7 @@ function publicSocials(p: Pick<Profile, "github" | "linkedin" | "x_handle" | "in
 export async function directory(me: string) {
   const sql = db();
   const rows = await sql<(Profile & { status: string | null; requester: string | null })[]>`
-    select p.id, p.full_name, p.stack, p.is_adult, p.avatar, p.fun_fact,
+    select p.id, p.full_name, p.stack, p.is_adult, p.avatar, p.fun_fact, p.last_active_at,
            c.status, c.requester
     from quest_profiles p
     left join quest_connections c
@@ -175,6 +177,7 @@ export async function directory(me: string) {
     stack: r.stack,
     avatar: r.avatar,
     funFact: r.fun_fact,
+    lastActive: r.last_active_at ? new Date(r.last_active_at).toISOString() : null,
     state:
       r.status === "accepted"
         ? "connected"
@@ -240,6 +243,7 @@ export type CrewMember = {
   stack: string[];
   avatar: string | null;
   funFact: string | null;
+  lastActive: string | null;
   contacts: { label: string; href: string }[];
   met: boolean;
 };
@@ -248,7 +252,7 @@ export async function crew(me: string) {
   const sql = db();
   const rows = await sql<(Profile & { status: string; requester: string; met: boolean })[]>`
     select p.id, p.full_name, p.stack, p.github, p.linkedin, p.x_handle, p.instagram, p.whatsapp,
-           p.share_whatsapp, p.is_adult, p.avatar, p.fun_fact, c.status, c.requester,
+           p.share_whatsapp, p.is_adult, p.avatar, p.fun_fact, p.last_active_at, c.status, c.requester,
            exists (select 1 from quest_meets m where m.user_a = c.user_a and m.user_b = c.user_b) as met
     from quest_connections c
     join quest_profiles p on p.id = case when c.user_a = ${me} then c.user_b else c.user_a end
@@ -269,6 +273,7 @@ export async function crew(me: string) {
       stack: r.stack,
       avatar: r.avatar,
       funFact: r.fun_fact,
+      lastActive: r.last_active_at ? new Date(r.last_active_at).toISOString() : null,
       contacts,
       met: r.met,
     };

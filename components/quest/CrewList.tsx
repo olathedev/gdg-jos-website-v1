@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { respondAction } from "@/app/quest/actions";
 import type { CrewMember } from "@/lib/quest/game";
+import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
 import { BrandMark } from "./icons";
 import { GameAvatar, stackStyle } from "./ui";
@@ -26,7 +27,7 @@ function Stack({ stack }: { stack: string[] }) {
 const card = "flex flex-col gap-3 rounded-[24px] border border-white/[0.08] bg-[#121212] p-3.5";
 
 /** Incoming padi requests (accept or decline) and padis with their shared contacts. */
-export default function CrewList({ pending, connected }: { pending: CrewMember[]; connected: CrewMember[] }) {
+export default function CrewList({ pending, connected, now }: { pending: CrewMember[]; connected: CrewMember[]; now: number }) {
   const [done, setDone] = useState<Record<string, "accepted" | "declined">>({});
   const [gone, setGone] = useState<Set<string>>(new Set());
   const [, start] = useTransition();
@@ -56,6 +57,7 @@ export default function CrewList({ pending, connected }: { pending: CrewMember[]
                     <span className="truncate text-base font-bold">{p.name}</span>
                     <Stack stack={p.stack} />
                     {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
+                    <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
                 </div>
@@ -104,6 +106,7 @@ export default function CrewList({ pending, connected }: { pending: CrewMember[]
                     <Stack stack={p.stack} />
                     {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
                     {p.met && <span className="text-[11px] font-bold tracking-wider text-[#81C995]">MET IN PERSON</span>}
+                    <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
                 </div>

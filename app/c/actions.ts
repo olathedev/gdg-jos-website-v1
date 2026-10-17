@@ -7,7 +7,7 @@ import { adminSiteUrl } from "@/lib/admin/site";
 import { cloudinaryEnabled, type SignedUpload, signUpload } from "@/lib/cloudinary";
 import { getMe } from "@/lib/quest/auth";
 import { removePhoto } from "@/lib/quest/circle-admin";
-import { requireCircle, roleOf, setRole } from "@/lib/quest/circles";
+import { CIRCLE_SOCIALS, requireCircle, roleOf, setRole, updateCircleSocials } from "@/lib/quest/circles";
 import { GameError } from "@/lib/quest/game";
 import { createRoleInvite, revokeRoleInvite } from "@/lib/quest/invites";
 import {
@@ -19,9 +19,9 @@ import {
   updatePartnerFull,
   updatePartnerPublic,
 } from "@/lib/quest/partner-admin";
-import { parsePartnerFull, parsePartnerPublic } from "@/lib/quest/partner-input";
+import { httpsUrl, parsePartnerFull, parsePartnerPublic } from "@/lib/quest/partner-input";
 import { isStaff, ROLES, roleLabel, type Role, type StaffRole } from "@/lib/quest/roles";
-import { displayName } from "@/lib/quest/validate";
+import { displayName, PARTNER_HANDLE } from "@/lib/quest/validate";
 import { db } from "@/lib/tickets/db";
 
 export type AdminResult = { ok: boolean; message: string } | null;
@@ -177,4 +177,27 @@ export async function partnerLogoSignAction(slug: string, stationId: string): Pr
   } catch (e) {
     return { error: e instanceof GameError ? e.message : "Not allowed." };
   }
+}
+
+/* ---------- circle settings ---------- */
+
+export async function saveCircleSettingsAction(slug: string, _: AdminResult, form: FormData): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { me, circle } = await context(slug);
+    const get = (k: string) => String(form.get(k) ?? "").trim();
+    const whatsapp = get("whatsapp_url");
+    if (whatsapp && !/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9?=&_-]+$/.test(whatsapp)) {
+      throw new GameError("The WhatsApp group link must start with https://chat.whatsapp.com/");
+    }
+    const website = httpsUrl(get("website_url"));
+    if (website === undefined) throw new GameError("The website must be a full https:// link.");
+    const socials = {} as Record<(typeof CIRCLE_SOCIALS)[number]["id"], string | null>;
+    for (const s of CIRCLE_SOCIALS) {
+      const h = get(s.id).replace(/^@/, "");
+      if (h && !PARTNER_HANDLE.test(h)) throw new GameError(`${s.name}: enter the handle only, e.g. gdgjos (letters, digits, . _ -).`);
+      socials[s.id] = h || null;
+    }
+    await updateCircleSocials(circle.id, me.id, { whatsapp_url: whatsapp || null, website_url: website, ...socials });
+    return "Saved. Home shows the new links now.";
+  });
 }

@@ -16,7 +16,7 @@ export function PartnerLogo({ name, url, size = 56 }: { name: string; url: strin
     .join("");
   return url ? (
     // eslint-disable-next-line @next/next/no-img-element -- organiser-provided https link, any host
-    <img src={url} alt={`${name} logo`} width={size} height={size} className="shrink-0 rounded-2xl bg-white object-contain p-1.5" style={{ width: size, height: size }} />
+    <img src={url} alt={`${name} logo`} width={size} height={size} loading="lazy" className="shrink-0 rounded-2xl bg-white object-contain p-1.5" style={{ width: size, height: size }} />
   ) : (
     <span
       aria-hidden

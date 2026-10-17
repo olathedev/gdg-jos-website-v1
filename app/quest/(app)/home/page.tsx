@@ -1,12 +1,16 @@
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from "@/components/quest/icons";
+import CircleSocials from "@/components/quest/CircleSocials";
 import JoinGdg, { JoinWhatsApp } from "@/components/quest/JoinGdg";
+import PartnersRow from "@/components/quest/PartnersRow";
 import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
 import ShareProfile from "@/components/quest/ShareProfile";
 import XPost from "@/components/quest/XPost";
 import { adminSiteUrl } from "@/lib/admin/site";
 import { requireAgent } from "@/lib/quest/auth";
+import { circleSocialLinks, getCircle } from "@/lib/quest/circles";
+import { partnerCards } from "@/lib/quest/partners";
 import {
   FOLLOWS,
   PARTNER_GOAL,
@@ -46,6 +50,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
     ensureSlug(me),
     adminSiteUrl(),
   ]);
+  const [circle, partners] = await Promise.all([getCircle(), partnerCards(me.id)]);
   const rank = board.byId.get(me.id)?.rank;
   const top = board.rows.slice(0, 3);
   const liveRound = g.rounds.find((r) => r.status === "live" && !r.played);
@@ -250,24 +255,12 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
         </Link>
       </div>
 
-      <Link
-        href="/quest/stage/partners"
-        className={`${panel} flex min-h-14 items-center gap-3 px-4 py-3 transition-transform active:scale-[0.98]`}
-      >
-        <StageBadge id="partners" color="#34A853" size={40} />
-        <span className="flex flex-1 flex-col">
-          <span className="text-[15px] font-bold">Meet the partners</span>
-          <span className="text-xs text-fg/60">
-            Check them out +{POINTS.partnerVisit} · follow +{POINTS.partnerFollow} · scan their booth +{POINTS.booth}
-          </span>
-        </span>
-        <ArrowRight aria-hidden className="size-5 text-fg/60" />
-      </Link>
-
       <XPost posted={posted} handle={me.x_handle} points={POINTS.xPost} />
 
       <JoinGdg claimed={joined} />
-      <JoinWhatsApp />
+      <JoinWhatsApp href={circle?.whatsapp_url} />
+      {circle && <CircleSocials host={circle.host_name} links={circleSocialLinks(circle)} />}
+      <PartnersRow partners={partners} />
 
       {/* Mini board */}
       {top.length > 0 && (

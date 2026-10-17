@@ -54,11 +54,11 @@ export default function JoinGdg({ claimed }: { claimed: boolean }) {
   );
 }
 
-/** The GDG Jos WhatsApp group. Opens WhatsApp (or a new tab). */
-export function JoinWhatsApp() {
+/** The circle's WhatsApp group (from circle settings, else the GDG Jos group). Opens WhatsApp (or a new tab). */
+export function JoinWhatsApp({ href }: { href?: string | null }) {
   return (
     <a
-      href={WHATSAPP_URL}
+      href={href || WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
       className="flex min-h-14 items-center gap-3 rounded-[24px] border border-g-green/40 bg-g-green/10 px-4 py-3 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-g-green active:scale-[0.98]"

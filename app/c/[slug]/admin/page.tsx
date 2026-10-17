@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import RemovePhotoButton from "@/components/quest/RemovePhotoButton";
 import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
+import CircleSettings from "@/components/quest/CircleSettings";
 import { CreateInvite, RevokeInvite } from "@/components/quest/InviteLinks";
 import { AddPartner, PartnerEditor } from "@/components/quest/PartnerEditor";
 import { PartnerLogo } from "@/components/quest/PartnerProfile";
@@ -28,6 +29,7 @@ const TABS = [
   { id: "people", label: "People" },
   { id: "invites", label: "Invite links" },
   { id: "partners", label: "Partners" },
+  { id: "settings", label: "Settings" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
@@ -90,6 +92,7 @@ export default async function CircleAdmin({ params, searchParams }: PageProps<"/
       {tab === "people" && <People circle={circle} me={me} actorRole={role} sp={sp} here={here} />}
       {tab === "invites" && <Invites circle={circle} actorRole={role} inviteCode={me.invite_code} />}
       {tab === "partners" && <Partners circle={circle} isOrganiser={role === "organiser"} />}
+      {tab === "settings" && <CircleSettings slug={circle.slug} host={circle.host_name} values={circle} />}
     </main>
   );
 }

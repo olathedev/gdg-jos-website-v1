@@ -19,6 +19,7 @@ import {
 } from "@/lib/quest/game";
 import { markAllSeen } from "@/lib/quest/celebrate";
 import { POINTS } from "@/lib/quest/config";
+import { claimPartnerFollow, claimPartnerVisit } from "@/lib/quest/partners";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
 import { hasSocial, playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
@@ -242,6 +243,24 @@ export async function xPostAction(_: Result, form: FormData): Promise<Result> {
     if (!post) throw new GameError("Paste a link like x.com/you/status/123…");
     const res = await submitXPost(me, post.id, post.handle);
     return `Post counted. +${res.points}`;
+  });
+}
+
+/* ---------- partners ---------- */
+
+export async function partnerVisitAction(stationId: string) {
+  return play(async () => {
+    const me = await agent();
+    const points = await claimPartnerVisit(me.id, uuid.parse(stationId));
+    return points ? `+${points}` : "";
+  });
+}
+
+export async function partnerFollowAction(stationId: string, platform: string) {
+  return play(async () => {
+    const me = await agent();
+    await claimPartnerFollow(me.id, uuid.parse(stationId), platform);
+    return "Followed.";
   });
 }
 

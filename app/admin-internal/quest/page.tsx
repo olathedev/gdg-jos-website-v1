@@ -6,8 +6,10 @@ import {
   AddPartner,
   AddQuestion,
   CommunityImport,
+  EditPartner,
   PartnersSwitch,
   RemovePartner,
+  ResetPartnerCode,
   RemoveQuestion,
   ReviewButton,
   RoundButton,
@@ -51,7 +53,7 @@ export default async function QuestAdminPage() {
   const partners = await Promise.all(
     partnerRows.map(async (p) => {
       const url = `${site}/quest/s/${p.code}`;
-      return { ...p, url, qr: await QRCode.toDataURL(url, { margin: 1, width: 600, errorCorrectionLevel: "M" }) };
+      return { ...p, url, qr: await QRCode.toDataURL(url, { margin: 1, width: 1000, errorCorrectionLevel: "M" }) };
     }),
   );
 
@@ -146,7 +148,7 @@ export default async function QuestAdminPage() {
 
         <Section
           title="Partners"
-          sub="Stage 4. Add each partner, then print their QR and give it to the people at their stand. Players scan it after asking about the partner. The stage stays closed for everyone until you open it here; after that each player still needs 3 padis. Remove only works before anyone has scanned."
+          sub="Stage 4. Add each partner, fill in their profile (Edit profile), then print their booth QR and give it to the people at their stand. Players earn points for reading a partner's profile and following them any time; booth scans wait until you open the stage here, and then each player still needs 3 padis. Remove only works before anyone has scanned."
         >
           <div className="mb-5">
             <PartnersSwitch open={partnersLive} />
@@ -167,18 +169,27 @@ export default async function QuestAdminPage() {
           {partners.length > 0 && (
             <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {partners.map((p) => (
-                <li key={p.id} className="flex gap-4 rounded-2xl border border-zinc-200/80 p-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
-                  <img src={p.qr} alt={`QR for ${p.name}`} className="size-24 shrink-0 rounded-lg border border-zinc-100" />
-                  <div className="flex min-w-0 flex-1 flex-col gap-1 text-sm">
-                    <span className="truncate font-medium">{p.name}</span>
-                    <span className="text-zinc-500">{p.scans} scans</span>
-                    <a href={p.qr} download={`partner-${p.name.replace(/\W+/g, "-").toLowerCase()}.png`} className="text-xs font-medium text-ink underline">
-                      Download QR
-                    </a>
-                    <span className="truncate text-xs text-zinc-400">{p.url}</span>
+                <li key={p.id} className="rounded-2xl border border-zinc-200/80 p-4">
+                  <div className="flex gap-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
+                    <img src={p.qr} alt={`QR for ${p.name}`} className="size-24 shrink-0 rounded-lg border border-zinc-100" />
+                    <div className="flex min-w-0 flex-1 flex-col gap-1 text-sm">
+                      <span className="truncate font-medium">
+                        {p.name} {!p.active && <span className="text-xs font-normal text-zinc-400">(hidden)</span>}
+                      </span>
+                      <span className="text-zinc-500">{p.scans} scans</span>
+                      <a href={p.qr} download={`partner-${p.name.replace(/\W+/g, "-").toLowerCase()}.png`} className="text-xs font-medium text-ink underline">
+                        Download booth QR
+                      </a>
+                      <ResetPartnerCode id={p.id} name={p.name} />
+                      {p.slug && <span className="truncate text-xs text-zinc-400">Profile: {site}/quest/stage/partners/{p.slug}</span>}
+                    </div>
+                    <RemovePartner id={p.id} />
                   </div>
-                  <RemovePartner id={p.id} />
+                  <details className="mt-2">
+                    <summary className="cursor-pointer text-xs font-medium text-ink">Edit profile</summary>
+                    <EditPartner partner={p} />
+                  </details>
                 </li>
               ))}
             </ul>

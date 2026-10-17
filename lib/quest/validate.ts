@@ -103,6 +103,18 @@ export const links = {
   whatsapp: (n: string) => `https://wa.me/${n}`,
 };
 
+/** Partner socials: handles only (LinkedIn is the company page slug); the app builds the links. */
+export const PARTNER_SOCIALS = [
+  { id: "x", name: "X", href: (h: string) => `https://x.com/${h}` },
+  { id: "instagram", name: "Instagram", href: (h: string) => `https://www.instagram.com/${h}` },
+  { id: "linkedin", name: "LinkedIn", href: (h: string) => `https://www.linkedin.com/company/${h}` },
+  { id: "facebook", name: "Facebook", href: (h: string) => `https://www.facebook.com/${h}` },
+  { id: "github", name: "GitHub", href: (h: string) => `https://github.com/${h}` },
+  { id: "youtube", name: "YouTube", href: (h: string) => `https://www.youtube.com/@${h}` },
+] as const;
+export type PartnerSocial = (typeof PARTNER_SOCIALS)[number]["id"];
+export const PARTNER_HANDLE = /^[A-Za-z0-9._-]{1,100}$/;
+
 /** "Ada Okafor" → "Ada O." for everyone. The second argument is kept for older callers. */
 export function displayName(fullName: string | null | undefined, _isAdult = true) {
   const parts = (fullName ?? "").trim().split(/\s+/).filter(Boolean);

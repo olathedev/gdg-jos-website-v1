@@ -1,7 +1,7 @@
 "use client";
 
 import { Loading03Icon, Upload04Icon } from "@hugeicons/core-free-icons";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/admin-internal/actions";
 import {
   addPartnerAction,
@@ -10,9 +10,13 @@ import {
   communityImportAction,
   removePartnerAction,
   removeQuestionAction,
+  resetPartnerCodeAction,
   reviewReportAction,
   roundAction,
+  updatePartnerAction,
 } from "@/app/admin-internal/quest/actions";
+import type { AdminPartner } from "@/lib/quest/admin";
+import { PARTNER_SOCIALS } from "@/lib/quest/validate";
 import Icon from "./Icon";
 
 export function CommunityImport() {
@@ -131,6 +135,93 @@ export function RemovePartner({ id }: { id: string }) {
         Remove
       </button>
       {state && !state.ok && <span className="max-w-40 text-right text-xs text-rose-600">{state.message}</span>}
+    </form>
+  );
+}
+
+/** Partner profile: what players see on the partner's page. Handles only; the app builds the links. */
+export function EditPartner({ partner }: { partner: AdminPartner }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(updatePartnerAction, null);
+  const [description, setDescription] = useState(partner.description ?? "");
+  const input =
+    "h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100";
+  const label = "mb-1 block text-xs font-medium text-zinc-600";
+  return (
+    <form action={action} className="mt-3 space-y-3 border-t border-zinc-100 pt-3 text-sm">
+      <input type="hidden" name="id" value={partner.id} />
+      <label className="block">
+        <span className={label}>
+          Description <span className="text-zinc-400">({description.length}/280)</span>
+        </span>
+        <textarea
+          name="description"
+          rows={3}
+          maxLength={280}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm outline-none hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100"
+        />
+      </label>
+      <label className="block">
+        <span className={label}>Website</span>
+        <input name="website_url" type="url" defaultValue={partner.website_url ?? ""} placeholder="https://…" className={input} />
+      </label>
+      <label className="block">
+        <span className={label}>Logo image link</span>
+        <input name="logo_url" type="url" defaultValue={partner.logo_url ?? ""} placeholder="https://…/logo.png" className={input} />
+      </label>
+      <div className="grid grid-cols-2 gap-2">
+        {PARTNER_SOCIALS.map((s) => (
+          <label key={s.id} className="block">
+            <span className={label}>{s.id === "linkedin" ? "LinkedIn page slug" : s.name}</span>
+            <input name={s.id} defaultValue={partner[s.id] ?? ""} placeholder="handle" autoComplete="off" className={input} />
+          </label>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-end gap-4">
+        <label className="block w-24">
+          <span className={label}>Order</span>
+          <input name="sort_order" type="number" inputMode="numeric" defaultValue={partner.sort_order} className={input} />
+        </label>
+        <label className="flex h-10 items-center gap-2">
+          <input name="active" type="checkbox" defaultChecked={partner.active} className="size-4 accent-ink" />
+          <span>Shown to players</span>
+        </label>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          disabled={pending}
+          className="inline-flex h-10 items-center rounded-full bg-ink px-5 text-sm font-medium text-white hover:bg-ink/85 disabled:opacity-60"
+        >
+          {pending ? "Saving…" : "Save"}
+        </button>
+        {state && (
+          <span role="status" className={`text-sm ${state.ok ? "text-emerald-600" : "text-rose-600"}`}>
+            {state.message}
+          </span>
+        )}
+      </div>
+    </form>
+  );
+}
+
+/** Issues a new booth code. Printed QRs for this partner stop working, so it asks first. */
+export function ResetPartnerCode({ id, name }: { id: string; name: string }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(resetPartnerCodeAction, null);
+  return (
+    <form
+      action={action}
+      onSubmit={(e) => {
+        if (!window.confirm(`Reset ${name}'s booth QR? Codes already printed for this partner will stop working.`)) e.preventDefault();
+      }}
+      className="flex flex-col gap-1"
+    >
+      <input type="hidden" name="id" value={id} />
+      <button type="submit" disabled={pending} className="self-start text-xs font-medium text-zinc-500 hover:text-rose-600 disabled:opacity-60">
+        Reset booth QR
+      </button>
+      {state && <span className={`text-xs ${state.ok ? "text-emerald-600" : "text-rose-600"}`}>{state.message}</span>}
     </form>
   );
 }

@@ -18,8 +18,12 @@ export const POINTS = {
   /** Padi Up: each person you connect with by scanning (both of you). */
   meet: 20,
   room: 5,
-  /** Partners: each partner stand you scan. */
-  booth: 25,
+  /** Partners: each partner stand you scan (3 times the online visit). */
+  booth: 15,
+  /** Partners: reading a partner's profile in the app, once per partner. */
+  partnerVisit: 5,
+  /** Partners: following a partner, once per partner per platform (self-claimed, like GDG Jos follows). */
+  partnerFollow: 5,
   recap: 10,
   invite: 20,
   mission: 25,
@@ -46,6 +50,8 @@ export type StageId = (typeof STAGES)[number]["id"];
 /** People to connect with before Brain Blitz and Partners unlock. Every one after that still scores. */
 export const SQUAD_GOAL = 3;
 export const PARTNER_GOAL = 3;
+/** Seconds on a partner's profile before the online visit counts. */
+export const PARTNER_VISIT_SECONDS = 8;
 /** Padis (accepted connections) needed before Partner Link-up unlocks. */
 export const PARTNER_UNLOCK_PADIS = 3;
 /** Seconds to wait after a wrong guess about someone before trying again. */

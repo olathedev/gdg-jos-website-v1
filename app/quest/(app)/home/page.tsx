@@ -213,6 +213,20 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
         </Link>
       </div>
 
+      <Link
+        href="/quest/stage/partners"
+        className={`${panel} flex min-h-14 items-center gap-3 px-4 py-3 transition-transform active:scale-[0.98]`}
+      >
+        <StageBadge id="partners" color="#34A853" size={40} />
+        <span className="flex flex-1 flex-col">
+          <span className="text-[15px] font-bold">Meet the partners</span>
+          <span className="text-xs text-fg/60">
+            Check them out +{POINTS.partnerVisit} · follow +{POINTS.partnerFollow} · scan their booth +{POINTS.booth}
+          </span>
+        </span>
+        <ArrowRight aria-hidden className="size-5 text-fg/60" />
+      </Link>
+
       <XPost posted={posted} handle={me.x_handle} points={POINTS.xPost} />
 
       <JoinGdg claimed={joined} />

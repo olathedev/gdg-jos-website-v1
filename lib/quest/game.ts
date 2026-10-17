@@ -589,11 +589,12 @@ export async function meet(me: Profile, token: string) {
 
 export async function scanStation(userId: string, code: string) {
   const sql = db();
-  const [s] = await sql<{ id: string; kind: "room" | "booth"; name: string; open: boolean }[]>`
-    select id, kind, name,
+  const [s] = await sql<{ id: string; kind: "room" | "booth"; name: string; slug: string | null; active: boolean; open: boolean }[]>`
+    select id, kind, name, slug, active,
            (coalesce(opens_at <= now(), true) and coalesce(closes_at > now(), true)) as open
     from quest_stations where code = ${code}`;
   if (!s) throw new GameError("That code isn't a DevFest station.", "unknown");
+  if (!s.active) throw new GameError("This booth code isn't active.", "inactive");
   if (s.kind === "booth") {
     // Partner stands are Stage 4 of the game: gated by the stage, not by check-in.
     const { requireStage } = await import("./stages");
@@ -613,7 +614,7 @@ export async function scanStation(userId: string, code: string) {
     await checkMissions(userId);
     invalidateBoard();
   }
-  return { fresh: rows.length > 0, name: s.name, kind: s.kind };
+  return { fresh: rows.length > 0, name: s.name, kind: s.kind, slug: s.slug };
 }
 
 /** Event-day missions: three different rooms; five people from outside your stack. */

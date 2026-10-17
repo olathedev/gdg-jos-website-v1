@@ -3,7 +3,7 @@ import { randomBytes } from "node:crypto";
 import { db } from "@/lib/tickets/db";
 import { POINTS } from "./config";
 import { award, invalidateBoard } from "./points";
-import { displayName } from "./validate";
+import { displayName, type PartnerSocial } from "./validate";
 
 // Organiser tools for DevFest Quest (admin area only).
 
@@ -99,15 +99,61 @@ export async function setPartnersOpen(open: boolean) {
     on conflict (key) do update set value = excluded.value, updated_at = now()`;
 }
 
+export type AdminPartner = {
+  id: string;
+  name: string;
+  code: string;
+  slug: string | null;
+  scans: number;
+  description: string | null;
+  website_url: string | null;
+  logo_url: string | null;
+  sort_order: number;
+  active: boolean;
+} & Record<PartnerSocial, string | null>;
+
 export async function listPartners() {
-  return db()<{ id: string; name: string; code: string; scans: number }[]>`
-    select s.id, s.name, s.code, (select count(*)::int from quest_station_scans x where x.station_id = s.id) as scans
-    from quest_stations s where s.kind = 'booth' order by s.name`;
+  return db()<AdminPartner[]>`
+    select s.id, s.name, s.code, s.slug, s.description, s.website_url, s.logo_url, s.sort_order, s.active,
+           s.x, s.instagram, s.linkedin, s.facebook, s.github, s.youtube,
+           (select count(*)::int from quest_station_scans x where x.station_id = s.id) as scans
+    from quest_stations s where s.kind = 'booth' order by s.sort_order, s.name`;
 }
 
+/** Booth codes are the only secret in a booth QR: long and random, never the slug. */
+const boothCode = () => `p-${randomBytes(12).toString("base64url")}`;
+
 export async function addPartner(name: string) {
-  const code = `p-${randomBytes(6).toString("base64url")}`;
-  await db()`insert into quest_stations (kind, name, code) values ('booth', ${name}, ${code})`;
+  const sql = db();
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "partner";
+  try {
+    await sql`insert into quest_stations (kind, name, code, slug) values ('booth', ${name}, ${boothCode()}, ${base})`;
+  } catch (e) {
+    if ((e as { code?: string })?.code !== "23505") throw e;
+    await sql`insert into quest_stations (kind, name, code, slug) values ('booth', ${name}, ${boothCode()}, ${`${base}-${randomBytes(2).toString("hex")}`})`;
+  }
+}
+
+export type PartnerDetails = {
+  description: string | null;
+  website_url: string | null;
+  logo_url: string | null;
+  sort_order: number;
+  active: boolean;
+} & Record<PartnerSocial, string | null>;
+
+export async function updatePartner(id: string, d: PartnerDetails) {
+  await db()`
+    update quest_stations set
+      description = ${d.description}, website_url = ${d.website_url}, logo_url = ${d.logo_url},
+      x = ${d.x}, instagram = ${d.instagram}, linkedin = ${d.linkedin}, facebook = ${d.facebook},
+      github = ${d.github}, youtube = ${d.youtube}, sort_order = ${d.sort_order}, active = ${d.active}
+    where id = ${id} and kind = 'booth'`;
+}
+
+/** New booth code: QR codes printed before stop working. Points already earned stay. */
+export async function resetPartnerCode(id: string) {
+  await db()`update quest_stations set code = ${boothCode()} where id = ${id} and kind = 'booth'`;
 }
 
 /** Only partners nobody has scanned yet can be removed, so nobody loses points. */

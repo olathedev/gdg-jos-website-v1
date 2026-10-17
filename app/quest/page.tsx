@@ -26,7 +26,7 @@ export default async function Welcome({ searchParams }: PageProps<"/quest">) {
   const next = safeNext(one(sp.next));
 
   const me = await getMe();
-  if (me) redirect(me.onboarded_at ? (next ?? "/quest/home") : "/quest/setup");
+  if (me) redirect(me.onboarded_at ? (next ?? "/quest/home") : `/quest/setup${next ? `?next=${encodeURIComponent(next)}` : ""}`);
 
   const start = `/quest/auth/google?${new URLSearchParams({ ...(ref && { ref }), ...(next && { next }) })}`;
 

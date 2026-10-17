@@ -35,6 +35,7 @@ export type Profile = {
   onboarded_at: Date | null;
   last_active_at?: Date | null;
   hidden: boolean;
+  slug: string | null;
   avatar: string | null;
   fun_fact: string | null;
 };
@@ -46,7 +47,7 @@ const order = (a: string, b: string) => (a < b ? [a, b] : [b, a]);
 export async function getProfile(id: string) {
   const [p] = await db()<Profile[]>`
     select id, email, full_name, stack, github, linkedin, x_handle, instagram, whatsapp,
-           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at, avatar, fun_fact, hidden
+           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at, avatar, fun_fact, hidden, slug
     from quest_profiles where id = ${id}`;
   return p ?? null;
 }

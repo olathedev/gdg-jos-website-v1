@@ -32,9 +32,11 @@ export async function requireAgent() {
   return me;
 }
 
-/** Only for safe in-app redirects after sign-in. */
+/** Only for safe in-app redirects after sign-in: game pages and profile links. */
 export const safeNext = (next: string | null | undefined) =>
-  next && /^\/quest(\/[A-Za-z0-9/_?=&.-]*)?$/.test(next) && !next.startsWith("//") ? next : null;
+  next && (/^\/quest(\/[A-Za-z0-9/_?=&.-]*)?$/.test(next) || /^\/p\/[a-z0-9-]{3,40}$/.test(next)) && !next.startsWith("//")
+    ? next
+    : null;
 
 /**
  * Someone scanned the entrance QR before signing in: the code was checked then and

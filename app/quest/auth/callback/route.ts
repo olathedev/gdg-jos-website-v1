@@ -26,6 +26,8 @@ export async function GET(req: Request) {
   await createSession(id);
   await completePendingCheckin(id);
   const me = await getProfile(id);
-  const dest = !me?.onboarded_at ? "/quest/setup" : (state.next ?? "/quest/home");
+  const dest = !me?.onboarded_at
+    ? `/quest/setup${state.next ? `?next=${encodeURIComponent(state.next)}` : ""}`
+    : (state.next ?? "/quest/home");
   return NextResponse.redirect(`${base}${dest}`);
 }

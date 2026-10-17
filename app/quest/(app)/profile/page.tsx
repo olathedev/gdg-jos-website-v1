@@ -1,4 +1,7 @@
 import JoinGdg from "@/components/quest/JoinGdg";
+import ShareProfile from "@/components/quest/ShareProfile";
+import { adminSiteUrl } from "@/lib/admin/site";
+import { ensureSlug } from "@/lib/quest/profiles";
 import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
@@ -14,6 +17,7 @@ export const metadata = { title: "Profile" };
 
 export default async function Profile() {
   const me = await requireAgent();
+  const [slug, site] = await Promise.all([ensureSlug(me), adminSiteUrl()]);
   const [{ score }, board, g] = await Promise.all([myScore(me.id), leaderboard(), gameState(me.id)]);
   const rank = board.byId.get(me.id)?.rank;
   const socials = [
@@ -123,6 +127,13 @@ export default async function Profile() {
             );
           })}
         </ul>
+      </section>
+
+      <section className={`${panel} flex flex-col items-center gap-2 p-4`} aria-labelledby="link-h">
+        <h2 id="link-h" className="text-[11px] font-bold tracking-[0.2em] text-white/45">
+          YOUR PROFILE LINK
+        </h2>
+        <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
       </section>
 
       <JoinGdg />

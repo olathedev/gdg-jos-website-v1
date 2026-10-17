@@ -1,6 +1,7 @@
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from "@/components/quest/icons";
+import JoinGdg from "@/components/quest/JoinGdg";
 import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { FOLLOWS, PARTNER_GOAL, PARTNER_UNLOCK_PADIS, SQUAD_GOAL, STAGES, type StageId } from "@/lib/quest/config";
@@ -197,6 +198,8 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
           <span className="text-sm font-bold">Find people</span>
         </Link>
       </div>
+
+      <JoinGdg />
 
       {/* Mini board */}
       {top.length > 0 && (

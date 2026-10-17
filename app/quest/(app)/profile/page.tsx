@@ -1,3 +1,4 @@
+import JoinGdg from "@/components/quest/JoinGdg";
 import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
@@ -123,6 +124,8 @@ export default async function Profile() {
           })}
         </ul>
       </section>
+
+      <JoinGdg />
 
       <div className="flex flex-col gap-3">
         <Link href="/quest/me" className={gameBtn}>

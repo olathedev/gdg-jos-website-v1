@@ -246,8 +246,8 @@ export async function xPostAction(_: Result, form: FormData): Promise<Result> {
     const me = await agent();
     const post = xPostId(String(form.get("url") ?? ""));
     if (!post) throw new GameError("Paste a link like x.com/you/status/123…");
-    const res = await submitXPost(me, post.id, post.handle);
-    return `Post counted. +${res.points}`;
+    const res = await submitXPost(me, post.id);
+    return `+${res.points} points for your post!`;
   });
 }
 

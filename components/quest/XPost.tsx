@@ -68,11 +68,11 @@ export default function XPost({ posted, handle, points }: { posted: boolean; han
               className={field}
             />
             <button type="submit" disabled={pending} className={`${gameBtn} min-h-12`}>
-              {pending ? "Checking…" : `Submit for +${points}`}
+              {pending ? "Saving…" : `Submit for +${points}`}
             </button>
           </form>
           <p className="text-xs text-fg/50">
-            Keep {X_MENTION} and {HASHTAGS.join(" ")} in your post{handle ? ` and post from @${handle}` : ""}.
+            Tag {X_MENTION} and use {HASHTAGS.join(" ")}. Your points land as soon as you submit.
           </p>
         </>
       )}

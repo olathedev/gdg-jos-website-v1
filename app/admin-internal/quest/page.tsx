@@ -39,15 +39,14 @@ export default async function QuestAdminPage() {
   const me = await currentAdmin();
   if (!me) redirect(base);
   const [stats, reports, rounds, partnerRows, site, questions, partnersLive] = await Promise.all([
-    questStats().then((x) => (console.log("DBG stats"), x)),
-    listReports().then((x) => (console.log("DBG reports"), x)),
-    listRounds().then((x) => (console.log("DBG rounds"), x)),
-    listPartners().then((x) => (console.log("DBG partners"), x)),
-    adminSiteUrl().then((x) => (console.log("DBG site"), x)),
-    listRoundQuestions().then((x) => (console.log("DBG questions"), x)),
-    partnersOpen().then((x) => (console.log("DBG open"), x)),
+    questStats(),
+    listReports(),
+    listRounds(),
+    listPartners(),
+    adminSiteUrl(),
+    listRoundQuestions(),
+    partnersOpen(),
   ]);
-  console.log("DBG all done");
   const partners = await Promise.all(
     partnerRows.map(async (p) => {
       const url = `${site}/quest/s/${p.code}`;
@@ -55,7 +54,6 @@ export default async function QuestAdminPage() {
     }),
   );
 
-  console.log("DBG qr done");
   const env = process.env;
   const setup = [
     { label: "Session secret", ok: (env.QUEST_SESSION_SECRET ?? "").length >= 32, note: "QUEST_SESSION_SECRET" },

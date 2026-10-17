@@ -69,7 +69,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
               t.on ? "bg-fg text-on-fg" : "text-fg/70 hover:text-fg"
             }`}
           >
-            {t.set && <span aria-hidden className="size-2 rounded-full bg-[#34A853]" />}
+            {t.set && <span aria-hidden className="size-2 rounded-full bg-live" />}
             {t.label}
           </button>
         ))}

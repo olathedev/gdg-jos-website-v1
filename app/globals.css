@@ -283,6 +283,23 @@ body {
   background-size: 22px 22px;
   color: var(--q-fg);
 }
+/*
+  Contrast floor for faded text (WCAG 2.2 AA, 4.5:1 on the page and on cards). The faded
+  utilities keep their look where they already pass and are lifted where they don't:
+  dark /30-/45 -> 47%; light /50-/60 (secondary) -> 70%, /25-/45 (tertiary) -> 64%.
+*/
+.quest-night :is(.text-fg\/45, .text-fg\/40, .text-fg\/35, .text-fg\/30, .text-fg\/25),
+.quest-night :is(.placeholder\:text-fg\/35, .placeholder\:text-fg\/30, .placeholder\:text-fg\/25)::placeholder {
+  color: color-mix(in oklab, var(--q-fg) 47%, transparent);
+}
+.quest-night[data-quest-theme="light"] :is(.text-fg\/60, .text-fg\/55, .text-fg\/50) {
+  color: color-mix(in oklab, var(--q-fg) 70%, transparent);
+}
+.quest-night[data-quest-theme="light"] :is(.text-fg\/45, .text-fg\/40, .text-fg\/35, .text-fg\/30, .text-fg\/25),
+.quest-night[data-quest-theme="light"] :is(.placeholder\:text-fg\/35, .placeholder\:text-fg\/30, .placeholder\:text-fg\/25)::placeholder {
+  color: color-mix(in oklab, var(--q-fg) 64%, transparent);
+}
+
 /* Overscroll and short pages match the theme too. */
 body:has(.quest-night) {
   background: #0a0a0a;

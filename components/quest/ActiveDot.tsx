@@ -6,7 +6,7 @@ export default function ActiveDot({ at, now }: { at: string | null | undefined; 
   if (!label) return null;
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold text-live">
-      <span aria-hidden className="size-2 rounded-full bg-[#34A853] shadow-[0_0_0_2px_rgb(52_168_83/0.25)]" />
+      <span aria-hidden className="size-2 rounded-full bg-live shadow-[0_0_0_2px_rgb(52_168_83/0.25)]" />
       {label}
     </span>
   );

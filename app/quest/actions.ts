@@ -17,6 +17,7 @@ import {
   savePlayer,
   upsertAuthUser,
 } from "@/lib/quest/game";
+import { markAllSeen } from "@/lib/quest/celebrate";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
 import { hasSocial, playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
@@ -157,20 +158,40 @@ export async function finishRoundAction(r: number) {
 
 /* ---------- people ---------- */
 
-export async function connectAction(otherId: string) {
-  return play(async () => {
+export type PadiResult = { ok: boolean; message: string; padi?: boolean } | null;
+
+/** "Be my padi". padi is true when this made you padis (they had already asked you). */
+export async function connectAction(otherId: string): Promise<PadiResult> {
+  try {
     const me = await agent();
-    await requestConnection(me, uuid.parse(otherId));
-    return "Request sent.";
-  });
+    const { padi } = await requestConnection(me, uuid.parse(otherId));
+    revalidatePath("/quest", "layout");
+    return { ok: true, message: padi ? "You're padis now." : "Request sent.", padi };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false, message: e.message };
+    console.error("[quest]", e);
+    return { ok: false, message: "Something went wrong. Try again." };
+  }
 }
 
-export async function respondAction(otherId: string, accept: boolean) {
-  return play(async () => {
+export async function respondAction(otherId: string, accept: boolean): Promise<PadiResult> {
+  try {
     const me = await agent();
-    await respondConnection(me.id, uuid.parse(otherId), accept);
-    return accept ? "Connected." : "Request removed.";
-  });
+    const { padi } = await respondConnection(me.id, uuid.parse(otherId), accept);
+    revalidatePath("/quest", "layout");
+    return { ok: true, message: accept ? "Connected." : "Request removed.", padi };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false, message: e.message };
+    console.error("[quest]", e);
+    return { ok: false, message: "Something went wrong. Try again." };
+  }
+}
+
+/** The other person saw their "new padi" celebration. */
+export async function padisSeenAction(otherIds: string[]) {
+  const me = await agent();
+  const ids = (Array.isArray(otherIds) ? otherIds : []).filter((x) => uuid.safeParse(x).success).slice(0, 50);
+  await markAllSeen(me.id, ids);
 }
 
 export async function blockAction(otherId: string, report: boolean, reason: string) {

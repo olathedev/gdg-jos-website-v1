@@ -5,6 +5,7 @@ import { respondAction } from "@/app/quest/actions";
 import type { CrewMember } from "@/lib/quest/game";
 import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
+import Celebration from "./Celebration";
 import { BrandMark } from "./icons";
 import { GameAvatar, stackStyle } from "./ui";
 
@@ -32,10 +33,12 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
   const [gone, setGone] = useState<Set<string>>(new Set());
   const [, start] = useTransition();
 
-  const respond = (id: string, accept: boolean) =>
+  const [party, setParty] = useState<string | null>(null);
+  const respond = (id: string, accept: boolean, name: string) =>
     start(async () => {
       setDone((d) => ({ ...d, [id]: accept ? "accepted" : "declined" }));
-      await respondAction(id, accept);
+      const res = await respondAction(id, accept);
+      if (res?.padi) setParty(`You and ${name} are now padis!`);
     });
 
   const requests = pending.filter((p) => !gone.has(p.id) && done[p.id] !== "declined");
@@ -43,6 +46,7 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
 
   return (
     <div className="flex flex-col gap-7">
+      {party && <Celebration message={party} onDone={() => setParty(null)} />}
       {requests.length > 0 && (
         <section className="flex flex-col gap-3" aria-labelledby="req-h">
           <h2 id="req-h" className="text-[11px] font-bold tracking-[0.2em] text-h-yellow">
@@ -67,14 +71,14 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
                   <div className="flex gap-2">
                     <button
                       type="button"
-                      onClick={() => respond(p.id, true)}
+                      onClick={() => respond(p.id, true, p.name)}
                       className="min-h-11 flex-1 rounded-full bg-white text-sm font-bold text-[#0A0A0A] active:scale-[0.97]"
                     >
                       Accept
                     </button>
                     <button
                       type="button"
-                      onClick={() => respond(p.id, false)}
+                      onClick={() => respond(p.id, false, p.name)}
                       className="min-h-11 flex-1 rounded-full border border-white/15 text-sm font-bold text-white/80"
                     >
                       Decline

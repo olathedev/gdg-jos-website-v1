@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Nav from "@/components/quest/Nav";
+import PadiCelebrations from "@/components/quest/PadiCelebrations";
+import { unseenPadis } from "@/lib/quest/celebrate";
 import { QrGlyph, Spark } from "@/components/quest/icons";
 import { GameAvatar } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
@@ -12,11 +14,12 @@ export const metadata = { robots: { index: false } };
 /** Signed-in game screens: one centred column, a slim top bar and a bottom bar. */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const me = await requireAgent();
-  const [{ score }, [{ pending }]] = await Promise.all([
+  const [{ score }, [{ pending }], newPadis] = await Promise.all([
     myScore(me.id),
     db()<{ pending: number }[]>`
       select count(*)::int as pending from quest_connections
       where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}`,
+    unseenPadis(me.id),
   ]);
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 pb-32">
@@ -42,6 +45,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </header>
       <main className="flex flex-1 flex-col">{children}</main>
       <Nav pending={pending} />
+      <PadiCelebrations padis={newPadis} />
     </div>
   );
 }

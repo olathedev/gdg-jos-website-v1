@@ -9,6 +9,7 @@ import type { Agent, ConnState } from "@/lib/quest/game";
 import { isHereNow } from "@/lib/quest/presence";
 import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
+import Celebration from "./Celebration";
 import { GameAvatar, stackStyle } from "./ui";
 
 /** Directory: search by name, filter by stack, one tap to send a padi request. */
@@ -36,7 +37,8 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
   }, [people, query, stack, gone, hereNow, now]);
   const hereCount = useMemo(() => people.filter((p) => isHereNow(p.lastActive, now)).length, [people, now]);
 
-  const ask = (id: string, current: ConnState) =>
+  const [party, setParty] = useState<string | null>(null);
+  const ask = (id: string, current: ConnState, name: string) =>
     start(async () => {
       setError(null);
       setStates((s) => ({ ...s, [id]: current === "incoming" ? "connected" : "requested" }));
@@ -44,11 +46,15 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
       if (res && !res.ok) {
         setStates((s) => ({ ...s, [id]: current }));
         setError(res.message);
+      } else if (res?.padi) {
+        setStates((s) => ({ ...s, [id]: "connected" }));
+        setParty(`You and ${name} are now padis!`);
       }
     });
 
   return (
     <div className="flex flex-col gap-4">
+      {party && <Celebration message={party} onDone={() => setParty(null)} />}
       <div role="group" aria-label="Show" className="grid grid-cols-2 gap-1 rounded-full border border-white/[0.12] bg-[#121212] p-1">
         {[
           { on: !hereNow, label: `Everyone · ${people.length}`, set: false },
@@ -152,7 +158,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
                   ) : (
                     <button
                       type="button"
-                      onClick={() => ask(p.id, st)}
+                      onClick={() => ask(p.id, st, p.name)}
                       className="flex min-h-11 items-center justify-center rounded-full bg-white text-sm font-bold text-[#0A0A0A] transition-transform active:scale-[0.97]"
                     >
                       {st === "incoming" ? "Accept their padi request" : "Be my padi"}

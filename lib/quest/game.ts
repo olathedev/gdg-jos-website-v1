@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/lib/tickets/db";
 import { FOLLOWS, LIMITS, POINTS } from "./config";
+import { markPadiSeen } from "./celebrate";
 import { award, invalidateBoard } from "./points";
 import { randomToken } from "./session";
 import { eventDate, lagosToday, phase } from "./time";
@@ -207,20 +208,29 @@ export async function requestConnection(me: Profile, otherId: string) {
   if (n >= LIMITS.connectsPerHour) throw new GameError("That's a lot of requests. Try again in an hour.");
   const [a, b] = order(me.id, otherId);
   // If they already asked you, connecting accepts their request.
-  await sql`
+  const rows = await sql<{ status: string }[]>`
     insert into quest_connections (user_a, user_b, requester)
     values (${a}, ${b}, ${me.id})
     on conflict (user_a, user_b) do update
       set status = 'accepted', responded_at = now()
-      where quest_connections.status = 'pending' and quest_connections.requester <> ${me.id}`;
+      where quest_connections.status = 'pending' and quest_connections.requester <> ${me.id}
+    returning status`;
+  const padi = rows[0]?.status === "accepted";
+  if (padi) await markPadiSeen(sql, me.id, otherId);
+  return { padi };
 }
 
 export async function respondConnection(me: string, otherId: string, accept: boolean) {
   const [a, b] = order(me, otherId);
-  await db()`
+  const sql = db();
+  const rows = await sql`
     update quest_connections
     set status = ${accept ? "accepted" : "declined"}, responded_at = now()
-    where user_a = ${a} and user_b = ${b} and requester = ${otherId} and status = 'pending'`;
+    where user_a = ${a} and user_b = ${b} and requester = ${otherId} and status = 'pending'
+    returning user_a`;
+  const padi = accept && rows.length > 0;
+  if (padi) await markPadiSeen(sql, me, otherId);
+  return { padi };
 }
 
 export async function blockAgent(me: string, otherId: string, report: boolean, reason: string) {
@@ -551,6 +561,7 @@ export async function meet(me: Profile, token: string) {
     await award(tx, me.id, "meet", pair, POINTS.meet);
     await award(tx, other.id, "meet", pair, POINTS.meet);
     // Meeting in person connects you, sharing contacts by each person's settings.
+    await markPadiSeen(tx, me.id, other.id);
     {
       await tx`
         insert into quest_connections (user_a, user_b, requester, status, responded_at)

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { meetAction } from "@/app/quest/actions";
 import { POINTS } from "@/lib/quest/config";
+import Celebration from "./Celebration";
 import Loader from "./Loader";
 import { GameAvatar, gameBtn, gameBtnGhost } from "./ui";
 
@@ -13,12 +14,19 @@ type Result = Awaited<ReturnType<typeof meetAction>>;
 /** Runs the connection the moment the scan page opens: no extra tap. */
 export default function MeetAuto({ token, avatar }: { token: string; avatar: string | null }) {
   const [res, setRes] = useState<Result | null>(null);
+  const [party, setParty] = useState(false);
   const started = useRef(false);
 
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    meetAction(token).then(setRes, () => setRes({ ok: false, message: "Something went wrong. Scan again." }));
+    meetAction(token).then(
+      (r) => {
+        setRes(r);
+        if (r.ok && r.fresh) setParty(true);
+      },
+      () => setRes({ ok: false, message: "Something went wrong. Scan again." }),
+    );
   }, [token]);
 
   if (!res) return <Loader label="Connecting" />;
@@ -38,6 +46,7 @@ export default function MeetAuto({ token, avatar }: { token: string; avatar: str
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 py-8 text-center">
+      {party && <Celebration message={`You and ${res.name} are now padis!`} onDone={() => setParty(false)} />}
       <div className="quest-pop relative">
         <GameAvatar avatar={res.avatar} size={110} className="ring-4 ring-g-green ring-offset-4 ring-offset-[#0A0A0A]" />
         <span className="absolute -right-1 -bottom-1 flex size-10 items-center justify-center rounded-full border-4 border-[#0A0A0A] bg-g-green text-white">

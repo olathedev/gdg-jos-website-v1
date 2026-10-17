@@ -45,7 +45,7 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
           </ul>
           {p.funFact && <p className="max-w-xs text-[15px] leading-snug text-white/80">{p.funFact}</p>}
           <div className="mt-3 w-full">
-            <PadiButton id={p.id} initial={p.state} />
+            <PadiButton id={p.id} initial={p.state} name={p.name} />
           </div>
         </section>
       )}

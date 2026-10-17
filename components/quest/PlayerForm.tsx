@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, SlidersHorizontal } from "lucide-react";
+import { Camera, SlidersHorizontal, Trash2 } from "lucide-react";
 import { useActionState, useState } from "react";
 import { avatarUploadAction, savePlayerAction, type Result } from "@/app/quest/actions";
 import { canvasBlob, readImage, UploadError, uploadBlob } from "@/lib/upload-image";
@@ -349,9 +349,14 @@ function PhotoUpload({ photo, unsaved, onUploaded }: { photo: string | null; uns
             <SlidersHorizontal aria-hidden className="size-4" /> Adjust
           </button>
         )}
+        {photo && (
+          <button type="button" className={pill} onClick={() => onUploaded("none")}>
+            <Trash2 aria-hidden className="size-4" /> Remove photo
+          </button>
+        )}
       </div>
       <p role="status" className={error && !editing ? "text-center text-xs font-bold text-bad" : "text-center text-xs text-fg/50"}>
-        {error && !editing ? error : photo && unsaved ? "Save your card to use this photo." : photo ? "" : "Or pick an avatar below."}
+        {error && !editing ? error : unsaved ? (photo ? "Save your card to use this photo." : "Save your card to apply this.") : photo ? "" : "Or pick an avatar below."}
       </p>
       {editing && image && <PhotoCropper image={image} busy={busy} error={error} onCancel={() => setEditing(false)} onDone={upload} />}
     </div>

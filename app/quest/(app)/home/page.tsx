@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
     <div className="flex flex-col gap-5 pt-2">
       {welcome && (
         <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-[#CCF6C5]">
-          You&apos;re in! Start with Stage 1 below.
+          You&apos;re in! Tap Start the quest to begin.
         </p>
       )}
 

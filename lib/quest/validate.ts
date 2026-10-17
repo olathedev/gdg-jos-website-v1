@@ -64,8 +64,6 @@ export const playerSchema = z.object({
     .transform((v) => v || null),
   ...handles,
   whatsapp: profileSchema.shape.whatsapp,
-  is_adult: z.boolean(),
-  listed: z.boolean(),
   share_whatsapp: z.boolean(),
 }).refine((d) => Boolean(d.github || d.linkedin || d.x_handle || d.instagram || d.whatsapp), {
   message: "Add at least one social: GitHub, LinkedIn, X, Instagram or WhatsApp.",
@@ -81,11 +79,11 @@ export const links = {
   whatsapp: (n: string) => `https://wa.me/${n}`,
 };
 
-/** "Ada Okafor" → "Ada O."; under-18s show first name only. */
-export function displayName(fullName: string | null | undefined, isAdult = true) {
+/** "Ada Okafor" → "Ada O." for everyone. The second argument is kept for older callers. */
+export function displayName(fullName: string | null | undefined, _isAdult = true) {
   const parts = (fullName ?? "").trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "Player";
-  if (!isAdult || parts.length === 1) return parts[0];
+  if (parts.length === 1) return parts[0];
   return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
 }
 

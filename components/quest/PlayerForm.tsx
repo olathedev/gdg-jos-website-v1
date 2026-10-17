@@ -16,8 +16,6 @@ type Initial = {
   x_handle: string | null;
   instagram: string | null;
   whatsapp: string | null;
-  is_adult: boolean;
-  listed: boolean;
   share_whatsapp: boolean;
   onboarded: boolean;
 };
@@ -68,10 +66,10 @@ function Toggle({
 
 const FACT_IDEAS = ["I've never seen snow", "I can name every Pokémon", "I code with my left hand only", "I've been to 9 states"];
 
-const shown = (name: string, adult = true) => {
+const shown = (name: string) => {
   const p = name.trim().split(/\s+/).filter(Boolean);
   if (!p.length) return "Your name";
-  return adult && p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
+  return p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
 };
 
 const label = "text-[11px] font-bold tracking-[0.2em] text-white/50";
@@ -84,9 +82,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
   const [name, setName] = useState(initial.full_name);
   const [picked, setPicked] = useState<string[]>(initial.stack);
   const [fact, setFact] = useState(initial.fun_fact ?? "");
-  const [adult, setAdult] = useState(initial.is_adult);
   const [socialError, setSocialError] = useState(false);
-  const [listed, setListed] = useState(initial.listed);
   const [shareWa, setShareWa] = useState(initial.share_whatsapp);
 
   const toggle = (l: string) => setPicked((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : cur.length < 3 ? [...cur, l] : cur));
@@ -110,7 +106,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
-        <span className="type-heading text-2xl font-bold">{shown(name, adult)}</span>
+        <span className="type-heading text-2xl font-bold">{shown(name)}</span>
         <span className="flex flex-wrap justify-center gap-1.5">
           {(picked.length ? picked : ["Your stack"]).map((p) => (
             <span key={p} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold">
@@ -159,7 +155,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
           className={`${field} h-14`}
         />
         <p className="text-xs text-white/50">
-          The leaderboard shows &quot;{shown(name, adult)}&quot;. Padis you accept see your full name.
+          The leaderboard shows &quot;{shown(name)}&quot;. Padis you accept see your full name.
         </p>
       </div>
 
@@ -262,20 +258,10 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       </fieldset>
 
       <div className="flex flex-col divide-y divide-white/[0.06] rounded-[24px] border border-white/[0.12] bg-[#121212]">
-        <Toggle name="is_adult" checked={adult} onChange={setAdult} title="I am 18 or over" />
-        <Toggle
-          name="listed"
-          checked={listed}
-          onChange={setListed}
-          disabled={!adult}
-          title="Show me in the directory"
-          hint={adult ? "Others can find you and send a padi request" : "Only for players 18 and over"}
-        />
         <Toggle
           name="share_whatsapp"
           checked={shareWa}
           onChange={setShareWa}
-          disabled={!adult}
           title="Share my WhatsApp with padis"
           hint="Only people you accept or scan see it"
         />

@@ -96,7 +96,6 @@ export async function saveProfile(userId: string, input: ProfileInput) {
 /** The player card: avatar, name, stack, fun fact, socials and directory choices. */
 export async function savePlayer(userId: string, input: PlayerInput) {
   const sql = db();
-  const adult = input.is_adult;
   try {
     const [row] = await sql`
       update quest_profiles set
@@ -110,9 +109,9 @@ export async function savePlayer(userId: string, input: PlayerInput) {
         x_handle_at = case when x_handle is distinct from ${input.x_handle} then now() else x_handle_at end,
         instagram = ${input.instagram},
         whatsapp = ${input.whatsapp},
-        is_adult = ${adult},
-        listed = ${adult && input.listed},
-        share_whatsapp = ${adult && input.share_whatsapp && Boolean(input.whatsapp)},
+        is_adult = true,
+        listed = true,
+        share_whatsapp = ${input.share_whatsapp && Boolean(input.whatsapp)},
         onboarded_at = coalesce(onboarded_at, now())
       where id = ${userId}
       returning id`;
@@ -124,18 +123,6 @@ export async function savePlayer(userId: string, input: PlayerInput) {
     throw e;
   }
   if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
-}
-
-/** One-tap directory switch. Listing needs 18+; confirmAdult records that in the same tap. */
-export async function setListed(userId: string, listed: boolean, confirmAdult: boolean) {
-  const [row] = await db()<{ listed: boolean }[]>`
-    update quest_profiles set
-      is_adult = is_adult or ${confirmAdult},
-      listed = ${listed} and (is_adult or ${confirmAdult})
-    where id = ${userId}
-    returning listed`;
-  if (!row) throw new GameError("Your session has ended. Sign in again.");
-  if (listed && !row.listed) throw new GameError("The directory is only for players 18 and over.");
 }
 
 /* ---------- blocks ---------- */
@@ -168,7 +155,7 @@ function publicSocials(p: Pick<Profile, "github" | "linkedin" | "x_handle" | "in
   return out;
 }
 
-/** Everyone who chose to be listed (18+ only). Socials stay hidden until a padi request is accepted. */
+/** Every player. Socials stay hidden until a padi request is accepted (or you scan each other). */
 export async function directory(me: string) {
   const sql = db();
   const rows = await sql<(Profile & { status: string | null; requester: string | null })[]>`
@@ -177,7 +164,7 @@ export async function directory(me: string) {
     from quest_profiles p
     left join quest_connections c
       on (c.user_a = least(p.id, ${me}::uuid) and c.user_b = greatest(p.id, ${me}::uuid))
-    where p.id <> ${me} and p.listed and p.is_adult and p.onboarded_at is not null
+    where p.id <> ${me} and p.onboarded_at is not null
       ${notBlocked(me)}
     order by p.onboarded_at desc
     limit 1000`;
@@ -202,12 +189,11 @@ export async function directory(me: string) {
 /* ---------- connections ---------- */
 
 export async function requestConnection(me: Profile, otherId: string) {
-  if (!me.is_adult) throw new GameError("Connections are for players 18 and over.");
   if (otherId === me.id) throw new GameError("That's you.");
   const sql = db();
   const [other] = await sql`
     select p.id from quest_profiles p
-    where p.id = ${otherId} and p.listed and p.is_adult and p.onboarded_at is not null ${notBlocked(me.id)}`;
+    where p.id = ${otherId} and p.onboarded_at is not null ${notBlocked(me.id)}`;
   if (!other) throw new GameError("That player isn't available.");
   const [{ n }] = await sql<{ n: number }[]>`
     select count(*)::int as n from quest_connections
@@ -272,14 +258,14 @@ export async function crew(me: string) {
     order by coalesce(c.responded_at, c.created_at) desc`;
   const toMember = (r: (typeof rows)[number], withContacts: boolean): CrewMember => {
     const contacts = withContacts ? publicSocials(r) : [];
-    if (withContacts && r.whatsapp && r.share_whatsapp && r.is_adult) {
+    if (withContacts && r.whatsapp && r.share_whatsapp) {
       contacts.unshift({ label: "WhatsApp", href: links.whatsapp(r.whatsapp) });
     }
     return {
       id: r.id,
       name: displayName(r.full_name, r.is_adult),
-      fullName: withContacts && r.is_adult ? r.full_name : displayName(r.full_name, r.is_adult),
-      initials: initials(r.is_adult ? r.full_name : displayName(r.full_name, false)),
+      fullName: withContacts ? r.full_name : displayName(r.full_name),
+      initials: initials(r.full_name),
       stack: r.stack,
       avatar: r.avatar,
       funFact: r.fun_fact,
@@ -532,7 +518,7 @@ export async function hasMet(a: string, b: string) {
 }
 
 /**
- * Scanning someone's QR: connects you both at once (18+ pairs) and pays both of you.
+ * Scanning someone's QR: connects you both as padis at once and pays both of you.
  * Each pair scores once, whoever scans whom.
  */
 export async function meet(me: Profile, token: string) {
@@ -557,7 +543,7 @@ export async function meet(me: Profile, token: string) {
     await award(tx, me.id, "meet", pair, POINTS.meet);
     await award(tx, other.id, "meet", pair, POINTS.meet);
     // Meeting in person connects you, sharing contacts by each person's settings.
-    if (me.is_adult && other.is_adult) {
+    {
       await tx`
         insert into quest_connections (user_a, user_b, requester, status, responded_at)
         values (${a}, ${b}, ${me.id}, 'accepted', now())
@@ -574,7 +560,7 @@ export async function meet(me: Profile, token: string) {
     fresh,
     name: displayName(other.full_name, other.is_adult),
     avatar: other.avatar,
-    connected: me.is_adult && other.is_adult,
+    connected: true,
   };
 }
 

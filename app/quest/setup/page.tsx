@@ -33,8 +33,6 @@ export default async function Setup() {
           x_handle: me.x_handle,
           instagram: me.instagram,
           whatsapp: me.whatsapp,
-          is_adult: me.is_adult,
-          listed: me.listed,
           share_whatsapp: me.share_whatsapp,
           onboarded: ready,
         }}

@@ -69,7 +69,7 @@ export async function leaderboard(): Promise<Board> {
     id: r.id,
     rank: i + 1,
     name: displayName(r.full_name, r.is_adult),
-    initials: initials(r.is_adult ? r.full_name : displayName(r.full_name, false)),
+    initials: initials(r.full_name),
     stack: r.stack,
     avatar: r.avatar,
     score: r.score,

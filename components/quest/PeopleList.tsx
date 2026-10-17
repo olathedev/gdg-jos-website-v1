@@ -82,7 +82,7 @@ export default function PeopleList({ people, canConnect }: { people: Agent[]; ca
 
       {shown.length === 0 ? (
         <p className="rounded-[24px] border border-white/[0.08] bg-[#121212] px-5 py-10 text-center text-sm text-white/60">
-          {people.length === 0 ? "Nobody's listed yet. Be the first: turn on Show me in the directory on your card." : "No one matches that."}
+          {people.length === 0 ? "No one else is here yet. Share your QR and get people playing." : "No one matches that."}
         </p>
       ) : (
         <ul className="flex flex-col gap-2.5">

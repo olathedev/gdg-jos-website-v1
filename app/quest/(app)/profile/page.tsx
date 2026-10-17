@@ -2,7 +2,6 @@ import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
 import { BrandMark, QrGlyph, Spark, StageBadge } from "@/components/quest/icons";
-import ListMeCta from "@/components/quest/ListMeCta";
 import { GameAvatar, gameBtn, gameBtnGhost, panel, stackStyle } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { STAGES } from "@/lib/quest/config";
@@ -76,15 +75,13 @@ export default async function Profile() {
           </ul>
         )}
         <p className="text-xs text-white/45">
-          {me.listed ? "You're listed in People." : "You're hidden from People."}{" "}
+          You&apos;re in People.{" "}
           {me.whatsapp && me.share_whatsapp ? "Padis see your WhatsApp." : ""}
         </p>
         <Link href="/quest/setup" className="mt-1 flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-h-yellow hover:bg-white/[0.05]">
           <Pencil aria-hidden className="size-3.5" /> Edit player card
         </Link>
       </section>
-
-      {!me.listed && <ListMeCta adult={me.is_adult} />}
 
       {/* Stats */}
       <dl className="grid grid-cols-3 gap-2.5">

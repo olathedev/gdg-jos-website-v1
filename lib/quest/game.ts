@@ -126,6 +126,18 @@ export async function savePlayer(userId: string, input: PlayerInput) {
   if (await award(sql, userId, "profile", "profile", POINTS.profile)) invalidateBoard();
 }
 
+/** One-tap directory switch. Listing needs 18+; confirmAdult records that in the same tap. */
+export async function setListed(userId: string, listed: boolean, confirmAdult: boolean) {
+  const [row] = await db()<{ listed: boolean }[]>`
+    update quest_profiles set
+      is_adult = is_adult or ${confirmAdult},
+      listed = ${listed} and (is_adult or ${confirmAdult})
+    where id = ${userId}
+    returning listed`;
+  if (!row) throw new GameError("Your session has ended. Sign in again.");
+  if (listed && !row.listed) throw new GameError("The directory is only for players 18 and over.");
+}
+
 /* ---------- blocks ---------- */
 
 const notBlocked = (me: string) => db()`

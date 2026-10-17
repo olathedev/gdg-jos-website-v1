@@ -15,6 +15,7 @@ import {
   respondConnection,
   saveProfile,
   savePlayer,
+  setListed,
   upsertAuthUser,
 } from "@/lib/quest/game";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
@@ -155,6 +156,14 @@ export async function finishRoundAction(r: number) {
 }
 
 /* ---------- people ---------- */
+
+export async function setListedAction(listed: boolean, confirmAdult: boolean) {
+  return play(async () => {
+    const me = await agent();
+    await setListed(me.id, Boolean(listed), Boolean(confirmAdult));
+    return listed ? "You're in People now." : "You're hidden from People.";
+  });
+}
 
 export async function connectAction(otherId: string) {
   return play(async () => {

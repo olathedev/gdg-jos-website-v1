@@ -2,6 +2,7 @@ import { LogOut, Pencil } from "lucide-react";
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
 import { BrandMark, QrGlyph, Spark, StageBadge } from "@/components/quest/icons";
+import ListMeCta from "@/components/quest/ListMeCta";
 import { GameAvatar, gameBtn, gameBtnGhost, panel, stackStyle } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { STAGES } from "@/lib/quest/config";
@@ -82,6 +83,8 @@ export default async function Profile() {
           <Pencil aria-hidden className="size-3.5" /> Edit player card
         </Link>
       </section>
+
+      {!me.listed && <ListMeCta adult={me.is_adult} />}
 
       {/* Stats */}
       <dl className="grid grid-cols-3 gap-2.5">

@@ -201,11 +201,12 @@ export async function padisSeenAction(otherIds: string[]) {
   await markAllSeen(me.id, ids);
 }
 
-export async function blockAction(otherId: string, report: boolean, reason: string) {
+/** Block only: reports were retired (older reports stay in the database for organisers). */
+export async function blockAction(otherId: string) {
   return play(async () => {
     const me = await agent();
-    await blockAgent(me.id, uuid.parse(otherId), report, String(reason ?? ""));
-    return report ? "Blocked and reported. An organiser will review it." : "Blocked.";
+    await blockAgent(me.id, uuid.parse(otherId));
+    return "Blocked. You won't see each other any more.";
   });
 }
 

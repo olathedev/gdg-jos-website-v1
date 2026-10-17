@@ -236,17 +236,13 @@ export async function respondConnection(me: string, otherId: string, accept: boo
   return { padi };
 }
 
-export async function blockAgent(me: string, otherId: string, report: boolean, reason: string) {
+/** Blocks hide both people from each other everywhere. New blocks never create a report. */
+export async function blockAgent(me: string, otherId: string) {
   if (me === otherId) return;
   const sql = db();
   const [a, b] = order(me, otherId);
   await sql.begin(async (tx) => {
-    await tx`
-      insert into quest_blocks (blocker, blocked, reported, reason)
-      values (${me}, ${otherId}, ${report}, ${reason.slice(0, 500) || null})
-      on conflict (blocker, blocked) do update
-        set reported = quest_blocks.reported or excluded.reported,
-            reason = coalesce(excluded.reason, quest_blocks.reason)`;
+    await tx`insert into quest_blocks (blocker, blocked) values (${me}, ${otherId}) on conflict (blocker, blocked) do nothing`;
     await tx`delete from quest_connections where user_a = ${a} and user_b = ${b}`;
   });
 }

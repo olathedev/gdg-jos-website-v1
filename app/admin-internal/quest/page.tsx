@@ -11,7 +11,6 @@ import {
   RemovePartner,
   ResetPartnerCode,
   RemoveQuestion,
-  ReviewButton,
   RoundButton,
 } from "@/components/admin/QuestForms";
 import { adminSiteUrl } from "@/lib/admin/site";
@@ -219,7 +218,7 @@ export default async function QuestAdminPage() {
           <CommunityImport />
         </Section>
 
-        <Section title="Reports" sub="Players reported from the Crew screen. Both people are already hidden from each other; check each report at least twice a day.">
+        <Section title="Reports" sub="Reporting was retired: players can still block anyone, and blocked people stay hidden from each other. Reports filed before are kept here, read-only.">
           {reports.length === 0 ? (
             <p className="rounded-2xl border border-zinc-200/80 px-5 py-10 text-center text-sm text-zinc-500">No reports.</p>
           ) : (
@@ -235,11 +234,7 @@ export default async function QuestAdminPage() {
                       <p className="mt-1 text-zinc-600">{r.reason ?? <span className="text-zinc-400">No reason given</span>}</p>
                       <p className="mt-1 text-xs text-zinc-400">{when.format(new Date(r.created_at))}</p>
                     </div>
-                    {r.status === "open" ? (
-                      <ReviewButton blocker={r.blocker} blocked={r.blocked} />
-                    ) : (
-                      <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">Reviewed</span>
-                    )}
+                    <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">{r.status === "open" ? "Not reviewed" : "Reviewed"}</span>
                   </div>
                 </li>
               ))}

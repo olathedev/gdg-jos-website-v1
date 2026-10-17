@@ -1,20 +1,19 @@
 "use client";
 
-import { Flag } from "lucide-react";
+import { Ellipsis } from "lucide-react";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { blockAction } from "@/app/quest/actions";
 
-/** Block or report, on every person card. Blocking hides both people from each other. */
+/** Block, on every person card. Blocking hides both people from each other. Help goes to the organisers. */
 export default function BlockMenu({ id, name, onDone }: { id: string; name: string; onDone?: () => void }) {
   const [open, setOpen] = useState(false);
-  const [report, setReport] = useState(false);
-  const [reason, setReason] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
-  const submit = (withReport: boolean) =>
+  const block = () =>
     start(async () => {
-      const res = await blockAction(id, withReport, withReport ? reason : "");
+      const res = await blockAction(id);
       setMsg(res?.message ?? null);
       if (res?.ok) setTimeout(() => onDone?.(), 900);
     });
@@ -24,10 +23,10 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`Block or report ${name}`}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full text-fg/40 hover:bg-fg/[0.06] hover:text-fg/80"
+        aria-label={`More options for ${name}`}
+        className="flex size-11 shrink-0 items-center justify-center rounded-full text-fg/40 hover:bg-fg/[0.06] hover:text-fg/80"
       >
-        <Flag aria-hidden className="size-4" />
+        <Ellipsis aria-hidden className="size-5" />
       </button>
     );
   }
@@ -38,51 +37,24 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
         <p role="status" className="text-sm font-bold">
           {msg}
         </p>
-      ) : report ? (
-        <>
-          <label htmlFor={`reason-${id}`} className="text-xs font-bold text-fg/60">
-            What happened? Organisers will review it.
-          </label>
-          <textarea
-            id={`reason-${id}`}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={2}
-            maxLength={500}
-            className="resize-none rounded-xl border border-fg/10 bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-h-yellow"
-          />
-          <div className="flex gap-2">
-            <button
-              type="button"
-              disabled={pending}
-              onClick={() => submit(true)}
-              className="min-h-10 flex-1 rounded-full bg-g-red px-4 text-sm font-bold text-white disabled:opacity-50"
-            >
-              Block and report
-            </button>
-            <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-4 text-sm font-bold text-fg/60">
-              Cancel
-            </button>
-          </div>
-        </>
       ) : (
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
             disabled={pending}
-            onClick={() => submit(false)}
-            className="min-h-10 rounded-full border border-fg/15 px-4 text-sm font-bold disabled:opacity-50"
+            onClick={block}
+            className="min-h-11 rounded-full border border-fg/15 px-4 text-sm font-bold disabled:opacity-50"
           >
             Block {name}
           </button>
-          <button type="button" onClick={() => setReport(true)} className="min-h-10 rounded-full border border-g-red/50 px-4 text-sm font-bold text-bad">
-            Report
-          </button>
-          <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-3 text-sm font-bold text-fg/50">
+          <button type="button" onClick={() => setOpen(false)} className="min-h-11 rounded-full px-3 text-sm font-bold text-fg/50">
             Cancel
           </button>
         </div>
       )}
+      <Link href="/quest/people?role=organisers" className="flex min-h-11 items-center text-xs font-bold text-hl underline">
+        Need help? Find an organiser
+      </Link>
     </div>
   );
 }

@@ -47,7 +47,7 @@ function Toggle({
     <label className={`flex min-h-14 items-center gap-3 px-4 py-3 ${disabled ? "opacity-40" : "cursor-pointer"}`}>
       <span className="flex flex-1 flex-col">
         <span className="text-[15px] font-bold">{title}</span>
-        {hint && <span className="text-xs text-white/50">{hint}</span>}
+        {hint && <span className="text-xs text-fg/50">{hint}</span>}
       </span>
       <input
         type="checkbox"
@@ -59,7 +59,7 @@ function Toggle({
       />
       <span
         aria-hidden
-        className="relative h-7 w-12 shrink-0 rounded-full bg-white/15 transition-colors peer-checked:bg-g-green peer-focus-visible:outline-2 peer-focus-visible:outline-h-yellow after:absolute after:top-1 after:left-1 after:size-5 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5"
+        className="relative h-7 w-12 shrink-0 rounded-full bg-fg/15 transition-colors peer-checked:bg-g-green peer-focus-visible:outline-2 peer-focus-visible:outline-h-yellow after:absolute after:top-1 after:left-1 after:size-5 after:rounded-full after:bg-fg after:transition-transform peer-checked:after:translate-x-5"
       />
     </label>
   );
@@ -73,9 +73,9 @@ const shown = (name: string) => {
   return p.length > 1 ? `${p[0]} ${p[p.length - 1][0].toUpperCase()}.` : p[0];
 };
 
-const label = "text-[11px] font-bold tracking-[0.2em] text-white/50";
+const label = "text-[11px] font-bold tracking-[0.2em] text-fg/50";
 const field =
-  "w-full rounded-2xl border border-white/[0.12] bg-[#121212] px-4 text-base text-white outline-none placeholder:text-white/30 focus:border-h-yellow";
+  "w-full rounded-2xl border border-fg/[0.12] bg-surface px-4 text-base text-fg outline-none placeholder:text-fg/30 focus:border-h-yellow";
 
 export default function PlayerForm({ initial, next }: { initial: Initial; next?: string | null }) {
   const [state, action, pending] = useActionState<Result, FormData>(savePlayerAction, null);
@@ -112,7 +112,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
         <span className="type-heading text-2xl font-bold">{shown(name)}</span>
         <span className="flex flex-wrap justify-center gap-1.5">
           {(picked.length ? picked : ["Your stack"]).map((p) => (
-            <span key={p} className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold">
+            <span key={p} className="rounded-full bg-fg/10 px-2.5 py-0.5 text-xs font-bold">
               {p}
             </span>
           ))}
@@ -132,7 +132,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
                 aria-label={`Avatar ${a.id.slice(1)}`}
                 onClick={() => setAvatar(a.id)}
                 className={`flex aspect-square items-center justify-center rounded-full p-1 transition-transform active:scale-90 ${
-                  on ? "scale-105 ring-[3px] ring-white ring-offset-2 ring-offset-[#0A0A0A]" : "opacity-75 hover:opacity-100"
+                  on ? "scale-105 ring-[3px] ring-fg ring-offset-2 ring-offset-bg" : "opacity-75 hover:opacity-100"
                 }`}
               >
                 <AvatarArt spec={a} size={64} />
@@ -157,7 +157,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
           autoComplete="name"
           className={`${field} h-14`}
         />
-        <p className="text-xs text-white/50">
+        <p className="text-xs text-fg/50">
           The leaderboard shows &quot;{shown(name)}&quot;. Padis you accept see your full name.
         </p>
       </div>
@@ -178,7 +178,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
                 onClick={() => toggle(s.label)}
                 disabled={!on && picked.length >= 3}
                 className={`flex min-h-11 items-center gap-2 rounded-full border-2 px-4 text-sm font-bold transition-colors disabled:opacity-35 ${
-                  on ? "text-[#0A0A0A]" : "border-white/[0.12] bg-[#121212] text-white"
+                  on ? "text-[#0A0A0A]" : "border-fg/[0.12] bg-surface text-fg"
                 }`}
                 style={on ? { background: s.tint, borderColor: s.color } : undefined}
               >
@@ -195,7 +195,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
 
       <div className="flex flex-col gap-2">
         <label htmlFor="fun_fact" className={label}>
-          A FUN FACT ABOUT YOU <span className="text-white/30">(OPTIONAL)</span>
+          A FUN FACT ABOUT YOU <span className="text-fg/30">(OPTIONAL)</span>
         </label>
         <textarea
           id="fun_fact"
@@ -207,7 +207,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
           placeholder={`e.g. ${FACT_IDEAS[0]}`}
           className={`${field} resize-none py-3`}
         />
-        <p className="flex justify-between text-xs text-white/50">
+        <p className="flex justify-between text-xs text-fg/50">
           <span>Shown on your card. A great conversation starter.</span>
           <span className="tabular-nums">{fact.length}/90</span>
         </p>
@@ -215,14 +215,14 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
 
       <fieldset className="flex flex-col gap-3">
         <legend className={`${label} mb-3`}>
-          SOCIALS <span className="text-h-yellow">· ADD AT LEAST ONE (USERNAME ONLY)</span>
+          SOCIALS <span className="text-hl">· ADD AT LEAST ONE (USERNAME ONLY)</span>
         </legend>
         {SOCIALS.map((f) => (
-          <div key={f.id} className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
+          <div key={f.id} className="flex h-13 items-center overflow-hidden rounded-2xl border border-fg/[0.12] bg-surface focus-within:border-h-yellow">
             <label htmlFor={f.id} className="w-24 shrink-0 pl-4 text-sm font-bold">
               {f.label}
             </label>
-            <span className="text-sm text-white/35">{f.prefix}</span>
+            <span className="text-sm text-fg/35">{f.prefix}</span>
             <input
               id={f.id}
               name={f.id}
@@ -232,11 +232,11 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
               autoCorrect="off"
               spellCheck={false}
               maxLength={100}
-              className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-white outline-none placeholder:text-white/25"
+              className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-fg outline-none placeholder:text-fg/25"
             />
           </div>
         ))}
-        <div className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
+        <div className="flex h-13 items-center overflow-hidden rounded-2xl border border-fg/[0.12] bg-surface focus-within:border-h-yellow">
           <label htmlFor="whatsapp" className="w-24 shrink-0 pl-4 text-sm font-bold">
             WhatsApp
           </label>
@@ -247,20 +247,20 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
             inputMode="tel"
             defaultValue={initial.whatsapp ? `+${initial.whatsapp}` : ""}
             placeholder="0803 000 0000"
-            className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-white outline-none placeholder:text-white/25"
+            className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-fg outline-none placeholder:text-fg/25"
           />
         </div>
         {socialError && (
-          <p role="alert" className="text-sm font-bold text-[#F8D8D8]">
+          <p role="alert" className="text-sm font-bold text-bad">
             Add at least one of GitHub, LinkedIn, X or Instagram so your padis can find you.
           </p>
         )}
-        <p className="text-xs leading-relaxed text-white/50">
+        <p className="text-xs leading-relaxed text-fg/50">
           We build every link ourselves, so nobody can hide a dodgy link. Socials are only shown to padis you accept.
         </p>
       </fieldset>
 
-      <div className="flex flex-col divide-y divide-white/[0.06] rounded-[24px] border border-white/[0.12] bg-[#121212]">
+      <div className="flex flex-col divide-y divide-fg/[0.06] rounded-[24px] border border-fg/[0.12] bg-surface">
         <Toggle
           name="share_whatsapp"
           checked={shareWa}
@@ -278,7 +278,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
       </div>
 
       {state && (
-        <p role="status" className={`rounded-full border px-4 py-2.5 text-center text-sm font-bold ${state.ok ? "border-g-green/40 bg-g-green/10 text-[#CCF6C5]" : "border-g-red/40 bg-g-red/10 text-[#F8D8D8]"}`}>
+        <p role="status" className={`rounded-full border px-4 py-2.5 text-center text-sm font-bold ${state.ok ? "border-g-green/40 bg-g-green/10 text-good" : "border-g-red/40 bg-g-red/10 text-bad"}`}>
           {state.message}
         </p>
       )}

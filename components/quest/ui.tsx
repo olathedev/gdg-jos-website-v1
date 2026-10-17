@@ -91,7 +91,7 @@ export const pillLight = `${pill} bg-white text-ink hover:bg-white/85`;
 export const pillOutline = `${pill} border-2 border-ink text-ink hover:bg-ink/5`;
 
 export const input =
-  "h-12 w-full rounded-full border border-[#D6D6D6] bg-white px-[18px] text-base outline-none focus:border-g-blue focus:ring-2 focus:ring-g-blue/25";
+  "h-12 w-full rounded-full border border-[#D6D6D6] bg-fg px-[18px] text-base outline-none focus:border-g-blue focus:ring-2 focus:ring-g-blue/25";
 
 /* ---------- stage game (dark) ---------- */
 
@@ -113,7 +113,7 @@ export function GameAvatar({
       {a ? (
         <AvatarArt spec={a} size={size} />
       ) : (
-        <span className="flex size-full items-center justify-center bg-[#2A2A2A] font-bold text-white" style={{ fontSize: size * 0.34 }}>
+        <span className="flex size-full items-center justify-center bg-surface-3 font-bold text-fg" style={{ fontSize: size * 0.34 }}>
           {initials}
         </span>
       )}
@@ -123,7 +123,7 @@ export function GameAvatar({
 
 /** Chunky game button with a pressed-down feel. */
 export const gameBtn =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-white px-7 text-base font-bold text-[#0A0A0A] transition-[transform,background-color] hover:bg-white/90 active:scale-[0.97] disabled:opacity-40 disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-h-yellow";
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-fg px-7 text-base font-bold text-on-fg transition-[transform,background-color] hover:bg-fg/90 active:scale-[0.97] disabled:opacity-40 disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-h-yellow";
 export const gameBtnGhost =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 px-6 text-sm font-bold text-white transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-white";
-export const panel = "rounded-[24px] border border-white/[0.08] bg-[#121212]";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-fg/20 px-6 text-sm font-bold text-fg transition-colors hover:bg-fg/[0.06] focus-visible:outline-2 focus-visible:outline-fg";
+export const panel = "rounded-[24px] border border-fg/[0.08] bg-surface";

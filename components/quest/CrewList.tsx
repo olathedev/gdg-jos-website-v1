@@ -16,7 +16,7 @@ function Stack({ stack }: { stack: string[] }) {
   return (
     <span className="flex flex-wrap gap-1.5">
       {stack.map((s) => (
-        <span key={s} className="flex items-center gap-1 text-xs font-semibold text-white/60">
+        <span key={s} className="flex items-center gap-1 text-xs font-semibold text-fg/60">
           <span aria-hidden className="size-1.5 rounded-full" style={{ background: stackStyle(s).color }} />
           {s}
         </span>
@@ -25,7 +25,7 @@ function Stack({ stack }: { stack: string[] }) {
   );
 }
 
-const card = "flex flex-col gap-3 rounded-[24px] border border-white/[0.08] bg-[#121212] p-3.5";
+const card = "flex flex-col gap-3 rounded-[24px] border border-fg/[0.08] bg-surface p-3.5";
 
 /** Incoming padi requests (accept or decline) and padis with their shared contacts. */
 export default function CrewList({ pending, connected, now }: { pending: CrewMember[]; connected: CrewMember[]; now: number }) {
@@ -49,7 +49,7 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
       {party && <Celebration message={party} onDone={() => setParty(null)} />}
       {requests.length > 0 && (
         <section className="flex flex-col gap-3" aria-labelledby="req-h">
-          <h2 id="req-h" className="text-[11px] font-bold tracking-[0.2em] text-h-yellow">
+          <h2 id="req-h" className="text-[11px] font-bold tracking-[0.2em] text-hl">
             REQUESTS · {requests.length}
           </h2>
           <ul className="flex flex-col gap-2.5">
@@ -60,26 +60,26 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="truncate text-base font-bold">{p.name}</span>
                     <Stack stack={p.stack} />
-                    {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
+                    {p.funFact && <span className="text-[13px] leading-snug text-fg/70">{p.funFact}</span>}
                     <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
                 </div>
                 {done[p.id] === "accepted" ? (
-                  <p className="text-center text-sm font-bold text-[#CCF6C5]">Accepted! Their socials are below.</p>
+                  <p className="text-center text-sm font-bold text-good">Accepted! Their socials are below.</p>
                 ) : (
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => respond(p.id, true, p.name)}
-                      className="min-h-11 flex-1 rounded-full bg-white text-sm font-bold text-[#0A0A0A] active:scale-[0.97]"
+                      className="min-h-11 flex-1 rounded-full bg-fg text-sm font-bold text-on-fg active:scale-[0.97]"
                     >
                       Accept
                     </button>
                     <button
                       type="button"
                       onClick={() => respond(p.id, false, p.name)}
-                      className="min-h-11 flex-1 rounded-full border border-white/15 text-sm font-bold text-white/80"
+                      className="min-h-11 flex-1 rounded-full border border-fg/15 text-sm font-bold text-fg/80"
                     >
                       Decline
                     </button>
@@ -92,11 +92,11 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
       )}
 
       <section className="flex flex-col gap-3" aria-labelledby="padis-h">
-        <h2 id="padis-h" className="text-[11px] font-bold tracking-[0.2em] text-white/45">
+        <h2 id="padis-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
           MY PADIS · {padis.length}
         </h2>
         {padis.length === 0 ? (
-          <p className="rounded-[24px] border border-white/[0.08] bg-[#121212] px-5 py-8 text-center text-sm text-white/60">
+          <p className="rounded-[24px] border border-fg/[0.08] bg-surface px-5 py-8 text-center text-sm text-fg/60">
             No padis yet. Scan someone&apos;s QR or send a request from People.
           </p>
         ) : (
@@ -108,8 +108,8 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="truncate text-base font-bold">{p.fullName}</span>
                     <Stack stack={p.stack} />
-                    {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
-                    {p.met && <span className="text-[11px] font-bold tracking-wider text-[#81C995]">MET IN PERSON</span>}
+                    {p.funFact && <span className="text-[13px] leading-snug text-fg/70">{p.funFact}</span>}
+                    {p.met && <span className="text-[11px] font-bold tracking-wider text-live">MET IN PERSON</span>}
                     <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
@@ -122,7 +122,7 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
                           href={c.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex min-h-10 items-center gap-2 rounded-full border border-white/[0.12] px-3.5 text-sm font-bold hover:bg-white/[0.05]"
+                          className="flex min-h-10 items-center gap-2 rounded-full border border-fg/[0.12] px-3.5 text-sm font-bold hover:bg-fg/[0.05]"
                         >
                           <BrandMark id={brandId(c.label)} size={16} />
                           {c.label}
@@ -132,7 +132,7 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-xs text-white/45">They haven&apos;t added any socials yet.</p>
+                  <p className="text-xs text-fg/45">They haven&apos;t added any socials yet.</p>
                 )}
               </li>
             ))}

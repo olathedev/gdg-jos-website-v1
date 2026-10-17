@@ -29,11 +29,11 @@ function Step({ row, place, h, color }: { row?: BoardRow; place: number; h: stri
           <span className="max-w-full truncate text-sm font-bold">{row.name}</span>
         </>
       ) : (
-        <span className="pb-2 text-sm text-white/30">Open</span>
+        <span className="pb-2 text-sm text-fg/30">Open</span>
       )}
       <div
         className={`flex w-full flex-col items-center justify-start gap-0.5 rounded-t-2xl pt-2 text-ink ${h}`}
-        style={{ background: row ? color : "rgb(255 255 255 / 0.06)" }}
+        style={{ background: row ? color : "rgb(var(--q-fg-rgb) / 0.06)" }}
       >
         <span className="type-heading text-xl font-bold">{place}</span>
         {row && <span className="text-xs font-black tabular-nums">{row.score}</span>}
@@ -57,7 +57,7 @@ export default async function Board() {
           <PodiumGlyph size={28} />
         </span>
         <h1 className="type-heading text-[28px] font-bold">Leaderboard</h1>
-        <p className="text-xs text-white/50">
+        <p className="text-xs text-fg/50">
           {phase() === "pre" ? `Before 17 Oct scores stop at ${PRE_EVENT_CAP}. ` : ""}Ties go to whoever got there first.
         </p>
       </header>
@@ -69,17 +69,17 @@ export default async function Board() {
       </div>
 
       <div className={`${panel} flex items-center gap-3 border-h-yellow/40 bg-h-yellow/10 px-4 py-3`}>
-        <span className="type-heading w-12 text-xl font-bold text-h-yellow">{you ? `#${you.rank}` : "–"}</span>
+        <span className="type-heading w-12 text-xl font-bold text-hl">{you ? `#${you.rank}` : "–"}</span>
         <GameAvatar avatar={me.avatar} size={36} />
         <span className="flex-1 text-sm font-bold">You</span>
         <span className="text-sm font-black tabular-nums">{mine.score}</span>
       </div>
 
       {rest.length > 0 && (
-        <ol className={`${panel} flex flex-col divide-y divide-white/5 px-3`} start={4}>
+        <ol className={`${panel} flex flex-col divide-y divide-fg/5 px-3`} start={4}>
           {rest.map((r) => (
-            <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-h-yellow" : ""}`}>
-              <span className="w-8 text-center text-sm font-black text-white/50 tabular-nums">{r.rank}</span>
+            <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-hl" : ""}`}>
+              <span className="w-8 text-center text-sm font-black text-fg/50 tabular-nums">{r.rank}</span>
               <GameAvatar avatar={r.avatar} initials={r.initials} size={32} />
               <span className="flex-1 truncate text-sm font-bold">{r.name}</span>
               <span className="text-sm font-black tabular-nums">{r.score}</span>
@@ -87,8 +87,8 @@ export default async function Board() {
           ))}
         </ol>
       )}
-      {rows.length === 0 && <p className={`${panel} px-5 py-8 text-center text-sm text-white/60`}>No scores yet. Clear Stage 1 to get on the board.</p>}
-      <p className="text-center text-xs text-white/40">Winners show their ticket on stage to collect prizes.</p>
+      {rows.length === 0 && <p className={`${panel} px-5 py-8 text-center text-sm text-fg/60`}>No scores yet. Clear Stage 1 to get on the board.</p>}
+      <p className="text-center text-xs text-fg/40">Winners show their ticket on stage to collect prizes.</p>
     </div>
   );
 }

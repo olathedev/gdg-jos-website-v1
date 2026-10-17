@@ -20,7 +20,7 @@ export default async function Me() {
 
   return (
     <div className="flex flex-col items-center gap-5 pt-2 text-center">
-      <span className="text-[11px] font-bold tracking-[0.2em] text-white/50">MY QUEST QR</span>
+      <span className="text-[11px] font-bold tracking-[0.2em] text-fg/50">MY QUEST QR</span>
 
       <div className="quest-pop flex w-full max-w-[320px] flex-col items-center gap-4 rounded-[32px] bg-white p-5 text-ink">
         <div
@@ -35,7 +35,7 @@ export default async function Me() {
         </div>
       </div>
 
-      <p className="max-w-xs text-sm text-white/65">
+      <p className="max-w-xs text-sm text-fg/65">
         Let other players scan this. You&apos;re connected instantly and you both get +{POINTS.meet}.
       </p>
 

@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   return (
     <div className="flex flex-col gap-5 pt-2">
       {welcome && (
-        <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-[#CCF6C5]">
+        <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-good">
           You&apos;re in! Tap Start the quest to begin.
         </p>
       )}
@@ -55,28 +55,28 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
       {/* Score */}
       <section className="flex items-end justify-between gap-4" aria-label="Your score">
         <div className="flex flex-col">
-          <span className="text-sm font-semibold text-white/55">Hi {first}</span>
+          <span className="text-sm font-semibold text-fg/55">Hi {first}</span>
           <span className="type-heading quest-pop flex items-center gap-2 text-[52px] leading-none font-bold tabular-nums">
             <span aria-hidden className="text-g-blue">{"{"}</span>
             {score}
             <span aria-hidden className="text-g-yellow">{"}"}</span>
           </span>
-          <span className="text-xs font-bold tracking-[0.18em] text-white/40">POINTS</span>
+          <span className="text-xs font-bold tracking-[0.18em] text-fg/40">POINTS</span>
         </div>
         <Link
           href="/quest/board"
-          className="mb-1 flex items-center gap-1.5 rounded-full border border-white/10 bg-[#141414] px-3.5 py-2 text-sm font-bold hover:bg-[#1C1C1C]"
+          className="mb-1 flex items-center gap-1.5 rounded-full border border-fg/10 bg-surface-2 px-3.5 py-2 text-sm font-bold hover:bg-surface-3"
         >
           {rank ? `Rank #${rank}` : "Not ranked yet"}
-          <ChevronRight aria-hidden className="size-4 text-white/50" />
+          <ChevronRight aria-hidden className="size-4 text-fg/50" />
         </Link>
       </section>
 
       {/* Quest breadcrumb */}
       <nav aria-label="Your quest" className={`${panel} flex flex-col gap-3 p-4`}>
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold tracking-[0.2em] text-white/45">YOUR QUEST</span>
-          <span className="text-xs font-bold text-white/60">{cleared}/4 cleared</span>
+          <span className="text-[11px] font-bold tracking-[0.2em] text-fg/45">YOUR QUEST</span>
+          <span className="text-xs font-bold text-fg/60">{cleared}/4 cleared</span>
         </div>
         <ol className="flex items-start">
           {STAGES.map((st, i) => {
@@ -90,20 +90,20 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
                   aria-label={`Stage ${st.num}: ${st.title}. ${status(st.id, s)}`}
                   className="group flex w-full flex-col items-center gap-1.5 text-center"
                 >
-                  <span className={`relative flex h-11 items-center rounded-full ${here ? "ring-2 ring-white ring-offset-2 ring-offset-[#121212]" : ""}`}>
+                  <span className={`relative flex h-11 items-center rounded-full ${here ? "ring-2 ring-fg ring-offset-2 ring-offset-surface" : ""}`}>
                     <StageBadge id={st.id} color={st.color} size={st.id === "partners" ? 34 : 42} locked={s === "locked"} />
                     {s === "done" && (
-                      <span className="absolute -top-1 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-[#121212] bg-white">
-                        <Check aria-hidden className="size-3 text-[#0A0A0A]" strokeWidth={4} />
+                      <span className="absolute -top-1 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-surface bg-fg">
+                        <Check aria-hidden className="size-3 text-on-fg" strokeWidth={4} />
                       </span>
                     )}
                     {s === "locked" && (
-                      <span className="absolute -right-1.5 -bottom-1 flex size-5 items-center justify-center rounded-full border-2 border-[#121212] bg-[#2A2A2A] text-white/70">
+                      <span className="absolute -right-1.5 -bottom-1 flex size-5 items-center justify-center rounded-full border-2 border-surface bg-surface-3 text-fg/70">
                         <LockGlyph size={10} />
                       </span>
                     )}
                   </span>
-                  <span className={`text-[11px] leading-tight font-bold ${s === "locked" ? "text-white/35" : here ? "text-white" : "text-white/70"}`}>
+                  <span className={`text-[11px] leading-tight font-bold ${s === "locked" ? "text-fg/35" : here ? "text-fg" : "text-fg/70"}`}>
                     {st.short}
                   </span>
                 </Link>
@@ -111,7 +111,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
                   <span
                     aria-hidden
                     className="mt-[21px] h-0.5 w-3 shrink-0 rounded-full"
-                    style={{ background: s === "done" ? st.color : "rgb(255 255 255 / 0.15)" }}
+                    style={{ background: s === "done" ? st.color : "rgb(var(--q-fg-rgb) / 0.15)" }}
                   />
                 )}
               </li>
@@ -127,15 +127,15 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
       {liveRound && g.states.quiz !== "locked" && (
         <Link
           href={`/quest/quiz/${liveRound.round}`}
-          className="flex items-center gap-3 rounded-[24px] border border-h-yellow/50 bg-[#17140A] p-4 transition-transform active:scale-[0.98]"
+          className="flex items-center gap-3 rounded-[24px] border border-h-yellow/50 bg-tint-yellow p-4 transition-transform active:scale-[0.98]"
         >
           <StageBadge id="quiz" color="#F9AB00" size={44} />
           <span className="flex flex-1 flex-col">
-            <span className="text-[11px] font-black tracking-[0.15em] text-g-red">LIVE NOW</span>
+            <span className="text-[11px] font-black tracking-[0.15em] text-alert">LIVE NOW</span>
             <span className="text-[15px] font-bold">Brain Blitz · Round {liveRound.round}</span>
-            <span className="text-xs text-white/60">10 questions, 60 seconds. One shot.</span>
+            <span className="text-xs text-fg/60">10 questions, 60 seconds. One shot.</span>
           </span>
-          <ArrowRight aria-hidden className="size-5 text-h-yellow" />
+          <ArrowRight aria-hidden className="size-5 text-hl" />
         </Link>
       )}
 
@@ -143,7 +143,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
       {pending > 0 && (
         <Link
           href="/quest/crew"
-          className="flex items-center gap-3 rounded-[24px] border border-g-red/40 bg-[#160D0C] p-4 transition-transform active:scale-[0.98]"
+          className="flex items-center gap-3 rounded-[24px] border border-g-red/40 bg-tint-red p-4 transition-transform active:scale-[0.98]"
         >
           <span aria-hidden className="flex size-11 items-center justify-center rounded-full bg-g-red text-white">
             <StageGlyph id="padiup" size={24} ink="currentColor" fill="transparent" />
@@ -152,9 +152,9 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
             <span className="text-[15px] font-bold">
               {pending} padi {pending === 1 ? "request" : "requests"}
             </span>
-            <span className="text-xs text-white/60">Accept to swap socials</span>
+            <span className="text-xs text-fg/60">Accept to swap socials</span>
           </span>
-          <ArrowRight aria-hidden className="size-5 text-white/60" />
+          <ArrowRight aria-hidden className="size-5 text-fg/60" />
         </Link>
       )}
 
@@ -163,13 +163,13 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
         <div className="flex items-center gap-3.5">
           <StageBadge id={current.id} color={current.color} size={current.id === "partners" ? 44 : 52} locked={g.states[current.id] === "locked"} />
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: current.color }}>
+            <span className="text-[11px] font-bold tracking-[0.18em]" style={{ color: `var(--q-st-${current.id})` }}>
               {cleared === 4 ? "ALL CLEARED" : `NEXT UP · STAGE ${current.num}`}
             </span>
             <h2 id="next-h" className="type-heading text-xl leading-tight font-bold">
               {current.title}
             </h2>
-            <span className="text-sm text-white/60">{status(current.id, g.states[current.id])}</span>
+            <span className="text-sm text-fg/60">{status(current.id, g.states[current.id])}</span>
           </div>
         </div>
         {current.id === "padiup" ? (
@@ -186,13 +186,13 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <Link href="/quest/me" className={`${panel} flex items-center gap-3 p-4 transition-transform active:scale-[0.97]`}>
-          <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-white text-[#0A0A0A]">
+          <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-fg text-on-fg">
             <QrGlyph size={20} />
           </span>
           <span className="text-sm font-bold">My QR</span>
         </Link>
         <Link href="/quest/people" className={`${panel} flex items-center gap-3 p-4 transition-transform active:scale-[0.97]`}>
-          <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-[#1E1E1E] text-white">
+          <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-surface-3 text-fg">
             <StageGlyph id="padiup" size={22} ink="currentColor" fill="transparent" />
           </span>
           <span className="text-sm font-bold">Find people</span>
@@ -205,16 +205,16 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
       {top.length > 0 && (
         <section className={`${panel} flex flex-col gap-1 p-3`} aria-labelledby="top-h">
           <div className="flex items-center justify-between px-1 pb-1">
-            <h2 id="top-h" className="text-[11px] font-bold tracking-[0.2em] text-white/45">
+            <h2 id="top-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
               TOP PLAYERS
             </h2>
-            <Link href="/quest/board" className="text-xs font-bold text-h-yellow">
+            <Link href="/quest/board" className="text-xs font-bold text-hl">
               See board
             </Link>
           </div>
           <ol>
             {top.map((r) => (
-              <li key={r.id} className={`flex items-center gap-3 rounded-2xl px-1 py-2 ${r.id === me.id ? "text-h-yellow" : ""}`}>
+              <li key={r.id} className={`flex items-center gap-3 rounded-2xl px-1 py-2 ${r.id === me.id ? "text-hl" : ""}`}>
                 <RankBadge rank={r.rank} size={24} />
                 <GameAvatar avatar={r.avatar} initials={r.initials} size={30} />
                 <span className="flex-1 truncate text-sm font-bold">{r.name}</span>

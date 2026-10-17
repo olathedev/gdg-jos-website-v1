@@ -33,17 +33,17 @@ export default function SocialsStage({ followed }: { followed: string[] }) {
                   });
                 }}
                 className={`relative flex aspect-square flex-col items-center justify-center gap-2 rounded-[24px] border p-3 text-center transition-transform active:scale-95 ${
-                  on ? "border-g-green/70 bg-[#121212]" : "border-white/[0.08] bg-[#121212] hover:border-white/25"
+                  on ? "border-g-green/70 bg-surface" : "border-fg/[0.08] bg-surface hover:border-fg/25"
                 }`}
               >
                 <span
                   aria-hidden
-                  className={`flex size-14 items-center justify-center rounded-full ${on ? "bg-white text-[#0A0A0A]" : "bg-[#1E1E1E] text-white"}`}
+                  className={`flex size-14 items-center justify-center rounded-full ${on ? "bg-fg text-on-fg" : "bg-surface-3 text-fg"}`}
                 >
                   <BrandMark id={f.id} size={26} />
                 </span>
                 <span className="text-sm font-bold">{f.name}</span>
-                <span className="truncate text-xs text-white/55">{f.handle}</span>
+                <span className="truncate text-xs text-fg/55">{f.handle}</span>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-xs font-black ${on ? "bg-g-green text-white" : "bg-h-yellow text-[#0A0A0A]"}`}
                 >
@@ -62,18 +62,18 @@ export default function SocialsStage({ followed }: { followed: string[] }) {
         })}
       </ul>
       {cleared ? (
-        <div className="quest-pop flex flex-col items-center gap-3 rounded-[24px] border border-g-green/40 bg-[#121212] p-5 text-center">
+        <div className="quest-pop flex flex-col items-center gap-3 rounded-[24px] border border-g-green/40 bg-surface p-5 text-center">
           <span aria-hidden className="flex size-12 items-center justify-center rounded-full bg-g-green text-white">
             <Check className="size-6" strokeWidth={3.5} />
           </span>
           <span className="type-heading text-xl font-bold">Stage cleared!</span>
-          <span className="text-sm text-white/70">Padi Up is unlocked. Time to meet people.</span>
+          <span className="text-sm text-fg/70">Padi Up is unlocked. Time to meet people.</span>
           <Link href="/quest/stage/padiup" className={gameBtn}>
             Go to Stage 2
           </Link>
         </div>
       ) : (
-        <p className="text-center text-xs leading-relaxed text-white/50">
+        <p className="text-center text-xs leading-relaxed text-fg/50">
           Tap a tile to follow, then come back. These apps don&apos;t show who follows a page, so winners&apos; follows are
           checked by hand.
         </p>

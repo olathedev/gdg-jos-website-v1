@@ -47,14 +47,14 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
         <span aria-hidden className="quest-float">
           <StageBadge id="quiz" color="#F9AB00" size={88} />
         </span>
-        <span className="text-[11px] font-bold tracking-[0.2em] text-h-yellow">ROUND {round}</span>
+        <span className="text-[11px] font-bold tracking-[0.2em] text-hl">ROUND {round}</span>
         <h1 className="type-heading text-3xl font-bold">Ready?</h1>
-        <ul className="flex flex-col gap-1.5 text-sm text-white/70">
+        <ul className="flex flex-col gap-1.5 text-sm text-fg/70">
           <li>{ROUND_QUESTIONS} questions, {ROUND_SECONDS} seconds on the clock</li>
           <li>The clock starts the moment you tap Start</li>
           <li>One shot only. Ties go to the faster finish</li>
         </ul>
-        {error && <p className="text-sm font-bold text-[#F8D8D8]">{error}</p>}
+        {error && <p className="text-sm font-bold text-bad">{error}</p>}
         <button
           type="button"
           disabled={starting}
@@ -104,16 +104,16 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
   return (
     <div className="flex flex-col gap-5 pt-2">
       <div className="flex items-center justify-between text-sm font-bold">
-        <span className="text-white/60">
+        <span className="text-fg/60">
           Q {Math.min(number, total)}/{total}
         </span>
-        <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-[#141414] px-3 py-1">
-          <Check aria-hidden className="size-3.5 text-g-green" strokeWidth={3.5} /> {score}
+        <span className="flex items-center gap-1.5 rounded-full border border-fg/10 bg-surface-2 px-3 py-1">
+          <Check aria-hidden className="size-3.5 text-live" strokeWidth={3.5} /> {score}
         </span>
       </div>
 
       <div className="flex items-center gap-3">
-        <span aria-hidden className="h-3 flex-1 overflow-hidden rounded-full bg-white/10">
+        <span aria-hidden className="h-3 flex-1 overflow-hidden rounded-full bg-fg/10">
           <span
             className={`block h-full rounded-full transition-[width] duration-200 ease-linear ${
               secs <= 10 ? "bg-g-red" : secs <= 25 ? "bg-h-yellow" : "bg-g-green"
@@ -124,7 +124,7 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
         <span
           role="timer"
           aria-label={`${secs} seconds left`}
-          className={`type-heading w-12 text-right text-2xl font-bold tabular-nums ${secs <= 10 ? "animate-pulse text-g-red" : ""}`}
+          className={`type-heading w-12 text-right text-2xl font-bold tabular-nums ${secs <= 10 ? "animate-pulse text-alert" : ""}`}
         >
           {secs}
         </span>
@@ -157,15 +157,15 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
                         : state === "wrong"
                           ? "border-g-red bg-g-red/25"
                           : state === "wait"
-                            ? "border-white/60 bg-white/10"
+                            ? "border-fg/60 bg-fg/10"
                             : state === "dim"
-                              ? "border-white/5 bg-white/[0.02] opacity-50"
-                              : "border-white/[0.08] bg-[#121212] hover:border-white/25"
+                              ? "border-fg/5 bg-fg/[0.02] opacity-50"
+                              : "border-fg/[0.08] bg-surface hover:border-fg/25"
                     }`}
                   >
                     <span
                       aria-hidden
-                      className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-sm font-black"
+                      className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-fg/10 text-sm font-black"
                     >
                       {state === "right" ? (
                         <Check className="size-4" strokeWidth={3.5} />
@@ -183,9 +183,9 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
           </ul>
         </div>
       ) : (
-        <p className="py-10 text-center text-white/60">Wrapping up…</p>
+        <p className="py-10 text-center text-fg/60">Wrapping up…</p>
       )}
-      {error && <p className="text-center text-sm font-bold text-[#F8D8D8]">{error}</p>}
+      {error && <p className="text-center text-sm font-bold text-bad">{error}</p>}
     </div>
   );
 }

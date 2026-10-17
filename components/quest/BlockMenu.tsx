@@ -25,7 +25,7 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
         type="button"
         onClick={() => setOpen(true)}
         aria-label={`Block or report ${name}`}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full text-white/40 hover:bg-white/[0.06] hover:text-white/80"
+        className="flex size-9 shrink-0 items-center justify-center rounded-full text-fg/40 hover:bg-fg/[0.06] hover:text-fg/80"
       >
         <Flag aria-hidden className="size-4" />
       </button>
@@ -33,14 +33,14 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
   }
 
   return (
-    <div className="flex w-full flex-col gap-2.5 rounded-2xl border border-white/10 bg-[#0A0A0A] p-3">
+    <div className="flex w-full flex-col gap-2.5 rounded-2xl border border-fg/10 bg-bg p-3">
       {msg ? (
         <p role="status" className="text-sm font-bold">
           {msg}
         </p>
       ) : report ? (
         <>
-          <label htmlFor={`reason-${id}`} className="text-xs font-bold text-white/60">
+          <label htmlFor={`reason-${id}`} className="text-xs font-bold text-fg/60">
             What happened? Organisers will review it.
           </label>
           <textarea
@@ -49,7 +49,7 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             maxLength={500}
-            className="resize-none rounded-xl border border-white/10 bg-[#121212] px-3 py-2 text-sm text-white outline-none focus:border-h-yellow"
+            className="resize-none rounded-xl border border-fg/10 bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-h-yellow"
           />
           <div className="flex gap-2">
             <button
@@ -60,7 +60,7 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
             >
               Block and report
             </button>
-            <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-4 text-sm font-bold text-white/60">
+            <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-4 text-sm font-bold text-fg/60">
               Cancel
             </button>
           </div>
@@ -71,14 +71,14 @@ export default function BlockMenu({ id, name, onDone }: { id: string; name: stri
             type="button"
             disabled={pending}
             onClick={() => submit(false)}
-            className="min-h-10 rounded-full border border-white/15 px-4 text-sm font-bold disabled:opacity-50"
+            className="min-h-10 rounded-full border border-fg/15 px-4 text-sm font-bold disabled:opacity-50"
           >
             Block {name}
           </button>
-          <button type="button" onClick={() => setReport(true)} className="min-h-10 rounded-full border border-g-red/50 px-4 text-sm font-bold text-[#F8D8D8]">
+          <button type="button" onClick={() => setReport(true)} className="min-h-10 rounded-full border border-g-red/50 px-4 text-sm font-bold text-bad">
             Report
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-3 text-sm font-bold text-white/50">
+          <button type="button" onClick={() => setOpen(false)} className="min-h-10 rounded-full px-3 text-sm font-bold text-fg/50">
             Cancel
           </button>
         </div>

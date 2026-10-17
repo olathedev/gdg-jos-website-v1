@@ -56,10 +56,10 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
           ) : (
             <li
               key={`slot-${i}`}
-              className="flex flex-col items-center gap-2 rounded-3xl border-2 border-dashed border-white/10 px-2 py-4 text-center"
+              className="flex flex-col items-center gap-2 rounded-3xl border-2 border-dashed border-fg/10 px-2 py-4 text-center"
             >
-              <span className="flex size-12 items-center justify-center rounded-full bg-white/5 text-xl text-white/30">?</span>
-              <span className="text-xs font-bold text-white/30">Partner {i + 1}</span>
+              <span className="flex size-12 items-center justify-center rounded-full bg-fg/5 text-xl text-fg/30">?</span>
+              <span className="text-xs font-bold text-fg/30">Partner {i + 1}</span>
             </li>
           ),
         )}
@@ -73,7 +73,7 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
 
       {list.length > 0 && (
         <section className="flex flex-col gap-3" aria-labelledby="pl-h">
-          <h2 id="pl-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-white/50">
+          <h2 id="pl-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-fg/50">
             PARTNERS AT DEVFEST JOS
           </h2>
           <ul className="flex flex-wrap justify-center gap-2">
@@ -81,7 +81,7 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
               <li
                 key={p.id}
                 className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${
-                  p.visited ? "bg-g-green/20 text-[#CCF6C5]" : "bg-white/[0.06] text-white/70"
+                  p.visited ? "bg-g-green/20 text-good" : "bg-fg/[0.06] text-fg/70"
                 }`}
               >
                 {p.visited && <Check aria-hidden className="size-3" strokeWidth={4} />}

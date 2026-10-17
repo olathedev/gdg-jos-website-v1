@@ -26,12 +26,12 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
         <span aria-hidden className="quest-pop">
           {view.rank && view.rank <= 3 ? <RankBadge rank={view.rank} size={84} /> : <StageBadge id="quiz" color="#F9AB00" size={84} />}
         </span>
-        <span className="text-[11px] font-bold tracking-[0.2em] text-h-yellow">ROUND {round} COMPLETE</span>
+        <span className="text-[11px] font-bold tracking-[0.2em] text-hl">ROUND {round} COMPLETE</span>
         <span className="type-heading text-[56px] leading-none font-bold tabular-nums">
           {view.score}
-          <span className="text-2xl text-white/40">/{view.total || ROUND_QUESTIONS}</span>
+          <span className="text-2xl text-fg/40">/{view.total || ROUND_QUESTIONS}</span>
         </span>
-        <span className="text-sm font-semibold text-white/70">
+        <span className="text-sm font-semibold text-fg/70">
           +{view.score * POINTS.roundAnswer} points · {view.seconds}s
           {view.rank ? ` · #${view.rank} this round` : ""}
         </span>
@@ -51,12 +51,12 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
     <div className="flex flex-1 flex-col items-center justify-center gap-4 py-10 text-center">
       <span aria-hidden className="relative">
         <StageBadge id="quiz" color="#F9AB00" size={80} locked />
-        <span className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full border-[3px] border-[#0A0A0A] bg-[#2A2A2A] text-white/70">
+        <span className="absolute -right-1 -bottom-1 flex size-8 items-center justify-center rounded-full border-[3px] border-bg bg-surface-3 text-fg/70">
           <LockGlyph size={14} />
         </span>
       </span>
       <h1 className="type-heading text-2xl font-bold">{view.kind === "soon" ? `Round ${round} opens soon` : `Round ${round} is closed`}</h1>
-      <p className="max-w-xs text-sm text-white/65">
+      <p className="max-w-xs text-sm text-fg/65">
         {view.kind === "soon" ? "Organisers open each round live. Keep an eye on the screens." : "This round has ended."}
       </p>
       <Link href="/quest/stage/quiz" className={gameBtn}>

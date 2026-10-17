@@ -38,14 +38,14 @@ export default async function QuizStage() {
               <span
                 aria-hidden
                 className={`type-heading flex size-14 shrink-0 items-center justify-center rounded-2xl text-2xl font-bold ${
-                  live ? "bg-h-yellow text-[#0A0A0A]" : r.played ? "bg-white text-[#0A0A0A]" : "border border-dashed border-white/20 text-white/40"
+                  live ? "bg-h-yellow text-[#0A0A0A]" : r.played ? "bg-fg text-on-fg" : "border border-dashed border-fg/20 text-fg/40"
                 }`}
               >
                 {r.round}
               </span>
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="type-heading text-lg font-bold">Round {r.round}</span>
-                <span className="text-sm text-white/60">
+                <span className="text-sm text-fg/60">
                   {r.played
                     ? r.finished
                       ? `You scored ${r.score}/${ROUND_QUESTIONS}`
@@ -60,7 +60,7 @@ export default async function QuizStage() {
               {live && !r.finished && (
                 <span className="animate-pulse rounded-full bg-g-red px-2.5 py-1 text-[11px] font-black tracking-wider">LIVE</span>
               )}
-              {r.status === "soon" && <LockGlyph size={18} className="text-white/40" />}
+              {r.status === "soon" && <LockGlyph size={18} className="text-fg/40" />}
             </>
           );
           const cls = `${panel} flex items-center gap-4 p-4 ${live && !r.finished ? "border-h-yellow/50" : ""}`;
@@ -80,19 +80,19 @@ export default async function QuizStage() {
 
       {shown && (
         <section className="flex flex-col gap-3" aria-labelledby="rb-h">
-          <h2 id="rb-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-white/50">
+          <h2 id="rb-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-fg/50">
             ROUND {shown.round} · TOP 10
           </h2>
           {top.length === 0 ? (
-            <p className={`${panel} px-5 py-6 text-center text-sm text-white/60`}>No scores yet. Be first.</p>
+            <p className={`${panel} px-5 py-6 text-center text-sm text-fg/60`}>No scores yet. Be first.</p>
           ) : (
-            <ol className={`${panel} flex flex-col divide-y divide-white/5 px-3`}>
+            <ol className={`${panel} flex flex-col divide-y divide-fg/5 px-3`}>
               {top.map((r) => (
-                <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-h-yellow" : ""}`}>
+                <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-hl" : ""}`}>
                   <RankBadge rank={r.rank} size={26} />
                   <GameAvatar avatar={r.avatar} size={32} />
                   <span className="flex-1 truncate text-sm font-bold">{r.name}</span>
-                  <span className="text-xs text-white/50 tabular-nums">{r.seconds}s</span>
+                  <span className="text-xs text-fg/50 tabular-nums">{r.seconds}s</span>
                   <span className="w-10 text-right text-sm font-black tabular-nums">{r.score}/{ROUND_QUESTIONS}</span>
                 </li>
               ))}

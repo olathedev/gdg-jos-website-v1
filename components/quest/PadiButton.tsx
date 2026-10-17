@@ -20,7 +20,7 @@ export default function PadiButton({ id, initial, name }: { id: string; initial:
         {party && <Celebration message={`You and ${name} are now padis!`} onDone={() => setParty(false)} />}
         <Link
           href="/quest/crew"
-          className="flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-g-green/50 px-6 text-sm font-bold text-[#CCF6C5]"
+          className="flex min-h-12 items-center justify-center gap-1.5 rounded-full border border-g-green/50 px-6 text-sm font-bold text-good"
         >
           <Check aria-hidden className="size-4" strokeWidth={3} /> You&apos;re padis · see socials
         </Link>
@@ -29,7 +29,7 @@ export default function PadiButton({ id, initial, name }: { id: string; initial:
   }
   if (state === "requested") {
     return (
-      <span className="flex min-h-12 items-center justify-center rounded-full border border-white/15 px-6 text-sm font-bold text-white/60">
+      <span className="flex min-h-12 items-center justify-center rounded-full border border-fg/15 px-6 text-sm font-bold text-fg/60">
         Request sent
       </span>
     );
@@ -54,12 +54,12 @@ export default function PadiButton({ id, initial, name }: { id: string; initial:
             }
           })
         }
-        className="flex min-h-12 w-full items-center justify-center rounded-full bg-white px-8 text-[15px] font-bold text-[#0A0A0A] transition-transform active:scale-[0.97] disabled:opacity-60"
+        className="flex min-h-12 w-full items-center justify-center rounded-full bg-fg px-8 text-[15px] font-bold text-on-fg transition-transform active:scale-[0.97] disabled:opacity-60"
       >
         {state === "incoming" ? "Accept their padi request" : "Be my padi"}
       </button>
       {error && (
-        <p role="alert" className="text-sm font-bold text-[#F8D8D8]">
+        <p role="alert" className="text-sm font-bold text-bad">
           {error}
         </p>
       )}

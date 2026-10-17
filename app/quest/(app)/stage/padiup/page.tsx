@@ -30,7 +30,7 @@ export default async function PadiUpPage() {
       </StageHeader>
 
       <Steps id="padiup" steps={steps} />
-      <p className="-mt-3 text-center text-xs text-white/50">Each pair scores once, whoever scans whom.</p>
+      <p className="-mt-3 text-center text-xs text-fg/50">Each pair scores once, whoever scans whom.</p>
 
       <div className="flex flex-col gap-3">
         <Link href="/quest/scan" className={gameBtn}>
@@ -42,15 +42,15 @@ export default async function PadiUpPage() {
       </div>
 
       <section className="flex flex-col gap-3" aria-labelledby="padis-h">
-        <h2 id="padis-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-white/50">
+        <h2 id="padis-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-fg/50">
           YOUR PADIS · {squad.length}
         </h2>
         {squad.length === 0 ? (
           <div className={`${panel} flex flex-col items-center gap-2 px-5 py-8 text-center`}>
-            <span aria-hidden className="flex size-12 items-center justify-center rounded-full border-2 border-dashed border-white/20 text-white/40">
+            <span aria-hidden className="flex size-12 items-center justify-center rounded-full border-2 border-dashed border-fg/20 text-fg/40">
               <StageGlyph id="padiup" size={24} ink="currentColor" fill="transparent" />
             </span>
-            <span className="text-sm text-white/60">No one yet. Your first padi is out there.</span>
+            <span className="text-sm text-fg/60">No one yet. Your first padi is out there.</span>
           </div>
         ) : (
           <ul className="grid grid-cols-3 gap-3">
@@ -63,10 +63,10 @@ export default async function PadiUpPage() {
             {Array.from({ length: Math.max(0, SQUAD_GOAL - squad.length) }, (_, i) => (
               <li
                 key={`empty-${i}`}
-                className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-white/10 px-2 py-4 text-center"
+                className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-fg/10 px-2 py-4 text-center"
               >
-                <span className="flex size-[52px] items-center justify-center rounded-full bg-white/5 text-xl text-white/30">?</span>
-                <span className="text-xs font-bold text-white/30">Open slot</span>
+                <span className="flex size-[52px] items-center justify-center rounded-full bg-fg/5 text-xl text-fg/30">?</span>
+                <span className="text-xs font-bold text-fg/30">Open slot</span>
               </li>
             ))}
           </ul>

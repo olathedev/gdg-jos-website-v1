@@ -18,7 +18,7 @@ export default async function Hall({ searchParams }: PageProps<"/quest/hall">) {
   const top = rows.slice(0, 10);
 
   return (
-    <main className="relative grid min-h-dvh grid-cols-[minmax(0,1fr)_minmax(320px,30vw)] gap-[4vw] overflow-hidden bg-[#0A0A0A] px-[4.4vw] py-[6vh] text-white">
+    <main className="quest-dark relative grid min-h-dvh grid-cols-[minmax(0,1fr)_minmax(320px,30vw)] gap-[4vw] overflow-hidden bg-[#0A0A0A] px-[4.4vw] py-[6vh] text-white">
       <AutoRefresh seconds={15} />
       <span aria-hidden className="absolute -top-5 left-[47%] h-11 w-[150px] -rotate-16 rounded-full bg-g-blue" />
       <span aria-hidden className="absolute top-6 left-[61%] size-10 rounded-full bg-g-yellow" />

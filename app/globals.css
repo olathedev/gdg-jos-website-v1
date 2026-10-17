@@ -200,23 +200,95 @@ body {
   }
 }
 
-/* DevFest Quest: near-black with a faint dot grid; brand shapes come from <Backdrop>. */
+/*
+  PadiUp theme tokens. Dark by default; light when the device prefers it or the player picks it
+  (data-quest-theme on .quest-night, set before first paint). Components use these through the
+  colour utilities below (bg-surface, text-fg/60, border-fg/10 ...), never raw hex.
+*/
+@theme inline {
+  --color-bg: var(--q-bg);
+  --color-surface: var(--q-surface);
+  --color-surface-2: var(--q-surface-2);
+  --color-surface-3: var(--q-surface-3);
+  --color-fg: var(--q-fg);
+  --color-on-fg: var(--q-on-fg);
+  --color-good: var(--q-good);
+  --color-bad: var(--q-bad);
+  --color-live: var(--q-live);
+  --color-alert: var(--q-alert);
+  --color-hl: var(--q-hl);
+  --color-sky: var(--q-sky);
+  --color-tint-yellow: var(--q-tint-yellow);
+  --color-tint-red: var(--q-tint-red);
+  --color-tint-green: var(--q-tint-green);
+}
+
+.quest-night,
+.quest-dark {
+  --q-bg: #0a0a0a;
+  --q-surface: #121212;
+  --q-surface-2: #141414;
+  --q-surface-3: #2a2a2a;
+  --q-fg: #ffffff;
+  --q-fg-rgb: 255 255 255;
+  --q-on-fg: #0a0a0a;
+  --q-good: #ccf6c5;
+  --q-bad: #f8d8d8;
+  --q-live: #81c995;
+  --q-alert: #ff8a80;
+  --q-hl: #ffd427;
+  --q-sky: #57caff;
+  --q-tint-yellow: #17140a;
+  --q-tint-red: #160d0c;
+  --q-tint-green: #0f1a12;
+  --q-dots: rgb(255 255 255 / 0.045);
+  --q-st-socials: #4285f4;
+  --q-st-padiup: #ea4335;
+  --q-st-quiz: #f9ab00;
+  --q-st-partners: #34a853;
+  color-scheme: dark;
+}
+
+/* Light: brand ground #F0F0F0, ink #1E1E1E, white cards, pastel tints. All text >= 4.5:1. */
+.quest-night[data-quest-theme="light"] {
+  --q-bg: #f0f0f0;
+  --q-surface: #ffffff;
+  --q-surface-2: #ffffff;
+  --q-surface-3: #e2e2e2;
+  --q-fg: #1e1e1e;
+  --q-fg-rgb: 30 30 30;
+  --q-on-fg: #ffffff;
+  --q-good: #137333;
+  --q-bad: #b3261e;
+  --q-live: #137333;
+  --q-alert: #c5221f;
+  --q-hl: #8a5a00;
+  --q-sky: #1967d2;
+  --q-tint-yellow: #ffe7a5;
+  --q-tint-red: #f8d8d8;
+  --q-tint-green: #ccf6c5;
+  --q-dots: rgb(30 30 30 / 0.07);
+  --q-st-socials: #1967d2;
+  --q-st-padiup: #c5221f;
+  --q-st-quiz: #8a5a00;
+  --q-st-partners: #137333;
+  color-scheme: light;
+}
+
 .quest-night {
   position: relative;
   isolation: isolate;
-  background-color: #0a0a0a;
-  background-image: radial-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1.3px);
+  background-color: var(--q-bg);
+  background-image: radial-gradient(var(--q-dots) 1px, transparent 1.3px);
   background-size: 22px 22px;
-  color-scheme: dark;
+  color: var(--q-fg);
 }
-@media (min-width: 1024px) {
-  .quest-night {
-    background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1.3px);
-  }
-}
-/* Overscroll and short pages stay dark too. */
+/* Overscroll and short pages match the theme too. */
 body:has(.quest-night) {
   background: #0a0a0a;
+}
+body:has(.quest-night[data-quest-theme="light"]) {
+  background: #f0f0f0;
 }
 
 @keyframes quest-pop {

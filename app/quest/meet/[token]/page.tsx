@@ -26,7 +26,7 @@ export default async function Meet({ params }: PageProps<"/quest/meet/[token]">)
         <div className="flex flex-1 flex-col items-center justify-center gap-4 py-10 text-center">
           <GameAvatar avatar={me.avatar} size={84} />
           <h1 className="type-heading text-2xl font-bold">That&apos;s you!</h1>
-          <p className="max-w-xs text-sm text-white/65">Show your QR to other players so they can scan it.</p>
+          <p className="max-w-xs text-sm text-fg/65">Show your QR to other players so they can scan it.</p>
           <Link href="/quest/home" className={gameBtn}>
             Back home
           </Link>

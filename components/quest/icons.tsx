@@ -65,15 +65,12 @@ export function StageBadge({ id, color, size = 88, locked = false }: { id: Stage
   const w = id === "partners" ? size * 1.25 : size;
   if (locked) {
     return (
-      <span
-        className="relative flex items-center justify-center"
-        style={{ width: w, height: size }}
-      >
+      <span className="relative flex items-center justify-center text-fg/25" style={{ width: w, height: size }}>
         <svg aria-hidden className="absolute inset-0" width={w} height={size} viewBox={`0 0 ${w} ${size}`} fill="none">
           {hex ? (
             <path
               d={`M${w / 2} 2 ${w * 0.93 - 1} ${size * 0.25} ${w * 0.93 - 1} ${size * 0.75} ${w / 2} ${size - 2} ${w * 0.07 + 1} ${size * 0.75} ${w * 0.07 + 1} ${size * 0.25}Z`}
-              stroke="rgb(255 255 255 / 0.22)"
+              stroke="currentColor"
               strokeWidth="2"
               strokeDasharray="5 6"
             />
@@ -84,13 +81,13 @@ export function StageBadge({ id, color, size = 88, locked = false }: { id: Stage
               width={w - 3}
               height={size - 3}
               rx={radius === "50%" ? size / 2 : radius === "30%" ? size * 0.3 : size / 2}
-              stroke="rgb(255 255 255 / 0.22)"
+              stroke="currentColor"
               strokeWidth="2"
               strokeDasharray="5 6"
             />
           )}
         </svg>
-        <StageGlyph id={id} size={size * 0.46} ink="rgb(255 255 255 / 0.28)" fill="transparent" />
+        <StageGlyph id={id} size={size * 0.46} ink="currentColor" fill="transparent" />
       </span>
     );
   }
@@ -159,7 +156,7 @@ export function RankBadge({ rank, size = 28 }: { rank: number; size?: number }) 
   const bg = rank === 1 ? "#F9AB00" : rank === 2 ? "#BDC1C6" : rank === 3 ? "#E8A87C" : "transparent";
   return (
     <span
-      className={`type-heading inline-flex shrink-0 items-center justify-center rounded-full font-bold tabular-nums ${rank <= 3 ? "text-[#0A0A0A]" : "text-white/50"}`}
+      className={`type-heading inline-flex shrink-0 items-center justify-center rounded-full font-bold tabular-nums ${rank <= 3 ? "text-[#0A0A0A]" : "text-fg/50"}`}
       style={{ width: size, height: size, background: bg, fontSize: size * 0.46 }}
     >
       {rank}

@@ -47,7 +47,7 @@ export default function Scanner() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <div className="relative aspect-square w-full max-w-[340px] overflow-hidden rounded-[32px] border border-white/[0.08] bg-[#121212]">
+      <div className="relative aspect-square w-full max-w-[340px] overflow-hidden rounded-[32px] border border-fg/[0.08] bg-surface">
         <video ref={video} playsInline muted className={`size-full object-cover ${blocked ? "hidden" : ""}`} />
         {/* Viewfinder corners in the four Google colours */}
         <svg aria-hidden className="pointer-events-none absolute inset-0 size-full" viewBox="0 0 100 100" fill="none" strokeWidth="3" strokeLinecap="round">
@@ -57,15 +57,15 @@ export default function Scanner() {
           <path d="M32 82h-8a6 6 0 0 1-6-6v-8" stroke="#F9AB00" vectorEffect="non-scaling-stroke" />
         </svg>
         {status === "starting" && (
-          <p className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-white/60">Starting camera…</p>
+          <p className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-fg/60">Starting camera…</p>
         )}
         {status === "found" && (
-          <p className="absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/70 text-sm font-bold">Got it. Opening…</p>
+          <p className="absolute inset-0 flex items-center justify-center bg-bg/70 text-sm font-bold">Got it. Opening…</p>
         )}
         {blocked && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center">
             <p className="text-sm font-bold">{status === "denied" ? "Camera is blocked" : "No camera found"}</p>
-            <p className="text-xs leading-relaxed text-white/60">
+            <p className="text-xs leading-relaxed text-fg/60">
               {status === "denied"
                 ? "Allow camera access for this site in your browser settings, then try again. You can also scan with your phone's camera app."
                 : "Scan with your phone's camera app instead. The code opens DevFest Quest."}
@@ -74,7 +74,7 @@ export default function Scanner() {
         )}
       </div>
 
-      <p role="status" className={`min-h-5 text-sm font-semibold ${miss ? "text-[#F8D8D8]" : "text-white/60"}`}>
+      <p role="status" className={`min-h-5 text-sm font-semibold ${miss ? "text-bad" : "text-fg/60"}`}>
         {miss ? "That's not a DevFest Quest code." : status === "scanning" ? "Hold the code inside the frame." : ""}
       </p>
 

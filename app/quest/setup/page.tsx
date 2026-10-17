@@ -15,19 +15,19 @@ export default async function Setup({ searchParams }: PageProps<"/quest/setup">)
     <main className="mx-auto flex max-w-md flex-col gap-5 px-4 pt-4 pb-12">
       <div className="flex items-center justify-between">
         {ready ? (
-          <Link href="/quest/profile" className="flex min-h-11 items-center text-sm font-bold text-white/60 hover:text-white">
+          <Link href="/quest/profile" className="flex min-h-11 items-center text-sm font-bold text-fg/60 hover:text-fg">
             Back
           </Link>
         ) : (
           <form action={signOutAction}>
-            <button className="flex min-h-11 items-center text-sm font-bold text-white/60 hover:text-white">Sign out</button>
+            <button className="flex min-h-11 items-center text-sm font-bold text-fg/60 hover:text-fg">Sign out</button>
           </form>
         )}
-        <span className="text-[11px] font-bold tracking-[0.2em] text-h-yellow">{ready ? "EDIT CARD" : "CREATE PLAYER"}</span>
+        <span className="text-[11px] font-bold tracking-[0.2em] text-hl">{ready ? "EDIT CARD" : "CREATE PLAYER"}</span>
       </div>
       {needSocial && (
-        <p role="status" className="rounded-[20px] border border-h-yellow/40 bg-[#17140A] px-4 py-3 text-sm leading-relaxed">
-          <span className="font-bold text-h-yellow">One quick thing.</span> Add a GitHub, LinkedIn, X or Instagram username so
+        <p role="status" className="rounded-[20px] border border-h-yellow/40 bg-tint-yellow px-4 py-3 text-sm leading-relaxed">
+          <span className="font-bold text-hl">One quick thing.</span> Add a GitHub, LinkedIn, X or Instagram username so
           your padis can find you, then you&apos;re straight back in.
         </p>
       )}

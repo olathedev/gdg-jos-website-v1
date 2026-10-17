@@ -55,7 +55,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
   return (
     <div className="flex flex-col gap-4">
       {party && <Celebration message={party} onDone={() => setParty(null)} />}
-      <div role="group" aria-label="Show" className="grid grid-cols-2 gap-1 rounded-full border border-white/[0.12] bg-[#121212] p-1">
+      <div role="group" aria-label="Show" className="grid grid-cols-2 gap-1 rounded-full border border-fg/[0.12] bg-surface p-1">
         {[
           { on: !hereNow, label: `Everyone · ${people.length}`, set: false },
           { on: hereNow, label: `Here now · ${hereCount}`, set: true },
@@ -66,7 +66,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
             aria-pressed={t.on}
             onClick={() => setHereNow(t.set)}
             className={`flex min-h-11 items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors ${
-              t.on ? "bg-white text-[#0A0A0A]" : "text-white/70 hover:text-white"
+              t.on ? "bg-fg text-on-fg" : "text-fg/70 hover:text-fg"
             }`}
           >
             {t.set && <span aria-hidden className="size-2 rounded-full bg-[#34A853]" />}
@@ -75,8 +75,8 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
         ))}
       </div>
 
-      <label className="flex h-13 items-center gap-2.5 rounded-full border border-white/[0.12] bg-[#121212] px-4 focus-within:border-h-yellow">
-        <Search aria-hidden className="size-4 text-white/40" />
+      <label className="flex h-13 items-center gap-2.5 rounded-full border border-fg/[0.12] bg-surface px-4 focus-within:border-h-yellow">
+        <Search aria-hidden className="size-4 text-fg/40" />
         <span className="sr-only">Search by name</span>
         <input
           type="search"
@@ -84,7 +84,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name"
           autoComplete="off"
-          className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-white outline-none placeholder:text-white/35"
+          className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-fg outline-none placeholder:text-fg/35"
         />
       </label>
 
@@ -99,7 +99,7 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
                 aria-pressed={on}
                 onClick={() => setStack(s.label === "All" ? null : s.label)}
                 className={`flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-sm font-bold transition-colors ${
-                  on ? "border-white bg-white text-[#0A0A0A]" : "border-white/[0.12] bg-[#121212] text-white/80"
+                  on ? "border-fg bg-fg text-on-fg" : "border-fg/[0.12] bg-surface text-fg/80"
                 }`}
               >
                 {s.label !== "All" && <span aria-hidden className="size-1.5 rounded-full" style={{ background: s.color }} />}
@@ -111,13 +111,13 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
       )}
 
       {error && (
-        <p role="alert" className="rounded-full border border-g-red/40 bg-g-red/10 px-4 py-2.5 text-center text-sm font-bold text-[#F8D8D8]">
+        <p role="alert" className="rounded-full border border-g-red/40 bg-g-red/10 px-4 py-2.5 text-center text-sm font-bold text-bad">
           {error}
         </p>
       )}
 
       {shown.length === 0 ? (
-        <p className="rounded-[24px] border border-white/[0.08] bg-[#121212] px-5 py-10 text-center text-sm text-white/60">
+        <p className="rounded-[24px] border border-fg/[0.08] bg-surface px-5 py-10 text-center text-sm text-fg/60">
           {people.length === 0 ? "No one else is here yet. Share your QR and get people playing." : hereNow ? "No one matching is active right now." : "No one matches that."}
         </p>
       ) : (
@@ -125,20 +125,20 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
           {shown.map((p) => {
             const st = states[p.id] ?? p.state;
             return (
-              <li key={p.id} className="flex flex-col gap-3 rounded-[24px] border border-white/[0.08] bg-[#121212] p-3.5">
+              <li key={p.id} className="flex flex-col gap-3 rounded-[24px] border border-fg/[0.08] bg-surface p-3.5">
                 <div className="flex items-start gap-3">
                   <GameAvatar avatar={p.avatar} initials={p.initials} size={52} />
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="truncate text-base font-bold">{p.name}</span>
                     <span className="flex flex-wrap gap-1.5">
                       {p.stack.map((s) => (
-                        <span key={s} className="flex items-center gap-1 text-xs font-semibold text-white/60">
+                        <span key={s} className="flex items-center gap-1 text-xs font-semibold text-fg/60">
                           <span aria-hidden className="size-1.5 rounded-full" style={{ background: stackStyle(s).color }} />
                           {s}
                         </span>
                       ))}
                     </span>
-                    {p.funFact && <span className="text-[13px] leading-snug text-white/70">{p.funFact}</span>}
+                    {p.funFact && <span className="text-[13px] leading-snug text-fg/70">{p.funFact}</span>}
                     <ActiveDot at={p.lastActive} now={now} />
                   </div>
                   <BlockMenu id={p.id} name={p.name.split(" ")[0]} onDone={() => setGone((g) => new Set(g).add(p.id))} />
@@ -147,19 +147,19 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
                   (st === "connected" ? (
                     <Link
                       href="/quest/crew"
-                      className="flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-g-green/50 text-sm font-bold text-[#CCF6C5]"
+                      className="flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-g-green/50 text-sm font-bold text-good"
                     >
                       <Check aria-hidden className="size-4" strokeWidth={3} /> Padis · see socials
                     </Link>
                   ) : st === "requested" ? (
-                    <span className="flex min-h-11 items-center justify-center rounded-full border border-white/15 text-sm font-bold text-white/60">
+                    <span className="flex min-h-11 items-center justify-center rounded-full border border-fg/15 text-sm font-bold text-fg/60">
                       Request sent
                     </span>
                   ) : (
                     <button
                       type="button"
                       onClick={() => ask(p.id, st, p.name)}
-                      className="flex min-h-11 items-center justify-center rounded-full bg-white text-sm font-bold text-[#0A0A0A] transition-transform active:scale-[0.97]"
+                      className="flex min-h-11 items-center justify-center rounded-full bg-fg text-sm font-bold text-on-fg transition-transform active:scale-[0.97]"
                     >
                       {st === "incoming" ? "Accept their padi request" : "Be my padi"}
                     </button>

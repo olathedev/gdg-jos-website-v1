@@ -26,15 +26,15 @@ export default function ShareProfile({ url, name }: { url: string; name: string 
     }
     await copy();
   };
-  const btn = "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-white/15 text-sm font-bold hover:bg-white/[0.05]";
+  const btn = "flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full border border-fg/15 text-sm font-bold hover:bg-fg/[0.05]";
   return (
     <div className="flex w-full flex-col gap-2">
-      <p className="truncate text-center text-xs text-white/45" title={url}>
+      <p className="truncate text-center text-xs text-fg/45" title={url}>
         {url.replace(/^https?:\/\//, "")}
       </p>
       <div className="flex gap-2">
         <button type="button" onClick={copy} className={btn}>
-          {copied ? <Check aria-hidden className="size-4 text-g-green" /> : <Copy aria-hidden className="size-4" />}
+          {copied ? <Check aria-hidden className="size-4 text-live" /> : <Copy aria-hidden className="size-4" />}
           {copied ? "Copied" : "Copy link"}
         </button>
         <button type="button" onClick={share} className={btn}>

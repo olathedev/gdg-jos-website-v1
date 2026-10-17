@@ -14,9 +14,9 @@ export default async function People() {
     <div className="flex flex-col gap-5 pt-2">
       <header className="flex flex-col gap-1">
         <h1 className="type-heading text-[26px] leading-tight font-bold">
-          People <span className="text-white/35">· {people.length}</span>
+          People <span className="text-fg/35">· {people.length}</span>
         </h1>
-        <p className="text-sm text-white/60">Everyone playing at DevFest Jos. Send a padi request to swap socials.</p>
+        <p className="text-sm text-fg/60">Everyone playing at DevFest Jos. Send a padi request to swap socials.</p>
       </header>
       <PeopleList people={people} canConnect now={now} />
     </div>

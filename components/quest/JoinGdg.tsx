@@ -15,9 +15,9 @@ export default function JoinGdg() {
       </span>
       <span className="flex flex-1 flex-col">
         <span className="text-[15px] font-bold">Join GDG Jos</span>
-        <span className="text-xs text-white/60">Meetups, events and people all year round</span>
+        <span className="text-xs text-fg/60">Meetups, events and people all year round</span>
       </span>
-      <ArrowUpRight aria-hidden className="size-5 text-white/60" />
+      <ArrowUpRight aria-hidden className="size-5 text-fg/60" />
       <span className="sr-only">(opens in a new tab)</span>
     </a>
   );

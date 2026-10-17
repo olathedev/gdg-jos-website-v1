@@ -46,14 +46,14 @@ export default async function QuestMap({ searchParams }: PageProps<"/quest/map">
   return (
     <div className="flex flex-col items-center gap-2 pt-2">
       {welcome && (
-        <p role="status" className="quest-pop w-full rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-[#CCF6C5]">
+        <p role="status" className="quest-pop w-full rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-good">
           You&apos;re in! Start with Stage 1 below.
         </p>
       )}
 
       {/* Score: centre stage */}
       <section className="flex flex-col items-center pt-5 pb-2 text-center" aria-label="Your score">
-        <span className="text-[11px] font-bold tracking-[0.2em] text-white/45">YOUR SCORE</span>
+        <span className="text-[11px] font-bold tracking-[0.2em] text-fg/45">YOUR SCORE</span>
         <span className="type-heading quest-pop flex items-center gap-3 text-[64px] leading-none font-bold tabular-nums">
           <span aria-hidden className="text-g-blue">{"{"}</span>
           {score}
@@ -61,7 +61,7 @@ export default async function QuestMap({ searchParams }: PageProps<"/quest/map">
         </span>
         <Link
           href="/quest/board"
-          className="mt-2 rounded-full border border-white/10 bg-[#141414] px-3.5 py-1.5 text-xs font-bold text-white/80 hover:text-white"
+          className="mt-2 rounded-full border border-fg/10 bg-surface-2 px-3.5 py-1.5 text-xs font-bold text-fg/80 hover:text-fg"
         >
           {rank ? `Rank #${rank} on the board` : "Not ranked yet"}
         </Link>
@@ -82,7 +82,7 @@ export default async function QuestMap({ searchParams }: PageProps<"/quest/map">
                 key={i}
                 d={path(i)}
                 fill="none"
-                stroke={done ? STAGES[i].color : "rgb(255 255 255 / 0.2)"}
+                style={{ stroke: done ? STAGES[i].color : "rgb(var(--q-fg-rgb) / 0.2)" }}
                 strokeWidth={done ? 4 : 3}
                 strokeDasharray={done ? undefined : "2 9"}
                 strokeLinecap="round"
@@ -112,19 +112,19 @@ export default async function QuestMap({ searchParams }: PageProps<"/quest/map">
                   <StageBadge id={st.id} color={st.color} size={84} locked={s === "locked"} />
                 </span>
                 {s === "done" && (
-                  <span className="absolute -top-1 -right-1 flex size-7 items-center justify-center rounded-full border-[3px] border-[#0A0A0A] bg-white">
-                    <Check aria-hidden className="size-3.5 text-[#0A0A0A]" strokeWidth={4} />
+                  <span className="absolute -top-1 -right-1 flex size-7 items-center justify-center rounded-full border-[3px] border-bg bg-fg">
+                    <Check aria-hidden className="size-3.5 text-on-fg" strokeWidth={4} />
                   </span>
                 )}
                 {s === "locked" && (
-                  <span className="absolute -right-1 -bottom-1 flex size-7 items-center justify-center rounded-full border-[3px] border-[#0A0A0A] bg-[#2A2A2A] text-white/70">
+                  <span className="absolute -right-1 -bottom-1 flex size-7 items-center justify-center rounded-full border-[3px] border-bg bg-surface-3 text-fg/70">
                     <LockGlyph size={12} />
                   </span>
                 )}
                 {(current || s === "live") && (
                   <span
                     className={`absolute -bottom-3 rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-[0.12em] ${
-                      s === "live" ? "bg-g-red text-white" : "bg-white text-[#0A0A0A]"
+                      s === "live" ? "bg-g-red text-white" : "bg-fg text-on-fg"
                     }`}
                   >
                     {s === "live" ? "LIVE" : "PLAY"}
@@ -132,13 +132,13 @@ export default async function QuestMap({ searchParams }: PageProps<"/quest/map">
                 )}
               </span>
               <span className="flex w-[120px] flex-col gap-0.5">
-                <span className="text-[10px] font-bold tracking-[0.15em]" style={{ color: s === "locked" ? "rgb(255 255 255 / 0.35)" : st.color }}>
+                <span className="text-[10px] font-bold tracking-[0.15em]" style={{ color: s === "locked" ? "rgb(var(--q-fg-rgb) / 0.4)" : `var(--q-st-${st.id})` }}>
                   STAGE {st.num}
                 </span>
-                <span className={`type-heading text-[17px] leading-tight font-bold ${s === "locked" ? "text-white/40" : ""}`}>
+                <span className={`type-heading text-[17px] leading-tight font-bold ${s === "locked" ? "text-fg/40" : ""}`}>
                   {st.title}
                 </span>
-                <span className={`text-xs font-semibold ${s === "locked" ? "text-white/30" : "text-white/65"}`}>{status(st.id, s)}</span>
+                <span className={`text-xs font-semibold ${s === "locked" ? "text-fg/30" : "text-fg/65"}`}>{status(st.id, s)}</span>
               </span>
             </Link>
           );

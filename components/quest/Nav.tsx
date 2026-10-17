@@ -35,7 +35,7 @@ export default function Nav({ pending = 0 }: { pending?: number }) {
   const path = usePathname();
   return (
     <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.9rem,env(safe-area-inset-bottom))]">
-      <ul className="flex w-full max-w-[400px] items-center rounded-full border border-white/[0.08] bg-[#141414] p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.5)]">
+      <ul className="flex w-full max-w-[400px] items-center rounded-full border border-fg/[0.08] bg-surface-2 p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.5)]">
         {tabs.map((t) => {
           const on = path === t.href || t.also.some((a) => path.startsWith(a));
           const scan = t.href === "/quest/scan";
@@ -47,17 +47,17 @@ export default function Nav({ pending = 0 }: { pending?: number }) {
                 aria-label={t.label === "Padis" && pending ? `Padis, ${pending} new requests` : t.label}
                 className={`relative flex flex-col items-center justify-center gap-0.5 rounded-full text-[10px] font-bold transition-colors focus-visible:outline-2 focus-visible:outline-h-yellow ${
                   scan
-                    ? "size-[54px] bg-white text-[#0A0A0A] hover:bg-white/90"
+                    ? "size-[54px] bg-fg text-on-fg hover:bg-fg/90"
                     : on
-                      ? "min-h-[52px] w-full text-white"
-                      : "min-h-[52px] w-full text-white/45 hover:text-white/80"
+                      ? "min-h-[52px] w-full text-fg"
+                      : "min-h-[52px] w-full text-fg/45 hover:text-fg/80"
                 }`}
               >
                 <t.Icon size={scan ? 24 : 21} />
                 {!scan && <span>{t.label}</span>}
                 {!scan && on && <span aria-hidden className="absolute bottom-1 size-1 rounded-full bg-h-yellow" />}
                 {t.label === "Padis" && pending > 0 && (
-                  <span aria-hidden className="absolute top-1.5 right-[22%] size-2.5 rounded-full border-2 border-[#141414] bg-g-red" />
+                  <span aria-hidden className="absolute top-1.5 right-[22%] size-2.5 rounded-full border-2 border-surface-2 bg-g-red" />
                 )}
               </Link>
             </li>

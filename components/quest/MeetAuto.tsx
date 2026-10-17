@@ -36,7 +36,7 @@ export default function MeetAuto({ token, avatar }: { token: string; avatar: str
       <div className="flex flex-1 flex-col items-center justify-center gap-4 py-10 text-center">
         <GameAvatar avatar={avatar} size={88} />
         <h1 className="type-heading text-2xl font-bold">Couldn&apos;t connect</h1>
-        <p className="max-w-xs text-sm text-white/65">{res.message}</p>
+        <p className="max-w-xs text-sm text-fg/65">{res.message}</p>
         <Link href="/quest/scan" className={gameBtn}>
           Scan again
         </Link>
@@ -48,21 +48,21 @@ export default function MeetAuto({ token, avatar }: { token: string; avatar: str
     <div className="flex flex-1 flex-col items-center justify-center gap-4 py-8 text-center">
       {party && <Celebration message={`You and ${res.name} are now padis!`} onDone={() => setParty(false)} />}
       <div className="quest-pop relative">
-        <GameAvatar avatar={res.avatar} size={110} className="ring-4 ring-g-green ring-offset-4 ring-offset-[#0A0A0A]" />
-        <span className="absolute -right-1 -bottom-1 flex size-10 items-center justify-center rounded-full border-4 border-[#0A0A0A] bg-g-green text-white">
+        <GameAvatar avatar={res.avatar} size={110} className="ring-4 ring-g-green ring-offset-4 ring-offset-bg" />
+        <span className="absolute -right-1 -bottom-1 flex size-10 items-center justify-center rounded-full border-4 border-bg bg-g-green text-white">
           <Check aria-hidden className="size-5" strokeWidth={3.5} />
         </span>
       </div>
-      <span className="text-[11px] font-bold tracking-[0.2em] text-[#81C995]">{res.fresh ? "CONNECTED" : "ALREADY CONNECTED"}</span>
+      <span className="text-[11px] font-bold tracking-[0.2em] text-live">{res.fresh ? "CONNECTED" : "ALREADY CONNECTED"}</span>
       <h1 className="type-heading text-3xl leading-tight font-bold">
         {res.fresh ? `You and ${res.name} are now padis` : `You and ${res.name} already met`}
       </h1>
       {res.fresh ? (
         <span className="quest-pop rounded-full bg-h-yellow px-4 py-1.5 text-lg font-black text-[#0A0A0A]">+{POINTS.meet} each</span>
       ) : (
-        <p className="text-sm text-white/60">Each pair scores once. Go find someone new.</p>
+        <p className="text-sm text-fg/60">Each pair scores once. Go find someone new.</p>
       )}
-      {res.connected && <p className="max-w-xs text-sm text-white/65">Their socials are now in your Padis.</p>}
+      {res.connected && <p className="max-w-xs text-sm text-fg/65">Their socials are now in your Padis.</p>}
       <div className="mt-2 flex w-full max-w-xs flex-col gap-3">
         <Link href="/quest/scan" className={gameBtn}>
           Scan the next person

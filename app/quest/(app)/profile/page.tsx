@@ -1,5 +1,6 @@
 import JoinGdg from "@/components/quest/JoinGdg";
 import ShareProfile from "@/components/quest/ShareProfile";
+import ThemeSwitch from "@/components/quest/ThemeSwitch";
 import { adminSiteUrl } from "@/lib/admin/site";
 import { ensureSlug } from "@/lib/quest/profiles";
 import { LogOut, Pencil } from "lucide-react";
@@ -56,7 +57,7 @@ export default async function Profile() {
           })}
         </ul>
         {me.fun_fact && (
-          <p className="max-w-xs text-[15px] leading-snug text-white/80">
+          <p className="max-w-xs text-[15px] leading-snug text-fg/80">
             <span className="text-g-blue">{"{ "}</span>
             {me.fun_fact}
             <span className="text-g-yellow">{" }"}</span>
@@ -70,7 +71,7 @@ export default async function Profile() {
                   href={c.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex min-h-9 items-center gap-1.5 rounded-full border border-white/[0.12] px-3 text-xs font-bold text-white/80 hover:bg-white/[0.05]"
+                  className="flex min-h-9 items-center gap-1.5 rounded-full border border-fg/[0.12] px-3 text-xs font-bold text-fg/80 hover:bg-fg/[0.05]"
                 >
                   <BrandMark id={c.id} size={14} />
                   {c.label}
@@ -79,11 +80,11 @@ export default async function Profile() {
             ))}
           </ul>
         )}
-        <p className="text-xs text-white/45">
+        <p className="text-xs text-fg/45">
           {me.hidden ? "You're hidden from People." : "You're in People."}{" "}
           {me.whatsapp && me.share_whatsapp ? "Padis see your WhatsApp." : ""}
         </p>
-        <Link href="/quest/setup" className="mt-1 flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-h-yellow hover:bg-white/[0.05]">
+        <Link href="/quest/setup" className="mt-1 flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-hl hover:bg-fg/[0.05]">
           <Pencil aria-hidden className="size-3.5" /> Edit player card
         </Link>
       </section>
@@ -92,7 +93,7 @@ export default async function Profile() {
       <dl className="grid grid-cols-3 gap-2.5">
         {stats.map((s) => (
           <div key={s.label} className={`${panel} flex flex-col items-center gap-0.5 py-3.5`}>
-            <dt className="text-[11px] font-bold tracking-[0.15em] text-white/45 uppercase">{s.label}</dt>
+            <dt className="text-[11px] font-bold tracking-[0.15em] text-fg/45 uppercase">{s.label}</dt>
             <dd className="type-heading flex items-center gap-1 text-2xl font-bold tabular-nums">
               {s.label === "Score" && <Spark size={14} />}
               {s.value}
@@ -104,10 +105,10 @@ export default async function Profile() {
       {/* Stage progress */}
       <section className={`${panel} flex flex-col gap-3 p-4`} aria-labelledby="stages-h">
         <div className="flex items-center justify-between">
-          <h2 id="stages-h" className="text-[11px] font-bold tracking-[0.2em] text-white/45">
+          <h2 id="stages-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
             STAGES
           </h2>
-          <span className="text-xs font-bold text-white/60">{cleared}/4 cleared</span>
+          <span className="text-xs font-bold text-fg/60">{cleared}/4 cleared</span>
         </div>
         <ul className="grid grid-cols-4 gap-2">
           {STAGES.map((st) => {
@@ -118,8 +119,8 @@ export default async function Profile() {
                   <span className={`flex h-11 items-center ${s === "open" || s === "live" ? "opacity-80" : ""}`}>
                     <StageBadge id={st.id} color={st.color} size={st.id === "partners" ? 36 : 44} locked={s === "locked"} />
                   </span>
-                  <span className={`text-[11px] leading-tight font-bold ${s === "locked" ? "text-white/30" : "text-white/75"}`}>{st.short}</span>
-                  <span className={`text-[10px] font-bold ${s === "done" ? "text-[#81C995]" : "text-white/35"}`}>
+                  <span className={`text-[11px] leading-tight font-bold ${s === "locked" ? "text-fg/30" : "text-fg/75"}`}>{st.short}</span>
+                  <span className={`text-[10px] font-bold ${s === "done" ? "text-live" : "text-fg/35"}`}>
                     {s === "done" ? "Cleared" : s === "locked" ? "Locked" : s === "live" ? "Live" : "Open"}
                   </span>
                 </Link>
@@ -130,13 +131,15 @@ export default async function Profile() {
       </section>
 
       <section className={`${panel} flex flex-col items-center gap-2 p-4`} aria-labelledby="link-h">
-        <h2 id="link-h" className="text-[11px] font-bold tracking-[0.2em] text-white/45">
+        <h2 id="link-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
           YOUR PROFILE LINK
         </h2>
         <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
       </section>
 
       <JoinGdg />
+
+      <ThemeSwitch />
 
       <div className="flex flex-col gap-3">
         <Link href="/quest/me" className={gameBtn}>

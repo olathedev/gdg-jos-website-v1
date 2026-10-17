@@ -28,22 +28,22 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
       {!p ? (
         <>
           <h1 className="type-heading text-2xl font-bold">This profile isn&apos;t available</h1>
-          <p className="max-w-xs text-sm text-white/60">The link may be wrong, or the person isn&apos;t showing their profile.</p>
+          <p className="max-w-xs text-sm text-fg/60">The link may be wrong, or the person isn&apos;t showing their profile.</p>
         </>
       ) : (
-        <section className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-white/[0.08] bg-[#121212] px-5 pt-8 pb-6">
+        <section className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-fg/[0.08] bg-surface px-5 pt-8 pb-6">
           <GameAvatar avatar={p.avatar} initials={p.initials} size={104} />
           <h1 className="type-heading text-[28px] leading-tight font-bold">{p.name}</h1>
           <ActiveDot at={p.lastActive} now={serverNow()} />
           <ul className="flex flex-wrap justify-center gap-2" aria-label="Stack">
             {p.stack.map((s) => (
-              <li key={s} className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1 text-xs font-bold">
+              <li key={s} className="flex items-center gap-1.5 rounded-full border border-fg/15 px-3 py-1 text-xs font-bold">
                 <span aria-hidden className="size-1.5 rounded-full" style={{ background: stackStyle(s).color }} />
                 {s}
               </li>
             ))}
           </ul>
-          {p.funFact && <p className="max-w-xs text-[15px] leading-snug text-white/80">{p.funFact}</p>}
+          {p.funFact && <p className="max-w-xs text-[15px] leading-snug text-fg/80">{p.funFact}</p>}
           <div className="mt-3 w-full">
             <PadiButton id={p.id} initial={p.state} name={p.name} />
           </div>

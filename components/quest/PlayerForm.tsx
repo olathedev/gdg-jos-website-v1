@@ -85,13 +85,28 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
   const [picked, setPicked] = useState<string[]>(initial.stack);
   const [fact, setFact] = useState(initial.fun_fact ?? "");
   const [adult, setAdult] = useState(initial.is_adult);
+  const [socialError, setSocialError] = useState(false);
   const [listed, setListed] = useState(initial.listed);
   const [shareWa, setShareWa] = useState(initial.share_whatsapp);
 
   const toggle = (l: string) => setPicked((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : cur.length < 3 ? [...cur, l] : cur));
 
   return (
-    <form action={action} className="flex flex-col gap-7">
+    <form
+      action={action}
+      onSubmit={(e) => {
+        const f = e.currentTarget;
+        const any = ["github", "linkedin", "x_handle", "instagram", "whatsapp"].some(
+          (n) => (f.elements.namedItem(n) as HTMLInputElement | null)?.value.trim(),
+        );
+        setSocialError(!any);
+        if (!any) {
+          e.preventDefault();
+          (f.elements.namedItem("github") as HTMLInputElement | null)?.focus();
+        }
+      }}
+      className="flex flex-col gap-7"
+    >
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
@@ -201,7 +216,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
 
       <fieldset className="flex flex-col gap-3">
         <legend className={`${label} mb-3`}>
-          SOCIALS <span className="text-white/30">(USERNAMES ONLY)</span>
+          SOCIALS <span className="text-h-yellow">· ADD AT LEAST ONE</span>
         </legend>
         {SOCIALS.map((f) => (
           <div key={f.id} className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
@@ -236,6 +251,11 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
             className="h-full min-w-0 flex-1 bg-transparent pr-4 text-[15px] text-white outline-none placeholder:text-white/25"
           />
         </div>
+        {socialError && (
+          <p role="alert" className="text-sm font-bold text-[#F8D8D8]">
+            Add at least one social so your padis can find you.
+          </p>
+        )}
         <p className="text-xs leading-relaxed text-white/50">
           We build every link ourselves, so nobody can hide a dodgy link. Socials are only shown to padis you accept.
         </p>

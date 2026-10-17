@@ -6,6 +6,7 @@ import type { ActionState } from "@/app/admin-internal/actions";
 import {
   addPartnerAction,
   addQuestionAction,
+  partnersOpenAction,
   communityImportAction,
   removePartnerAction,
   removeQuestionAction,
@@ -192,6 +193,30 @@ export function RemoveQuestion({ id }: { id: string }) {
       <button type="submit" disabled={pending || Boolean(state?.ok)} className="text-xs font-medium text-zinc-500 hover:text-rose-600 disabled:opacity-60">
         {state?.ok ? "Removed" : "Remove"}
       </button>
+    </form>
+  );
+}
+
+/** Opens or closes Partner Link-up for every player. */
+export function PartnersSwitch({ open }: { open: boolean }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(partnersOpenAction, null);
+  return (
+    <form action={action} className="flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-200/80 px-4 py-3">
+      <span className="flex items-center gap-2.5 text-sm">
+        <span aria-hidden className={`size-2 rounded-full ${open ? "bg-emerald-500" : "bg-zinc-300"}`} />
+        Partner Link-up is <span className="font-medium">{open ? "open" : "closed"}</span> for players
+      </span>
+      <input type="hidden" name="open" value={open ? "0" : "1"} />
+      <button
+        type="submit"
+        disabled={pending}
+        className={`ml-auto inline-flex h-9 items-center rounded-full px-4 text-sm font-medium disabled:opacity-60 ${
+          open ? "border border-zinc-200 bg-white hover:bg-zinc-50" : "bg-ink text-white hover:bg-ink/85"
+        }`}
+      >
+        {pending ? "…" : open ? "Close Partner Link-up" : "Open Partner Link-up"}
+      </button>
+      {state && !state.ok && <span className="w-full text-xs text-rose-600">{state.message}</span>}
     </form>
   );
 }

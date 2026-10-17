@@ -87,6 +87,18 @@ export async function setRound(round: number, op: "open" | "close") {
   else await db()`update quest_rounds set closed_at = now() where round = ${round} and opened_at is not null`;
 }
 
+/** Partner Link-up is closed for everyone until an organiser opens it. */
+export async function partnersOpen() {
+  const [row] = await db()<{ value: string }[]>`select value from quest_meta where key = 'partners_open'`;
+  return row?.value === "1";
+}
+
+export async function setPartnersOpen(open: boolean) {
+  await db()`
+    insert into quest_meta (key, value, updated_at) values ('partners_open', ${open ? "1" : "0"}, now())
+    on conflict (key) do update set value = excluded.value, updated_at = now()`;
+}
+
 export async function listPartners() {
   return db()<{ id: string; name: string; code: string; scans: number }[]>`
     select s.id, s.name, s.code, (select count(*)::int from quest_station_scans x where x.station_id = s.id) as scans

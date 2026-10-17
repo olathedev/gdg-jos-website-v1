@@ -9,6 +9,7 @@ import {
   markReportReviewed,
   matchCommunityMembers,
   removePartner,
+  setPartnersOpen,
   setRound,
   unassignRoundQuestion,
 } from "@/lib/quest/admin";
@@ -93,4 +94,12 @@ export async function removeQuestionAction(_: ActionState, form: FormData): Prom
   await unassignRoundQuestion(id);
   revalidatePath("/admin-internal/quest");
   return { ok: true, message: "Removed from round." };
+}
+
+export async function partnersOpenAction(_: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const open = form.get("open") === "1";
+  await setPartnersOpen(open);
+  revalidatePath("/admin-internal/quest");
+  return { ok: true, message: open ? "Partner Link-up is open." : "Partner Link-up is closed." };
 }

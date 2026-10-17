@@ -29,7 +29,7 @@ export function StageGlyph({ id, size = 40, ink = INK, fill = "#fff", ...p }: Ic
           <path d="M9.5 9.5a20.5 20.5 0 0 0 0 29M38.5 9.5a20.5 20.5 0 0 1 0 29" {...s} />
         </>
       )}
-      {id === "squad" && (
+      {id === "padiup" && (
         <>
           <circle cx="16" cy="17" r="6" fill={fill} {...s} />
           <circle cx="32" cy="17" r="6" fill={fill} {...s} />
@@ -52,7 +52,7 @@ export function StageGlyph({ id, size = 40, ink = INK, fill = "#fff", ...p }: Ic
 /** The stage's DevFest shape: circle, squircle, hexagon, pill. */
 export const STAGE_SHAPE: Record<StageId, string> = {
   socials: "50%",
-  squad: "30%",
+  padiup: "30%",
   quiz: "0",
   partners: "999px",
 };

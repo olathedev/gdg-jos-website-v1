@@ -1,7 +1,7 @@
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from "@/components/quest/icons";
-import { GameAvatar, gameBtn, panel } from "@/components/quest/ui";
+import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { FOLLOWS, PARTNER_GOAL, PARTNER_UNLOCK_PADIS, SQUAD_GOAL, STAGES, type StageId } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
@@ -29,9 +29,12 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const first = me.full_name.trim().split(/\s+/)[0] || "player";
 
   const status = (id: StageId, s: StageState) => {
-    if (s === "locked") return id === "partners" ? `${Math.min(g.counts.padis, PARTNER_UNLOCK_PADIS)}/${PARTNER_UNLOCK_PADIS} padis to unlock` : "Locked";
+    if (s === "locked") {
+      if (id !== "partners") return "Locked";
+      return g.partnersOpen ? `${Math.min(g.counts.padis, PARTNER_UNLOCK_PADIS)}/${PARTNER_UNLOCK_PADIS} padis to unlock` : "Opens later";
+    }
     if (id === "socials") return s === "done" ? "Cleared" : `${g.counts.follows}/${FOLLOWS.length} followed`;
-    if (id === "squad") return s === "done" ? `${g.counts.squad} connected` : `${g.counts.squad}/${SQUAD_GOAL} connected`;
+    if (id === "padiup") return s === "done" ? `${g.counts.squad} connected` : `${g.counts.squad}/${SQUAD_GOAL} connected`;
     if (id === "quiz") {
       if (s === "live") return "A round is LIVE";
       const played = g.rounds.filter((r) => r.played).length;
@@ -114,6 +117,9 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
             );
           })}
         </ol>
+        <Link href="/quest/map" className={`${gameBtn} mt-1 min-h-12`}>
+          {cleared === 0 ? "Start the quest" : cleared === 4 ? "View quest map" : "Continue quest"} <ArrowRight aria-hidden className="size-4" />
+        </Link>
       </nav>
 
       {/* Live round */}
@@ -139,7 +145,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
           className="flex items-center gap-3 rounded-[24px] border border-g-red/40 bg-[#160D0C] p-4 transition-transform active:scale-[0.98]"
         >
           <span aria-hidden className="flex size-11 items-center justify-center rounded-full bg-g-red text-white">
-            <StageGlyph id="squad" size={24} ink="currentColor" fill="transparent" />
+            <StageGlyph id="padiup" size={24} ink="currentColor" fill="transparent" />
           </span>
           <span className="flex flex-1 flex-col">
             <span className="text-[15px] font-bold">
@@ -165,13 +171,13 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
             <span className="text-sm text-white/60">{status(current.id, g.states[current.id])}</span>
           </div>
         </div>
-        {current.id === "squad" ? (
-          <Link href="/quest/scan" className={gameBtn}>
+        {current.id === "padiup" ? (
+          <Link href="/quest/scan" className={gameBtnGhost}>
             <ScanGlyph size={20} /> Scan a player
           </Link>
         ) : (
-          <Link href={`/quest/stage/${current.id}`} className={gameBtn}>
-            {cleared === 4 ? "Keep scoring" : "Continue"} <ArrowRight aria-hidden className="size-4" />
+          <Link href={`/quest/stage/${current.id}`} className={gameBtnGhost}>
+            {cleared === 4 ? "Keep scoring" : `Open ${current.title}`} <ArrowRight aria-hidden className="size-4" />
           </Link>
         )}
       </section>
@@ -186,7 +192,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
         </Link>
         <Link href="/quest/people" className={`${panel} flex items-center gap-3 p-4 transition-transform active:scale-[0.97]`}>
           <span aria-hidden className="flex size-10 items-center justify-center rounded-full bg-[#1E1E1E] text-white">
-            <StageGlyph id="squad" size={22} ink="currentColor" fill="transparent" />
+            <StageGlyph id="padiup" size={22} ink="currentColor" fill="transparent" />
           </span>
           <span className="text-sm font-bold">Find people</span>
         </Link>

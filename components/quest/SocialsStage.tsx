@@ -67,8 +67,8 @@ export default function SocialsStage({ followed }: { followed: string[] }) {
             <Check className="size-6" strokeWidth={3.5} />
           </span>
           <span className="type-heading text-xl font-bold">Stage cleared!</span>
-          <span className="text-sm text-white/70">Squad Up is unlocked. Time to meet people.</span>
-          <Link href="/quest/stage/squad" className={gameBtn}>
+          <span className="text-sm text-white/70">Padi Up is unlocked. Time to meet people.</span>
+          <Link href="/quest/stage/padiup" className={gameBtn}>
             Go to Stage 2
           </Link>
         </div>

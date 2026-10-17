@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PodiumGlyph, ScanGlyph, StageGlyph } from "./icons";
 
-const PeopleGlyph = ({ size = 22 }: { size?: number }) => <StageGlyph id="squad" size={size} ink="currentColor" fill="transparent" />;
+const PeopleGlyph = ({ size = 22 }: { size?: number }) => <StageGlyph id="padiup" size={size} ink="currentColor" fill="transparent" />;
 
 function PadiGlyph({ size = 22 }: { size?: number }) {
   return (
@@ -23,7 +23,7 @@ function HomeGlyph({ size = 22 }: { size?: number }) {
 }
 
 const tabs = [
-  { href: "/quest/home", label: "Home", Icon: HomeGlyph, also: ["/quest/stage", "/quest/quiz"] },
+  { href: "/quest/home", label: "Home", Icon: HomeGlyph, also: ["/quest/map", "/quest/stage", "/quest/quiz"] },
   { href: "/quest/people", label: "People", Icon: PeopleGlyph, also: [] as string[] },
   { href: "/quest/scan", label: "Scan", Icon: ScanGlyph, also: [] as string[] },
   { href: "/quest/crew", label: "Padis", Icon: PadiGlyph, also: [] as string[] },

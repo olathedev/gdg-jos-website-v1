@@ -18,7 +18,7 @@ import { agentByToken, GameError, type Profile } from "./game";
 import { award, invalidateBoard } from "./points";
 import { displayName } from "./validate";
 
-// The 4-stage game. Socials and Squad Up are always open; Brain Blitz and Partners unlock once
+// The 4-stage game. Socials and Padi Up are always open; Brain Blitz and Partners unlock once
 // you've connected with SQUAD_GOAL people. Brain Blitz runs in rounds organisers open.
 
 export type StageState = "locked" | "open" | "live" | "done";
@@ -34,7 +34,7 @@ export type RoundInfo = {
 export async function gameState(userId: string) {
   const sql = db();
   const [[n], rounds] = await Promise.all([
-    sql<{ follows: number; squad: number; padis: number; partners: number }[]>`
+    sql<{ follows: number; squad: number; padis: number; partners: number; open: boolean }[]>`
       select
         (select count(*)::int from quest_social_claims
           where user_id = ${userId} and platform = any(${FOLLOWS.map((f) => f.id)})) as follows,
@@ -42,7 +42,8 @@ export async function gameState(userId: string) {
         (select count(*)::int from quest_connections
           where (user_a = ${userId} or user_b = ${userId}) and status = 'accepted') as padis,
         (select count(*)::int from quest_station_scans x join quest_stations s on s.id = x.station_id
-          where x.user_id = ${userId} and s.kind = 'booth') as partners`,
+          where x.user_id = ${userId} and s.kind = 'booth') as partners,
+        exists (select 1 from quest_meta where key = 'partners_open' and value = '1') as open`,
     sql<{ round: number; opened: boolean; closed: boolean; started: boolean; finished: boolean; score: number }[]>`
       select r.round,
              (r.opened_at is not null and r.opened_at <= now()) as opened,
@@ -72,18 +73,19 @@ export async function gameState(userId: string) {
   const states: Record<StageId, StageState> = {
     socials: socialsDone ? "done" : "open",
     // Scanning people is never locked: it's the heart of the event.
-    squad: squadDone ? "done" : "open",
+    padiup: squadDone ? "done" : "open",
     quiz: !squadDone ? "locked" : liveUnplayed ? "live" : quizDone ? "done" : "open",
     // Partners waits for real connections: PARTNER_UNLOCK_PADIS accepted padis.
-    partners: partnersDone ? "done" : n.padis < PARTNER_UNLOCK_PADIS ? "locked" : "open",
+    partners: partnersDone ? "done" : !n.open || n.padis < PARTNER_UNLOCK_PADIS ? "locked" : "open",
   };
-  const order: StageId[] = ["socials", "squad", "quiz", "partners"];
+  const order: StageId[] = ["socials", "padiup", "quiz", "partners"];
   const current = order.find((id) => states[id] === "live") ?? order.find((id) => states[id] === "open") ?? "partners";
 
   return {
     states,
     current,
     counts: { follows: n.follows, squad: n.squad, padis: n.padis, partners: n.partners },
+    partnersOpen: n.open,
     rounds: roundInfo,
   };
 }
@@ -93,15 +95,17 @@ export async function requireStage(userId: string, stage: StageId) {
   if (s.states[stage] === "locked") {
     throw new GameError(
       stage === "partners"
-        ? `Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up.`
-        : "Connect with your squad first to unlock this stage.",
+        ? s.partnersOpen
+          ? `Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up.`
+          : "Partner Link-up isn't open yet. Organisers will announce it."
+        : "Scan 3 people in Padi Up first to unlock this stage.",
       "locked",
     );
   }
   return s;
 }
 
-/* ---------- Squad Up ---------- */
+/* ---------- Padi Up ---------- */
 
 /** Everyone you've connected with by scanning, newest first. */
 export async function squadList(userId: string) {

@@ -24,8 +24,8 @@ export function StageHeader({
   const st = stageOf(id);
   return (
     <header className="flex flex-col items-center gap-3 pt-2 text-center">
-      <Link href="/quest/home" className="flex min-h-11 items-center gap-1.5 self-start text-sm font-bold text-white/60 hover:text-white">
-        <ArrowLeft aria-hidden className="size-4" /> Home
+      <Link href="/quest/map" className="flex min-h-11 items-center gap-1.5 self-start text-sm font-bold text-white/60 hover:text-white">
+        <ArrowLeft aria-hidden className="size-4" /> Quest map
       </Link>
       <span aria-hidden className="quest-pop">
         <StageBadge id={id} color={st.color} size={80} />
@@ -66,8 +66,8 @@ export function LockedStage({ id, message }: { id: StageId; message: string }) {
       <span className="text-[11px] font-bold tracking-[0.2em] text-white/40">STAGE {st.num} · LOCKED</span>
       <h1 className="type-heading text-2xl font-bold">{st.title}</h1>
       <p className="max-w-xs text-sm text-white/65">{message}</p>
-      <Link href="/quest/home" className={`${gameBtn} mt-2`}>
-        Back home
+      <Link href="/quest/map" className={`${gameBtn} mt-2`}>
+        Back to the quest map
       </Link>
     </div>
   );

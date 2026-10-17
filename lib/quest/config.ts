@@ -15,7 +15,7 @@ export const POINTS = {
   community: 15,
   xPost: 5,
   checkin: 20,
-  /** Squad Up: each person you connect with by scanning (both of you). */
+  /** Padi Up: each person you connect with by scanning (both of you). */
   meet: 20,
   room: 5,
   /** Partners: each partner stand you scan. */
@@ -30,7 +30,7 @@ export const POINTS = {
 /** The four stages, in unlock order. */
 export const STAGES = [
   { id: "socials", num: 1, title: "Follow the Signal", short: "Socials", blurb: "Follow GDG Jos on every platform.", color: "#4285F4" },
-  { id: "squad", num: 2, title: "Squad Up", short: "Squad", blurb: "Meet people and scan their QR. You both score.", color: "#EA4335" },
+  { id: "padiup", num: 2, title: "Padi Up", short: "Padi Up", blurb: "Meet people and scan their QR. You both score.", color: "#EA4335" },
   { id: "quiz", num: 3, title: "Brain Blitz", short: "Quiz", blurb: "10 questions. 60 seconds. 3 rounds.", color: "#F9AB00" },
   { id: "partners", num: 4, title: "Partner Link-up", short: "Partners", blurb: "Visit 3 partner stands and scan their code.", color: "#34A853" },
 ] as const;

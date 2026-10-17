@@ -27,7 +27,7 @@ export default async function Profile() {
   const stats = [
     { label: "Score", value: score },
     { label: "Rank", value: rank ? `#${rank}` : "–" },
-    { label: "Squad", value: g.counts.squad },
+    { label: "Padis", value: g.counts.padis },
   ];
 
   return (

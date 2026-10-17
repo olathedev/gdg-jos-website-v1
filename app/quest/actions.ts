@@ -119,7 +119,7 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     throw e;
   }
   revalidatePath("/quest", "layout");
-  if (!me.onboarded_at || !me.avatar) redirect("/quest/home?welcome=1");
+  if (!me.onboarded_at || !me.avatar) redirect("/quest/map?welcome=1");
   redirect("/quest/profile");
 }
 

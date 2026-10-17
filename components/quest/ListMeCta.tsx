@@ -15,7 +15,7 @@ export default function ListMeCta({ adult }: { adult: boolean }) {
     <section className="flex flex-col gap-3 rounded-[24px] border border-h-yellow/40 bg-[#17140A] p-4" aria-labelledby="listme-h">
       <div className="flex items-center gap-3">
         <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-h-yellow text-[#0A0A0A]">
-          <StageGlyph id="squad" size={24} ink="currentColor" fill="transparent" />
+          <StageGlyph id="padiup" size={24} ink="currentColor" fill="transparent" />
         </span>
         <div className="flex flex-col">
           <h2 id="listme-h" className="text-[15px] font-bold">

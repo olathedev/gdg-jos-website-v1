@@ -2,10 +2,19 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AdminChrome } from "@/components/admin/Chrome";
 import QRCode from "qrcode";
-import { AddPartner, AddQuestion, CommunityImport, RemovePartner, RemoveQuestion, ReviewButton, RoundButton } from "@/components/admin/QuestForms";
+import {
+  AddPartner,
+  AddQuestion,
+  CommunityImport,
+  PartnersSwitch,
+  RemovePartner,
+  RemoveQuestion,
+  ReviewButton,
+  RoundButton,
+} from "@/components/admin/QuestForms";
 import { adminSiteUrl } from "@/lib/admin/site";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
-import { listPartners, listReports, listRoundQuestions, listRounds, questStats } from "@/lib/quest/admin";
+import { listPartners, listReports, listRoundQuestions, listRounds, partnersOpen, questStats } from "@/lib/quest/admin";
 import { supabaseAuthEnabled } from "@/lib/quest/session";
 import { phase } from "@/lib/quest/time";
 
@@ -29,13 +38,14 @@ export default async function QuestAdminPage() {
   const base = `/${adminPath()}`;
   const me = await currentAdmin();
   if (!me) redirect(base);
-  const [stats, reports, rounds, partnerRows, site, questions] = await Promise.all([
+  const [stats, reports, rounds, partnerRows, site, questions, partnersLive] = await Promise.all([
     questStats(),
     listReports(),
     listRounds(),
     listPartners(),
     adminSiteUrl(),
     listRoundQuestions(),
+    partnersOpen(),
   ]);
   const partners = await Promise.all(
     partnerRows.map(async (p) => {
@@ -135,8 +145,11 @@ export default async function QuestAdminPage() {
 
         <Section
           title="Partners"
-          sub="Stage 4. Add each partner, then print their QR and give it to the people at their stand. Players scan it after asking about the partner. Remove only works before anyone has scanned."
+          sub="Stage 4. Add each partner, then print their QR and give it to the people at their stand. Players scan it after asking about the partner. The stage stays closed for everyone until you open it here; after that each player still needs 3 padis. Remove only works before anyone has scanned."
         >
+          <div className="mb-5">
+            <PartnersSwitch open={partnersLive} />
+          </div>
           <div className="flex flex-wrap items-start justify-between gap-4">
             <AddPartner />
             {partners.length > 0 && (

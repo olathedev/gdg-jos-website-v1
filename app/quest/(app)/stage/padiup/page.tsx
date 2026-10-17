@@ -6,7 +6,7 @@ import { requireAgent } from "@/lib/quest/auth";
 import { POINTS, SQUAD_GOAL } from "@/lib/quest/config";
 import { gameState, squadList } from "@/lib/quest/stages";
 
-export const metadata = { title: "Squad Up" };
+export const metadata = { title: "Padi Up" };
 
 const steps = [
   "Find someone and say hi",
@@ -14,22 +14,22 @@ const steps = [
   "You're connected instantly and you both score",
 ];
 
-export default async function SquadPage() {
+export default async function PadiUpPage() {
   const me = await requireAgent();
   const g = await gameState(me.id);
-  if (g.states.squad === "locked") {
-    return <LockedStage id="squad" message="Squad Up is opening up. Try again in a moment." />;
+  if (g.states.padiup === "locked") {
+    return <LockedStage id="padiup" message="Padi Up is opening up. Try again in a moment." />;
   }
   const squad = await squadList(me.id);
   const done = squad.length >= SQUAD_GOAL;
 
   return (
     <div className="flex flex-col gap-6">
-      <StageHeader id="squad" progress={squad.length} goal={SQUAD_GOAL} done={done}>
+      <StageHeader id="padiup" progress={squad.length} goal={SQUAD_GOAL} done={done}>
         <span className="rounded-full bg-h-yellow px-3 py-1 text-xs font-black text-ink">+{POINTS.meet} each · no limit</span>
       </StageHeader>
 
-      <Steps id="squad" steps={steps} />
+      <Steps id="padiup" steps={steps} />
       <p className="-mt-3 text-center text-xs text-white/50">Each pair scores once, whoever scans whom.</p>
 
       <div className="flex flex-col gap-3">
@@ -41,16 +41,16 @@ export default async function SquadPage() {
         </Link>
       </div>
 
-      <section className="flex flex-col gap-3" aria-labelledby="squad-h">
-        <h2 id="squad-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-white/50">
-          YOUR SQUAD · {squad.length}
+      <section className="flex flex-col gap-3" aria-labelledby="padis-h">
+        <h2 id="padis-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-white/50">
+          YOUR PADIS · {squad.length}
         </h2>
         {squad.length === 0 ? (
           <div className={`${panel} flex flex-col items-center gap-2 px-5 py-8 text-center`}>
             <span aria-hidden className="flex size-12 items-center justify-center rounded-full border-2 border-dashed border-white/20 text-white/40">
-              <StageGlyph id="squad" size={24} ink="currentColor" fill="transparent" />
+              <StageGlyph id="padiup" size={24} ink="currentColor" fill="transparent" />
             </span>
-            <span className="text-sm text-white/60">No one yet. Your first squad member is out there.</span>
+            <span className="text-sm text-white/60">No one yet. Your first padi is out there.</span>
           </div>
         ) : (
           <ul className="grid grid-cols-3 gap-3">

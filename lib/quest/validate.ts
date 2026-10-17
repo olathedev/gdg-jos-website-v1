@@ -67,6 +67,8 @@ export const playerSchema = z.object({
   is_adult: z.boolean(),
   listed: z.boolean(),
   share_whatsapp: z.boolean(),
+}).refine((d) => Boolean(d.github || d.linkedin || d.x_handle || d.instagram || d.whatsapp), {
+  message: "Add at least one social: GitHub, LinkedIn, X, Instagram or WhatsApp.",
 });
 
 export type PlayerInput = z.infer<typeof playerSchema>;

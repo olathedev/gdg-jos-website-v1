@@ -5,7 +5,7 @@ import { GameAvatar, gameBtn } from "@/components/quest/ui";
 import { getMe } from "@/lib/quest/auth";
 import { agentByToken } from "@/lib/quest/game";
 
-export const metadata = { title: "Squad Up", robots: { index: false } };
+export const metadata = { title: "Padi Up", robots: { index: false } };
 
 /** Opened by scanning someone's Quest QR, in the app or with the phone camera. */
 export default async function Meet({ params }: PageProps<"/quest/meet/[token]">) {

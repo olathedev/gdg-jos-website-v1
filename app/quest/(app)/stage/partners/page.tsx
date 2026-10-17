@@ -21,7 +21,11 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
     return (
       <LockedStage
         id="partners"
-        message={`Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up. You have ${g.counts.padis}. Scan people or accept padi requests.`}
+        message={
+          g.partnersOpen
+            ? `Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up. You have ${g.counts.padis}. Scan people or accept padi requests.`
+            : "Partner Link-up isn't open yet. Organisers will announce it, so keep collecting padis."
+        }
       />
     );
   }

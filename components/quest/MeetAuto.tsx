@@ -46,7 +46,7 @@ export default function MeetAuto({ token, avatar }: { token: string; avatar: str
       </div>
       <span className="text-[11px] font-bold tracking-[0.2em] text-[#81C995]">{res.fresh ? "CONNECTED" : "ALREADY CONNECTED"}</span>
       <h1 className="type-heading text-3xl leading-tight font-bold">
-        {res.fresh ? `You and ${res.name} are in each other's squad` : `You and ${res.name} already met`}
+        {res.fresh ? `You and ${res.name} are now padis` : `You and ${res.name} already met`}
       </h1>
       {res.fresh ? (
         <span className="quest-pop rounded-full bg-h-yellow px-4 py-1.5 text-lg font-black text-[#0A0A0A]">+{POINTS.meet} each</span>
@@ -58,8 +58,8 @@ export default function MeetAuto({ token, avatar }: { token: string; avatar: str
         <Link href="/quest/scan" className={gameBtn}>
           Scan the next person
         </Link>
-        <Link href={res.connected ? "/quest/crew" : "/quest/stage/squad"} className={gameBtnGhost}>
-          {res.connected ? "Open my padis" : "See my squad"}
+        <Link href={res.connected ? "/quest/crew" : "/quest/stage/padiup"} className={gameBtnGhost}>
+          {res.connected ? "Open my padis" : "See my padis"}
         </Link>
       </div>
     </div>

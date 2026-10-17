@@ -142,6 +142,12 @@ export default async function Profile() {
         </ul>
       </section>
 
+      {circle && (role === "organiser" || role === "co_organiser") && (
+        <Link href={`/c/${circle.slug}/admin`} className={gameBtnGhost}>
+          Circle admin · {circle.name}
+        </Link>
+      )}
+
       <section className={`${panel} flex flex-col items-center gap-2 p-4`} aria-labelledby="link-h">
         <h2 id="link-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
           YOUR PROFILE LINK

@@ -22,7 +22,7 @@ export const ROLE_INFO: Record<StaffRole, { word: string; label: string; plural:
 export const roleLabel = (r: Role) => (r === "attendee" ? "Attendee" : ROLE_INFO[r].label);
 
 /** Opens circle admin, edits partners and settings, sees circle numbers and the member list. */
-export const isStaff = (r: Role) => r === "organiser" || r === "co_organiser";
+export const isStaff = (r: Role): r is "organiser" | "co_organiser" => r === "organiser" || r === "co_organiser";
 
 /** Organisers and co-organisers earn points but can't win prizes. */
 export const prizeEligible = (r: Role) => !isStaff(r);

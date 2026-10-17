@@ -67,11 +67,12 @@ export type ProfileInput = z.infer<typeof profileSchema>;
 /** The player card. Socials are usernames; the app builds every link itself. */
 export const playerSchema = z.object({
   full_name: profileSchema.shape.full_name,
-  // A preset avatar, or the player's own uploaded photo (checked against their id on the server).
+  // A preset avatar, "none" (initials, e.g. after removing a photo), or the player's own uploaded
+  // photo (checked against their id on the server).
   avatar: z
     .string()
     .max(300)
-    .refine((v) => AVATARS.some((a) => a.id === v) || v.startsWith("https://res.cloudinary.com/"), "Pick an avatar."),
+    .refine((v) => v === "none" || AVATARS.some((a) => a.id === v) || v.startsWith("https://res.cloudinary.com/"), "Pick an avatar."),
   stack: z
     .array(z.string().refine((s) => STACK_LABELS.includes(s)))
     .min(1, "Pick at least one stack.")

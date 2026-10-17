@@ -4,9 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import ActiveDot from "@/components/quest/ActiveDot";
 import PadiButton from "@/components/quest/PadiButton";
 import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
+import RoleControl from "@/components/quest/RoleControl";
 import { GameAvatar, gameBtnGhost, stackStyle } from "@/components/quest/ui";
 import { getMe } from "@/lib/quest/auth";
-import { currentRoles } from "@/lib/quest/circles";
+import { currentRoles, roleOf } from "@/lib/quest/circles";
+import { assignableRoles, isStaff } from "@/lib/quest/roles";
 import { inviteBySlug, profileBySlug, SLUG } from "@/lib/quest/profiles";
 import { serverNow } from "@/lib/quest/time";
 import { hasSocial } from "@/lib/quest/validate";
@@ -41,6 +43,8 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
   if (p === "self") redirect("/quest/profile");
   const { circle, roles } = await currentRoles(p ? [p.id] : []);
   const role = p ? (roles.get(p.id) ?? null) : null;
+  // Organisers and co-organisers can change this person's role from here too (checked again on save).
+  const myRole = circle ? await roleOf(circle.id, me) : "attendee";
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-6 px-4 py-10 text-center">
@@ -67,6 +71,12 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
           <div className="mt-3 w-full">
             <PadiButton id={p.id} initial={p.state} name={p.name} />
           </div>
+          {circle && isStaff(myRole) && (
+            <div className="mt-2 flex w-full flex-col items-center gap-1 border-t border-fg/10 pt-3">
+              <span className="text-[11px] font-bold tracking-[0.2em] text-fg/45">ORGANISER TOOLS</span>
+              <RoleControl slug={circle.slug} userId={p.id} name={p.name} current={role ?? "attendee"} options={assignableRoles(myRole, role ?? "attendee")} />
+            </div>
+          )}
         </section>
       )}
       <Link href="/quest/home" className={gameBtnGhost}>

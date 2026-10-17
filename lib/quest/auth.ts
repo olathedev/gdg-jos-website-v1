@@ -32,9 +32,13 @@ export async function requireAgent() {
   return me;
 }
 
-/** Only for safe in-app redirects after sign-in: game pages and profile links. */
+/** Only for safe in-app redirects after sign-in: game pages, profile links and circle links. */
 export const safeNext = (next: string | null | undefined) =>
-  next && (/^\/quest(\/[A-Za-z0-9/_?=&.-]*)?$/.test(next) || /^\/p\/[a-z0-9-]{3,40}$/.test(next)) && !next.startsWith("//")
+  next &&
+  (/^\/quest(\/[A-Za-z0-9/_?=&.-]*)?$/.test(next) ||
+    /^\/p\/[a-z0-9-]{3,40}$/.test(next) ||
+    /^\/c\/[a-z0-9-]{3,40}(\/admin|\/r\/[A-Za-z0-9_-]{24,64})?$/.test(next)) &&
+  !next.startsWith("//")
     ? next
     : null;
 

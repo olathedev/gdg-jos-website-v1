@@ -3,6 +3,7 @@ import { db } from "@/lib/tickets/db";
 import { FOLLOWS, LIMITS, POINTS } from "./config";
 import { markPadiSeen } from "./celebrate";
 import { award, invalidateBoard } from "./points";
+import type { StaffRole } from "./roles";
 import { randomToken } from "./session";
 import { eventDate, lagosToday, phase } from "./time";
 import { displayName, initials, links, type PlayerInput, type ProfileInput } from "./validate";
@@ -150,6 +151,8 @@ export type Agent = {
   funFact: string | null;
   lastActive: string | null;
   state: ConnState;
+  /** Role in the circle above attendee, added by the page. */
+  role?: StaffRole | null;
 };
 
 function publicSocials(p: Pick<Profile, "github" | "linkedin" | "x_handle" | "instagram">) {
@@ -259,6 +262,7 @@ export type CrewMember = {
   lastActive: string | null;
   contacts: { label: string; href: string }[];
   met: boolean;
+  role?: StaffRole | null;
 };
 
 export async function crew(me: string) {

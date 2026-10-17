@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import ActiveDot from "@/components/quest/ActiveDot";
 import PadiButton from "@/components/quest/PadiButton";
+import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
 import { GameAvatar, gameBtnGhost, stackStyle } from "@/components/quest/ui";
 import { getMe } from "@/lib/quest/auth";
+import { currentRoles } from "@/lib/quest/circles";
 import { inviteBySlug, profileBySlug, SLUG } from "@/lib/quest/profiles";
 import { serverNow } from "@/lib/quest/time";
 import { hasSocial } from "@/lib/quest/validate";
@@ -37,6 +39,8 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
 
   const p = await profileBySlug(slug, me.id);
   if (p === "self") redirect("/quest/profile");
+  const { circle, roles } = await currentRoles(p ? [p.id] : []);
+  const role = p ? (roles.get(p.id) ?? null) : null;
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-6 px-4 py-10 text-center">
@@ -47,8 +51,9 @@ export default async function ProfileLink({ params }: PageProps<"/p/[slug]">) {
         </>
       ) : (
         <section className="flex w-full flex-col items-center gap-3 rounded-[28px] border border-fg/[0.08] bg-surface px-5 pt-8 pb-6">
-          <GameAvatar avatar={p.avatar} initials={p.initials} size={104} />
+          <GameAvatar avatar={p.avatar} initials={p.initials} size={104} ring={roleRing(role)} />
           <h1 className="type-heading text-[28px] leading-tight font-bold">{p.name}</h1>
+          {role && <RoleBadge role={role} circle={circle?.name ?? "DevFest Jos 2026"} large />}
           <ActiveDot at={p.lastActive} now={serverNow()} />
           <ul className="flex flex-wrap justify-center gap-2" aria-label="Stack">
             {p.stack.map((s) => (

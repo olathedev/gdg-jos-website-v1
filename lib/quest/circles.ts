@@ -58,6 +58,16 @@ export async function rolesFor(circleId: string, ids: string[]) {
   return map;
 }
 
+/** Roles in the current circle for people shown in a list. */
+export async function currentRoles(ids: string[]) {
+  const c = await getCircle();
+  return { circle: c, roles: c ? await rolesFor(c.id, ids) : new Map<string, StaffRole>() };
+}
+
+/** Adds each person's role (or null) to a list of people. */
+export const withRoles = <T extends { id: string }>(list: T[], roles: Map<string, StaffRole>) =>
+  list.map((p) => ({ ...p, role: roles.get(p.id) ?? null }));
+
 /** Organisers and co-organisers (they can't win prizes), owners included. */
 export async function staffIds(circleId: string) {
   const owners = ownerEmails();

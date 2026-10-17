@@ -7,6 +7,7 @@ import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
 import Celebration from "./Celebration";
 import { BrandMark } from "./icons";
+import RoleBadge, { roleRing } from "./RoleBadge";
 import { GameAvatar, stackStyle } from "./ui";
 
 const brandId = (label: string) =>
@@ -28,7 +29,17 @@ function Stack({ stack }: { stack: string[] }) {
 const card = "flex flex-col gap-3 rounded-[24px] border border-fg/[0.08] bg-surface p-3.5";
 
 /** Incoming padi requests (accept or decline) and padis with their shared contacts. */
-export default function CrewList({ pending, connected, now }: { pending: CrewMember[]; connected: CrewMember[]; now: number }) {
+export default function CrewList({
+  pending,
+  connected,
+  now,
+  circleName = "DevFest Jos 2026",
+}: {
+  pending: CrewMember[];
+  connected: CrewMember[];
+  now: number;
+  circleName?: string;
+}) {
   const [done, setDone] = useState<Record<string, "accepted" | "declined">>({});
   const [gone, setGone] = useState<Set<string>>(new Set());
   const [, start] = useTransition();
@@ -56,9 +67,12 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
             {requests.map((p) => (
               <li key={p.id} className={card}>
                 <div className="flex items-start gap-3">
-                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} />
+                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} ring={roleRing(p.role)} />
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="truncate text-base font-bold">{p.name}</span>
+                    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="truncate text-base font-bold">{p.name}</span>
+                      {p.role && <RoleBadge role={p.role} circle={circleName} />}
+                    </span>
                     <Stack stack={p.stack} />
                     {p.funFact && <span className="text-[13px] leading-snug text-fg/70">{p.funFact}</span>}
                     <ActiveDot at={p.lastActive} now={now} />
@@ -104,9 +118,12 @@ export default function CrewList({ pending, connected, now }: { pending: CrewMem
             {padis.map((p) => (
               <li key={p.id} className={card}>
                 <div className="flex items-start gap-3">
-                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} />
+                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} ring={roleRing(p.role)} />
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="truncate text-base font-bold">{p.fullName}</span>
+                    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="truncate text-base font-bold">{p.fullName}</span>
+                      {p.role && <RoleBadge role={p.role} circle={circleName} />}
+                    </span>
                     <Stack stack={p.stack} />
                     {p.funFact && <span className="text-[13px] leading-snug text-fg/70">{p.funFact}</span>}
                     {p.met && <span className="text-[11px] font-bold tracking-wider text-live">MET IN PERSON</span>}

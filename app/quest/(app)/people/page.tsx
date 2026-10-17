@@ -1,14 +1,19 @@
 import PeopleList from "@/components/quest/PeopleList";
 import { requireAgent } from "@/lib/quest/auth";
+import { currentRoles, withRoles } from "@/lib/quest/circles";
 import { directory } from "@/lib/quest/game";
 import { serverNow } from "@/lib/quest/time";
 
 export const metadata = { title: "People" };
 
-export default async function People() {
+export default async function People({ searchParams }: PageProps<"/quest/people">) {
   const me = await requireAgent();
-  const people = await directory(me.id);
+  const list = await directory(me.id);
+  const { circle, roles } = await currentRoles(list.map((p) => p.id));
+  const people = withRoles(list, roles);
   const now = serverNow();
+  const r = (await searchParams).role;
+  const initialRole = r === "organisers" || r === "speakers" ? r : null;
 
   return (
     <div className="flex flex-col gap-5 pt-2">
@@ -18,7 +23,7 @@ export default async function People() {
         </h1>
         <p className="text-sm text-fg/60">Everyone playing at DevFest Jos. Send a padi request to swap socials.</p>
       </header>
-      <PeopleList people={people} canConnect now={now} />
+      <PeopleList people={people} canConnect now={now} circleName={circle?.name ?? "DevFest Jos 2026"} initialRole={initialRole} />
     </div>
   );
 }

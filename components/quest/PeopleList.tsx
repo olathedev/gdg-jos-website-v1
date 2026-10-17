@@ -10,12 +10,26 @@ import { isHereNow } from "@/lib/quest/presence";
 import ActiveDot from "./ActiveDot";
 import BlockMenu from "./BlockMenu";
 import Celebration from "./Celebration";
+import RoleBadge, { roleRing } from "./RoleBadge";
 import { GameAvatar, stackStyle } from "./ui";
 
 /** Directory: search by name, filter by stack, one tap to send a padi request. */
-export default function PeopleList({ people, canConnect, now }: { people: Agent[]; canConnect: boolean; now: number }) {
+export default function PeopleList({
+  people,
+  canConnect,
+  now,
+  circleName = "DevFest Jos 2026",
+  initialRole = null,
+}: {
+  people: Agent[];
+  canConnect: boolean;
+  now: number;
+  circleName?: string;
+  initialRole?: "organisers" | "speakers" | null;
+}) {
   const [query, setQuery] = useState("");
   const [stack, setStack] = useState<string | null>(null);
+  const [roleFilter, setRoleFilter] = useState<"organisers" | "speakers" | null>(initialRole);
   const [hereNow, setHereNow] = useState(false);
   const [states, setStates] = useState<Record<string, ConnState>>({});
   const [gone, setGone] = useState<Set<string>>(new Set());
@@ -30,12 +44,21 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
         !gone.has(p.id) &&
         (!q || p.name.toLowerCase().includes(q)) &&
         (!stack || p.stack.includes(stack)) &&
+        (!roleFilter || (roleFilter === "speakers" ? p.role === "speaker" : p.role === "organiser" || p.role === "co_organiser")) &&
         (!hereNow || isHereNow(p.lastActive, now)),
     );
     // Here now: most recently active first.
     return hereNow ? [...list].sort((a, b) => (b.lastActive ?? "").localeCompare(a.lastActive ?? "")) : list;
-  }, [people, query, stack, gone, hereNow, now]);
+  }, [people, query, stack, roleFilter, gone, hereNow, now]);
   const hereCount = useMemo(() => people.filter((p) => isHereNow(p.lastActive, now)).length, [people, now]);
+  const roleChips = useMemo(
+    () =>
+      [
+        { id: "organisers" as const, label: "Organisers", n: people.filter((p) => p.role === "organiser" || p.role === "co_organiser").length },
+        { id: "speakers" as const, label: "Speakers", n: people.filter((p) => p.role === "speaker").length },
+      ].filter((c) => c.n > 0 || c.id === roleFilter),
+    [people, roleFilter],
+  );
 
   const [party, setParty] = useState<string | null>(null);
   const ask = (id: string, current: ConnState, name: string) =>
@@ -88,6 +111,27 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
         />
       </label>
 
+      {roleChips.length > 0 && (
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
+          {roleChips.map((c) => {
+            const on = roleFilter === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setRoleFilter(on ? null : c.id)}
+                className={`flex min-h-10 items-center gap-1.5 rounded-[10px] border px-3.5 text-sm font-bold transition-colors ${
+                  on ? "border-fg bg-fg text-on-fg" : "border-fg/[0.12] bg-surface text-fg/80"
+                }`}
+              >
+                {c.label} · {c.n}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {stacks.length > 0 && (
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1" role="group" aria-label="Filter by stack">
           {[{ label: "All", color: "#fff" }, ...stacks].map((s) => {
@@ -127,9 +171,12 @@ export default function PeopleList({ people, canConnect, now }: { people: Agent[
             return (
               <li key={p.id} className="flex flex-col gap-3 rounded-[24px] border border-fg/[0.08] bg-surface p-3.5">
                 <div className="flex items-start gap-3">
-                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} />
+                  <GameAvatar avatar={p.avatar} initials={p.initials} size={52} ring={roleRing(p.role)} />
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="truncate text-base font-bold">{p.name}</span>
+                    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="truncate text-base font-bold">{p.name}</span>
+                      {p.role && <RoleBadge role={p.role} circle={circleName} />}
+                    </span>
                     <span className="flex flex-wrap gap-1.5">
                       {p.stack.map((s) => (
                         <span key={s} className="flex items-center gap-1 text-xs font-semibold text-fg/60">

@@ -1,4 +1,5 @@
 import JoinGdg from "@/components/quest/JoinGdg";
+import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
 import ShareProfile from "@/components/quest/ShareProfile";
 import ThemeSwitch from "@/components/quest/ThemeSwitch";
 import { adminSiteUrl } from "@/lib/admin/site";
@@ -9,6 +10,7 @@ import { signOutAction } from "@/app/quest/actions";
 import { BrandMark, QrGlyph, Spark, StageBadge } from "@/components/quest/icons";
 import { GameAvatar, gameBtn, gameBtnGhost, panel, stackStyle } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
+import { getCircle, roleOf } from "@/lib/quest/circles";
 import { STAGES } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState } from "@/lib/quest/stages";
@@ -19,7 +21,8 @@ export const metadata = { title: "Profile" };
 
 export default async function Profile() {
   const me = await requireAgent();
-  const [slug, site] = await Promise.all([ensureSlug(me), adminSiteUrl()]);
+  const [slug, site, circle] = await Promise.all([ensureSlug(me), adminSiteUrl(), getCircle()]);
+  const role = circle ? await roleOf(circle.id, me) : "attendee";
   const [{ score }, board, g, [{ joined, invited }]] = await Promise.all([
     myScore(me.id),
     leaderboard(),
@@ -47,8 +50,9 @@ export default async function Profile() {
     <div className="flex flex-col gap-5 pt-2">
       {/* Player card */}
       <section className={`${panel} flex flex-col items-center gap-3 px-5 pt-7 pb-6 text-center`} aria-label="Your player card">
-        <GameAvatar avatar={me.avatar} initials={initials(me.full_name)} size={96} />
+        <GameAvatar avatar={me.avatar} initials={initials(me.full_name)} size={96} ring={roleRing(role === "attendee" ? null : role)} />
         <h1 className="type-heading text-[26px] leading-tight font-bold">{displayName(me.full_name, me.is_adult)}</h1>
+        {role !== "attendee" && circle && <RoleBadge role={role} circle={circle.name} large />}
         <ul className="flex flex-wrap justify-center gap-2" aria-label="Your stack">
           {me.stack.map((s) => {
             const st = stackStyle(s);

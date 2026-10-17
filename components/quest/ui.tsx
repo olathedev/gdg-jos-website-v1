@@ -101,16 +101,23 @@ export function GameAvatar({
   initials = "?",
   size = 48,
   className = "",
+  ring,
 }: {
   avatar: string | null | undefined;
   initials?: string;
   size?: number;
   className?: string;
+  /** Role colour: a 3px ring for organisers, co-organisers and speakers. */
+  ring?: string;
 }) {
   const a = avatarFor(avatar);
   const photo = avatar?.startsWith("https://res.cloudinary.com/") && avatar.includes("/image/upload/") ? avatar : null;
   return (
-    <span aria-hidden className={`inline-flex shrink-0 overflow-hidden rounded-full ${className}`} style={{ width: size, height: size }}>
+    <span
+      aria-hidden
+      className={`inline-flex shrink-0 overflow-hidden rounded-full ${className}`}
+      style={{ width: size, height: size, boxShadow: ring ? `0 0 0 3px ${ring}` : undefined }}
+    >
       {photo ? (
         // Face-centred square crop, in two sizes so Cloudinary keeps few variants.
         // eslint-disable-next-line @next/next/no-img-element -- already resized by Cloudinary

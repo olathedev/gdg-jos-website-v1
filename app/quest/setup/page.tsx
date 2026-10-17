@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { signOutAction } from "@/app/quest/actions";
 import PlayerForm from "@/components/quest/PlayerForm";
+import { cloudinaryEnabled } from "@/lib/cloudinary";
 import { requireMe, safeNext } from "@/lib/quest/auth";
 
 export const metadata = { title: "Your player card", robots: { index: false } };
@@ -33,6 +34,7 @@ export default async function Setup({ searchParams }: PageProps<"/quest/setup">)
       )}
       <PlayerForm
         next={next}
+        canUpload={cloudinaryEnabled() && me.is_adult}
         initial={{
           full_name: me.full_name,
           avatar: me.avatar,

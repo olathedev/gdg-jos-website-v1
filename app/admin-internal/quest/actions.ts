@@ -15,6 +15,7 @@ import {
   unassignRoundQuestion,
   updatePartner,
 } from "@/lib/quest/admin";
+import { cloudinaryEnabled, type SignedUpload, signUpload } from "@/lib/cloudinary";
 import { PARTNER_HANDLE, PARTNER_SOCIALS, type PartnerSocial } from "@/lib/quest/validate";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -107,6 +108,14 @@ export async function updatePartnerAction(_: ActionState, form: FormData): Promi
   await updatePartner(id, { description: description || null, website_url, logo_url, ...handles, sort_order, active: form.get("active") === "on" });
   revalidatePath("/admin-internal/quest");
   return { ok: true, message: "Saved." };
+}
+
+/** A signature to upload one partner's logo to that partner's own slot. Organisers only. */
+export async function partnerLogoUploadAction(id: string): Promise<SignedUpload | { error: string }> {
+  await requireAdmin();
+  if (!uuid.test(id)) return { error: "Invalid partner." };
+  if (!cloudinaryEnabled()) return { error: "Uploads need the Cloudinary keys set on the server." };
+  return signUpload("partners", id);
 }
 
 export async function resetPartnerCodeAction(_: ActionState, form: FormData): Promise<ActionState> {

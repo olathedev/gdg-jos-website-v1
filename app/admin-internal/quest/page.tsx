@@ -15,6 +15,7 @@ import {
   RoundButton,
 } from "@/components/admin/QuestForms";
 import { adminSiteUrl } from "@/lib/admin/site";
+import { cloudinaryEnabled } from "@/lib/cloudinary";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
 import { listPartners, listReports, listRoundQuestions, listRounds, partnersOpen, questStats } from "@/lib/quest/admin";
 import { ROUND_TIME } from "@/lib/quest/config";
@@ -64,6 +65,7 @@ export default async function QuestAdminPage() {
     { label: "X post checks", ok: Boolean(env.X_BEARER_TOKEN), note: "X_BEARER_TOKEN" },
     { label: "Scheduled jobs", ok: (env.CRON_SECRET ?? "").length >= 16, note: "CRON_SECRET" },
     { label: "Hall screen", ok: Boolean(env.QUEST_HALL_KEY), note: "QUEST_HALL_KEY" },
+    { label: "Image uploads (Cloudinary)", ok: cloudinaryEnabled(), note: "CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET" },
   ];
   const figures = [
     { label: "Players", value: stats.players, sub: `${stats.listed} listed in Who's coming` },
@@ -188,7 +190,7 @@ export default async function QuestAdminPage() {
                   </div>
                   <details className="mt-2">
                     <summary className="cursor-pointer text-xs font-medium text-ink">Edit profile</summary>
-                    <EditPartner partner={p} />
+                    <EditPartner partner={p} canUpload={cloudinaryEnabled()} />
                   </details>
                 </li>
               ))}

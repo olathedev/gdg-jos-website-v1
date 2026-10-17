@@ -108,9 +108,21 @@ export function GameAvatar({
   className?: string;
 }) {
   const a = avatarFor(avatar);
+  const photo = avatar?.startsWith("https://res.cloudinary.com/") && avatar.includes("/image/upload/") ? avatar : null;
   return (
     <span aria-hidden className={`inline-flex shrink-0 overflow-hidden rounded-full ${className}`} style={{ width: size, height: size }}>
-      {a ? (
+      {photo ? (
+        // Face-centred square crop, in two sizes so Cloudinary keeps few variants.
+        // eslint-disable-next-line @next/next/no-img-element -- already resized by Cloudinary
+        <img
+          src={photo.replace("/image/upload/", `/image/upload/c_fill,g_face,w_${size <= 48 ? 96 : 256},h_${size <= 48 ? 96 : 256},f_auto,q_auto/`)}
+          alt=""
+          width={size}
+          height={size}
+          loading="lazy"
+          className="size-full bg-surface-3 object-cover"
+        />
+      ) : a ? (
         <AvatarArt spec={a} size={size} />
       ) : (
         <span className="flex size-full items-center justify-center bg-surface-3 font-bold text-fg" style={{ fontSize: size * 0.34 }}>

@@ -10,6 +10,7 @@ import {
   communityImportAction,
   removePartnerAction,
   removeQuestionAction,
+  partnerLogoUploadAction,
   resetPartnerCodeAction,
   reviewReportAction,
   roundAction,
@@ -17,6 +18,7 @@ import {
 } from "@/app/admin-internal/quest/actions";
 import type { AdminPartner } from "@/lib/quest/admin";
 import { PARTNER_SOCIALS } from "@/lib/quest/validate";
+import { UploadError, uploadImage } from "@/lib/upload-image";
 import Icon from "./Icon";
 
 export function CommunityImport() {
@@ -140,9 +142,11 @@ export function RemovePartner({ id }: { id: string }) {
 }
 
 /** Partner profile: what players see on the partner's page. Handles only; the app builds the links. */
-export function EditPartner({ partner }: { partner: AdminPartner }) {
+export function EditPartner({ partner, canUpload }: { partner: AdminPartner; canUpload: boolean }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(updatePartnerAction, null);
   const [description, setDescription] = useState(partner.description ?? "");
+  const [logo, setLogo] = useState(partner.logo_url ?? "");
+  const [upload, setUpload] = useState<{ busy: boolean; message: string }>({ busy: false, message: "" });
   const input =
     "h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm outline-none placeholder:text-zinc-400 hover:border-zinc-300 focus:border-ink/30 focus:ring-4 focus:ring-zinc-100";
   const label = "mb-1 block text-xs font-medium text-zinc-600";
@@ -166,10 +170,38 @@ export function EditPartner({ partner }: { partner: AdminPartner }) {
         <span className={label}>Website</span>
         <input name="website_url" type="url" defaultValue={partner.website_url ?? ""} placeholder="https://…" className={input} />
       </label>
-      <label className="block">
-        <span className={label}>Logo image link</span>
-        <input name="logo_url" type="url" defaultValue={partner.logo_url ?? ""} placeholder="https://…/logo.png" className={input} />
-      </label>
+      <div>
+        <label className="block">
+          <span className={label}>Logo image link</span>
+          <input name="logo_url" type="url" value={logo} onChange={(e) => setLogo(e.target.value)} placeholder="https://…/logo.png" className={input} />
+        </label>
+        {canUpload && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-3">
+            <label className={`cursor-pointer text-xs font-medium text-ink underline ${upload.busy ? "pointer-events-none opacity-60" : ""}`}>
+              {upload.busy ? "Uploading…" : "Upload logo (JPG, PNG, WebP)"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                disabled={upload.busy}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (!file) return;
+                  setUpload({ busy: true, message: "" });
+                  try {
+                    setLogo(await uploadImage(file, () => partnerLogoUploadAction(partner.id), 400));
+                    setUpload({ busy: false, message: "Uploaded. Press Save to use it." });
+                  } catch (err) {
+                    setUpload({ busy: false, message: err instanceof UploadError ? err.message : "Upload failed. Try again." });
+                  }
+                }}
+              />
+            </label>
+            {upload.message && <span className="text-xs text-zinc-500">{upload.message}</span>}
+          </div>
+        )}
+      </div>
       <div className="grid grid-cols-2 gap-2">
         {PARTNER_SOCIALS.map((s) => (
           <label key={s.id} className="block">

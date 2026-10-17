@@ -1,7 +1,9 @@
 "use client";
 
+import { Camera } from "lucide-react";
 import { useActionState, useState } from "react";
-import { savePlayerAction, type Result } from "@/app/quest/actions";
+import { avatarUploadAction, savePlayerAction, type Result } from "@/app/quest/actions";
+import { UploadError, uploadImage } from "@/lib/upload-image";
 import { AVATARS, STACKS } from "@/lib/quest/config";
 import { AvatarArt } from "./icons";
 import { GameAvatar, gameBtn } from "./ui";
@@ -77,7 +79,7 @@ const label = "text-[11px] font-bold tracking-[0.2em] text-fg/50";
 const field =
   "w-full rounded-2xl border border-fg/[0.12] bg-surface px-4 text-base text-fg outline-none placeholder:text-fg/30 focus:border-h-yellow";
 
-export default function PlayerForm({ initial, next }: { initial: Initial; next?: string | null }) {
+export default function PlayerForm({ initial, next, canUpload = false }: { initial: Initial; next?: string | null; canUpload?: boolean }) {
   const [state, action, pending] = useActionState<Result, FormData>(savePlayerAction, null);
   const [avatar, setAvatar] = useState(initial.avatar ?? AVATARS[0].id);
   const [name, setName] = useState(initial.full_name);
@@ -140,6 +142,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
             );
           })}
         </div>
+        {canUpload && <PhotoUpload photo={avatar.startsWith("https://") ? avatar : null} unsaved={avatar !== initial.avatar} onUploaded={setAvatar} />}
         <input type="hidden" name="avatar" value={avatar} />
       </fieldset>
 
@@ -286,5 +289,46 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
         {pending ? "Saving…" : initial.onboarded ? "Save my card" : "Start the quest"}
       </button>
     </form>
+  );
+}
+
+/** Or use a photo: uploaded to the player's own slot, then saved with the card. */
+function PhotoUpload({ photo, unsaved, onUploaded }: { photo: string | null; unsaved: boolean; onUploaded: (url: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <label
+        className={`flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 text-sm font-bold transition-colors focus-within:outline-2 focus-within:outline-h-yellow ${
+          photo ? "border-fg bg-fg/[0.06]" : "border-fg/20 hover:bg-fg/[0.06]"
+        } ${busy ? "pointer-events-none opacity-60" : ""}`}
+      >
+        <Camera aria-hidden className="size-4" />
+        {busy ? "Uploading…" : photo ? "Change photo" : "Or use a photo"}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
+          className="sr-only"
+          disabled={busy}
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = "";
+            if (!file) return;
+            setError("");
+            setBusy(true);
+            try {
+              onUploaded(await uploadImage(file, avatarUploadAction, 640));
+            } catch (err) {
+              setError(err instanceof UploadError ? err.message : "Upload failed. Try again.");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        />
+      </label>
+      <p role="status" className={error ? "text-center text-xs font-bold text-bad" : "text-center text-xs text-fg/50"}>
+        {error || (photo && unsaved ? "Save your card to use this photo." : "A clear photo of your face helps padis find you.")}
+      </p>
+    </div>
   );
 }

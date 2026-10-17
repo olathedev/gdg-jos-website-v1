@@ -18,6 +18,7 @@ import {
   upsertAuthUser,
 } from "@/lib/quest/game";
 import { markAllSeen } from "@/lib/quest/celebrate";
+import { cloudinaryEnabled, isOwnUpload, type SignedUpload, signUpload } from "@/lib/cloudinary";
 import { POINTS } from "@/lib/quest/config";
 import { claimPartnerFollow, claimPartnerVisit } from "@/lib/quest/partners";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
@@ -113,6 +114,10 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     hidden: form.get("hidden") === "on",
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check your details." };
+  // A photo must be this adult player's own upload; otherwise only the preset avatars are allowed.
+  if (parsed.data.avatar.startsWith("https://") && !(me.is_adult && isOwnUpload(parsed.data.avatar, "avatars", me.id))) {
+    return { ok: false, message: "Pick an avatar." };
+  }
   try {
     await savePlayer(me.id, parsed.data);
   } catch (e) {
@@ -244,6 +249,17 @@ export async function xPostAction(_: Result, form: FormData): Promise<Result> {
     const res = await submitXPost(me, post.id, post.handle);
     return `Post counted. +${res.points}`;
   });
+}
+
+/* ---------- profile photo ---------- */
+
+/** A signature to upload this player's photo to their own slot. Adults only. */
+export async function avatarUploadAction(): Promise<SignedUpload | { error: string }> {
+  const me = await getMe();
+  if (!me) return { error: "Sign in to upload a photo." };
+  if (!me.is_adult) return { error: "Photos are for players 18 and over. Pick an avatar instead." };
+  if (!cloudinaryEnabled()) return { error: "Photo uploads aren't available yet." };
+  return signUpload("avatars", me.id);
 }
 
 /* ---------- partners ---------- */

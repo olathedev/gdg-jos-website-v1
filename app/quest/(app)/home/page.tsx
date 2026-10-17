@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { LockGlyph, StageBadge } from "@/components/quest/icons";
 import { requireAgent } from "@/lib/quest/auth";
-import { FOLLOWS, PARTNER_GOAL, SQUAD_GOAL, STAGES, type StageId } from "@/lib/quest/config";
+import { FOLLOWS, PARTNER_GOAL, PARTNER_UNLOCK_PADIS, SQUAD_GOAL, STAGES, type StageId } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState, type StageState } from "@/lib/quest/stages";
 
@@ -29,7 +29,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const liveRound = g.rounds.find((r) => r.status === "live");
 
   const status = (id: StageId, s: StageState) => {
-    if (s === "locked") return "Locked";
+    if (s === "locked") return id === "partners" ? `${Math.min(g.counts.padis, PARTNER_UNLOCK_PADIS)}/${PARTNER_UNLOCK_PADIS} padis to unlock` : "Locked";
     if (id === "socials") return s === "done" ? "Cleared" : `${g.counts.follows}/${FOLLOWS.length} followed`;
     if (id === "squad") return s === "done" ? `${g.counts.squad} connected` : `${g.counts.squad}/${SQUAD_GOAL} connected`;
     if (id === "quiz") {

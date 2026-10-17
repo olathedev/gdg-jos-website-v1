@@ -4,7 +4,7 @@ import { ScanGlyph } from "@/components/quest/icons";
 import { Banner, LockedStage, StageHeader, Steps } from "@/components/quest/Stage";
 import { gameBtn } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
-import { PARTNER_GOAL, POINTS } from "@/lib/quest/config";
+import { PARTNER_GOAL, PARTNER_UNLOCK_PADIS, POINTS } from "@/lib/quest/config";
 import { gameState, partners } from "@/lib/quest/stages";
 
 export const metadata = { title: "Partner Link-up" };
@@ -18,7 +18,12 @@ export default async function PartnersPage({ searchParams }: PageProps<"/quest/s
   const n = typeof sp.n === "string" ? sp.n.slice(0, 60) : undefined;
   const g = await gameState(me.id);
   if (g.states.partners === "locked") {
-    return <LockedStage id="partners" message="Scan 3 people in Squad Up to unlock Partner Link-up." />;
+    return (
+      <LockedStage
+        id="partners"
+        message={`Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up. You have ${g.counts.padis}. Scan people or accept padi requests.`}
+      />
+    );
   }
   const list = await partners(me.id);
   const visited = list.filter((p) => p.visited);

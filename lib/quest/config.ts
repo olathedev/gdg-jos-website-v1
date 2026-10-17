@@ -40,6 +40,8 @@ export type StageId = (typeof STAGES)[number]["id"];
 /** People to connect with before Brain Blitz and Partners unlock. Every one after that still scores. */
 export const SQUAD_GOAL = 3;
 export const PARTNER_GOAL = 3;
+/** Padis (accepted connections) needed before Partner Link-up unlocks. */
+export const PARTNER_UNLOCK_PADIS = 3;
 export const ROUND_SECONDS = 60;
 export const ROUND_QUESTIONS = 10;
 /** Seconds to wait after a wrong guess about someone before trying again. */

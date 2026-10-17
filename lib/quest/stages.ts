@@ -5,6 +5,7 @@ import {
   FOLLOWS,
   LIMITS,
   PARTNER_GOAL,
+  PARTNER_UNLOCK_PADIS,
   POINTS,
   ROUND_QUESTIONS,
   ROUND_SECONDS,
@@ -33,11 +34,13 @@ export type RoundInfo = {
 export async function gameState(userId: string) {
   const sql = db();
   const [[n], rounds] = await Promise.all([
-    sql<{ follows: number; squad: number; partners: number }[]>`
+    sql<{ follows: number; squad: number; padis: number; partners: number }[]>`
       select
         (select count(*)::int from quest_social_claims
           where user_id = ${userId} and platform = any(${FOLLOWS.map((f) => f.id)})) as follows,
         (select count(*)::int from quest_meets where user_a = ${userId} or user_b = ${userId}) as squad,
+        (select count(*)::int from quest_connections
+          where (user_a = ${userId} or user_b = ${userId}) and status = 'accepted') as padis,
         (select count(*)::int from quest_station_scans x join quest_stations s on s.id = x.station_id
           where x.user_id = ${userId} and s.kind = 'booth') as partners`,
     sql<{ round: number; opened: boolean; closed: boolean; started: boolean; finished: boolean; score: number }[]>`
@@ -71,7 +74,8 @@ export async function gameState(userId: string) {
     // Scanning people is never locked: it's the heart of the event.
     squad: squadDone ? "done" : "open",
     quiz: !squadDone ? "locked" : liveUnplayed ? "live" : quizDone ? "done" : "open",
-    partners: !squadDone ? "locked" : partnersDone ? "done" : "open",
+    // Partners waits for real connections: PARTNER_UNLOCK_PADIS accepted padis.
+    partners: partnersDone ? "done" : n.padis < PARTNER_UNLOCK_PADIS ? "locked" : "open",
   };
   const order: StageId[] = ["socials", "squad", "quiz", "partners"];
   const current = order.find((id) => states[id] === "live") ?? order.find((id) => states[id] === "open") ?? "partners";
@@ -79,7 +83,7 @@ export async function gameState(userId: string) {
   return {
     states,
     current,
-    counts: { follows: n.follows, squad: n.squad, partners: n.partners },
+    counts: { follows: n.follows, squad: n.squad, padis: n.padis, partners: n.partners },
     rounds: roundInfo,
   };
 }
@@ -87,7 +91,12 @@ export async function gameState(userId: string) {
 export async function requireStage(userId: string, stage: StageId) {
   const s = await gameState(userId);
   if (s.states[stage] === "locked") {
-    throw new GameError("Connect with your squad first to unlock this stage.", "locked");
+    throw new GameError(
+      stage === "partners"
+        ? `Get ${PARTNER_UNLOCK_PADIS} padis to unlock Partner Link-up.`
+        : "Connect with your squad first to unlock this stage.",
+      "locked",
+    );
   }
   return s;
 }

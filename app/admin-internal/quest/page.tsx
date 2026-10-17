@@ -137,7 +137,19 @@ export default async function QuestAdminPage() {
           title="Partners"
           sub="Stage 4. Add each partner, then print their QR and give it to the people at their stand. Players scan it after asking about the partner. Remove only works before anyone has scanned."
         >
-          <AddPartner />
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <AddPartner />
+            {partners.length > 0 && (
+              <a
+                href={`${base}/quest/print`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center rounded-full border border-zinc-200 bg-white px-5 text-sm font-medium hover:bg-zinc-50"
+              >
+                Print all partner QR codes
+              </a>
+            )}
+          </div>
           {partners.length > 0 && (
             <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {partners.map((p) => (

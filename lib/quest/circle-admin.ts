@@ -91,7 +91,7 @@ export async function members(circle: Circle, f: MemberQuery) {
       from quest_profiles p
       left join quest_circle_roles r on r.circle_id = ${circle.id} and r.user_id = p.id
     )
-    select m.*, count(*) over ()::int as total from m p
+    select p.*, count(*) over ()::int as total from m p
     where (${q === ""} or (p.is_adult and p.full_name ilike ${like}))
       and (${f.role === "all"} or p.role = ${f.role})
       and (${f.complete === "all"} or p.complete = ${f.complete === "yes"})

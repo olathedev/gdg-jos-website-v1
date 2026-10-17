@@ -5,6 +5,7 @@ import { cache } from "react";
 import { touchActive } from "./active";
 import { checkIn, GameError, getProfile } from "./game";
 import { CHECKIN_COOKIE, sessionUserId, unseal } from "./session";
+import { hasSocial } from "./validate";
 import { phase } from "./time";
 
 /** The signed-in attendee, once per request. */
@@ -26,6 +27,8 @@ export async function requireMe() {
 export async function requireAgent() {
   const me = await requireMe();
   if (!me.onboarded_at || !me.avatar) redirect("/quest/setup");
+  // Players from before socials were required add one before they carry on.
+  if (!hasSocial(me)) redirect("/quest/setup?need=social");
   return me;
 }
 

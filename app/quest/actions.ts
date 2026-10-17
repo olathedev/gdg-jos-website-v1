@@ -19,7 +19,7 @@ import {
 } from "@/lib/quest/game";
 import { answerRound, finishRound, startRound } from "@/lib/quest/stages";
 import { createSession, destroySession, devLoginEnabled } from "@/lib/quest/session";
-import { playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
+import { hasSocial, playerSchema, profileSchema, xPostId } from "@/lib/quest/validate";
 import { submitXPost } from "@/lib/quest/x";
 
 export type Result = { ok: boolean; message: string } | null;
@@ -116,8 +116,10 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     throw e;
   }
   revalidatePath("/quest", "layout");
-  if (!me.onboarded_at || !me.avatar) redirect("/quest/home?welcome=1");
-  redirect("/quest/profile");
+  // A scan or link that sent them here to finish their card goes back where it came from.
+  const next = safeNext(String(form.get("next") ?? ""));
+  if (!me.onboarded_at || !me.avatar) redirect(next ?? "/quest/home?welcome=1");
+  redirect(next ?? (hasSocial(me) ? "/quest/profile" : "/quest/home"));
 }
 
 /* ---------- stages ---------- */

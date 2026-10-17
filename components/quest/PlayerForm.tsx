@@ -76,7 +76,7 @@ const label = "text-[11px] font-bold tracking-[0.2em] text-white/50";
 const field =
   "w-full rounded-2xl border border-white/[0.12] bg-[#121212] px-4 text-base text-white outline-none placeholder:text-white/30 focus:border-h-yellow";
 
-export default function PlayerForm({ initial }: { initial: Initial }) {
+export default function PlayerForm({ initial, next }: { initial: Initial; next?: string | null }) {
   const [state, action, pending] = useActionState<Result, FormData>(savePlayerAction, null);
   const [avatar, setAvatar] = useState(initial.avatar ?? AVATARS[0].id);
   const [name, setName] = useState(initial.full_name);
@@ -92,7 +92,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       action={action}
       onSubmit={(e) => {
         const f = e.currentTarget;
-        const any = ["github", "linkedin", "x_handle", "instagram", "whatsapp"].some(
+        const any = ["github", "linkedin", "x_handle", "instagram"].some(
           (n) => (f.elements.namedItem(n) as HTMLInputElement | null)?.value.trim(),
         );
         setSocialError(!any);
@@ -103,6 +103,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
       }}
       className="flex flex-col gap-7"
     >
+      {next && <input type="hidden" name="next" value={next} />}
       {/* Live card preview */}
       <div className="flex flex-col items-center gap-2 text-center">
         <GameAvatar avatar={avatar} size={96} className="quest-float" />
@@ -212,7 +213,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
 
       <fieldset className="flex flex-col gap-3">
         <legend className={`${label} mb-3`}>
-          SOCIALS <span className="text-h-yellow">· ADD AT LEAST ONE</span>
+          SOCIALS <span className="text-h-yellow">· ADD AT LEAST ONE (USERNAME ONLY)</span>
         </legend>
         {SOCIALS.map((f) => (
           <div key={f.id} className="flex h-13 items-center overflow-hidden rounded-2xl border border-white/[0.12] bg-[#121212] focus-within:border-h-yellow">
@@ -249,7 +250,7 @@ export default function PlayerForm({ initial }: { initial: Initial }) {
         </div>
         {socialError && (
           <p role="alert" className="text-sm font-bold text-[#F8D8D8]">
-            Add at least one social so your padis can find you.
+            Add at least one of GitHub, LinkedIn, X or Instagram so your padis can find you.
           </p>
         )}
         <p className="text-xs leading-relaxed text-white/50">

@@ -4,6 +4,7 @@ import MeetAuto from "@/components/quest/MeetAuto";
 import { GameAvatar, gameBtn } from "@/components/quest/ui";
 import { getMe } from "@/lib/quest/auth";
 import { agentByToken } from "@/lib/quest/game";
+import { hasSocial } from "@/lib/quest/validate";
 
 export const metadata = { title: "Padi Up", robots: { index: false } };
 
@@ -14,6 +15,7 @@ export default async function Meet({ params }: PageProps<"/quest/meet/[token]">)
   const me = await getMe();
   if (!me) redirect(`/quest?next=${encodeURIComponent(`/quest/meet/${token}`)}`);
   if (!me.onboarded_at || !me.avatar) redirect("/quest/setup");
+  if (!hasSocial(me)) redirect(`/quest/setup?need=social&next=${encodeURIComponent(`/quest/meet/${token}`)}`);
 
   const other = await agentByToken(token);
   if (!other) notFound();

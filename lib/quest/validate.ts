@@ -11,6 +11,22 @@ const optional = (re: RegExp, msg: string) =>
     .refine((v) => v === "" || re.test(v), msg)
     .transform((v) => v || null);
 
+/**
+ * A social username for the player card: letters, digits, dot, dash, underscore, 1 to 50.
+ * A leading @ is dropped, and a pasted profile link on the right site is cut down to the
+ * username. Only the username is stored; links are always built by the app.
+ */
+const USERNAME = /^[A-Za-z0-9._-]{1,50}$/;
+function username(site: string, label: string, altSite?: string) {
+  const strip = new RegExp(`^(?:https?://)?(?:www\\.|m\\.)?(?:${[site, altSite].filter(Boolean).map((s) => s!.replace(/[.\/]/g, (c) => `\\${c}`)).join("|")})`, "i");
+  return z
+    .string()
+    .trim()
+    .transform((v) => v.replace(strip, "").replace(/[/?#].*$/, "").replace(/^@/, ""))
+    .refine((v) => v === "" || USERNAME.test(v), `${label}: use your username only (letters, numbers, . _ -).`)
+    .transform((v) => v || null);
+}
+
 export const handles = {
   github: optional(/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/, "GitHub usernames use letters, digits and dashes."),
   linkedin: optional(/^[A-Za-z0-9_-]{3,100}$/, "LinkedIn usernames use letters, digits, dashes and underscores."),
@@ -62,12 +78,19 @@ export const playerSchema = z.object({
     .max(90, "Keep your fun fact under 90 characters.")
     .refine((v) => !/[<>{}\\]/.test(v) && !/https?:|www\./i.test(v), "No links in your fun fact.")
     .transform((v) => v || null),
-  ...handles,
+  github: username("github.com/", "GitHub"),
+  linkedin: username("linkedin.com/in/", "LinkedIn"),
+  x_handle: username("x.com/", "X", "twitter.com/"),
+  instagram: username("instagram.com/", "Instagram"),
   whatsapp: profileSchema.shape.whatsapp,
   share_whatsapp: z.boolean(),
-}).refine((d) => Boolean(d.github || d.linkedin || d.x_handle || d.instagram || d.whatsapp), {
-  message: "Add at least one social: GitHub, LinkedIn, X, Instagram or WhatsApp.",
+}).refine((d) => Boolean(d.github || d.linkedin || d.x_handle || d.instagram), {
+  message: "Add at least one social: GitHub, LinkedIn, X or Instagram.",
 });
+
+/** Every player needs one of these before they can play. */
+export const hasSocial = (p: { github: string | null; linkedin: string | null; x_handle: string | null; instagram: string | null }) =>
+  Boolean(p.github || p.linkedin || p.x_handle || p.instagram);
 
 export type PlayerInput = z.infer<typeof playerSchema>;
 

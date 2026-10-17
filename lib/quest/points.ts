@@ -1,7 +1,9 @@
 import "server-only";
 import type postgres from "postgres";
+import { ownerEmails } from "@/lib/admin/auth";
 import { db } from "@/lib/tickets/db";
 import { PRE_EVENT_CAP } from "./config";
+import { CURRENT_CIRCLE } from "./roles";
 import { phase } from "./time";
 import { displayName, initials } from "./validate";
 
@@ -34,6 +36,8 @@ const BOARD_TTL = 30_000;
 /**
  * Everyone with points, ranked. Before event day each score is capped; ties go to whoever
  * reached the score first. Cached for 30 seconds so 500 phones read one result.
+ * Organisers and co-organisers (and ADMIN_USERS owners) keep their points but aren't ranked:
+ * they can't win prizes.
  */
 export async function leaderboard(): Promise<Board> {
   const p = phase();
@@ -63,6 +67,10 @@ export async function leaderboard(): Promise<Board> {
     join r on r.user_id = s.user_id
     join quest_profiles p on p.id = s.user_id
     where s.score > 0
+      and lower(p.email) <> all(${ownerEmails()})
+      and not exists (
+        select 1 from quest_circle_roles cr join quest_circles cc on cc.id = cr.circle_id
+        where cc.slug = ${CURRENT_CIRCLE} and cr.user_id = p.id and cr.role in ('organiser', 'co_organiser'))
     order by s.score desc, r.reached asc`;
 
   const list: BoardRow[] = rows.map((r, i) => ({
@@ -82,11 +90,11 @@ export async function leaderboard(): Promise<Board> {
 /**
  * Drop the cached board so new points show up sooner. At most once every 5 seconds per
  * server: during a quiz round hundreds of answers a minute would otherwise rebuild it on
- * every request. Players' own scores (myScore) are always live.
+ * every request. Players' own scores (myScore) are always live. `now` skips the wait (role changes).
  */
-export const invalidateBoard = () => {
+export const invalidateBoard = (now = false) => {
   const hit = cache.questBoard;
-  if (hit && Date.now() - hit.at > 5_000) cache.questBoard = undefined;
+  if (hit && (now || Date.now() - hit.at > 5_000)) cache.questBoard = undefined;
 };
 
 /** A player's live score (uncached) and their total including points held over the cap. */

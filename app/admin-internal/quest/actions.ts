@@ -16,7 +16,7 @@ import {
   updatePartner,
 } from "@/lib/quest/admin";
 import { cloudinaryEnabled, type SignedUpload, signUpload } from "@/lib/cloudinary";
-import { PARTNER_HANDLE, PARTNER_SOCIALS, type PartnerSocial } from "@/lib/quest/validate";
+import { parsePartnerFull } from "@/lib/quest/partner-input";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const uuid = /^[0-9a-f-]{36}$/i;
@@ -75,37 +75,14 @@ export async function removePartnerAction(_: ActionState, form: FormData): Promi
   return ok ? { ok: true, message: "Removed." } : { ok: false, message: "Players already scanned this partner, so it stays." };
 }
 
-/** https links only: a website or a logo image. */
-function httpsUrl(raw: string) {
-  if (!raw) return null;
-  try {
-    const u = new URL(raw);
-    return u.protocol === "https:" && u.hostname.includes(".") ? u.toString() : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
 export async function updatePartnerAction(_: ActionState, form: FormData): Promise<ActionState> {
   await requireAdmin();
-  const get = (k: string) => String(form.get(k) ?? "").trim();
-  const id = get("id");
+  const id = String(form.get("id") ?? "");
   if (!uuid.test(id)) return { ok: false, message: "Invalid partner." };
-  const description = get("description").replace(/\r\n/g, "\n");
-  if (description.length > 280) return { ok: false, message: "Keep the description to 280 characters." };
-  const website_url = httpsUrl(get("website_url"));
-  if (website_url === undefined) return { ok: false, message: "The website must be a full https:// link." };
-  const logo_url = httpsUrl(get("logo_url"));
-  if (logo_url === undefined) return { ok: false, message: "The logo must be a full https:// image link." };
-  const handles = {} as Record<PartnerSocial, string | null>;
-  for (const s of PARTNER_SOCIALS) {
-    const h = get(s.id).replace(/^@/, "");
-    if (h && !PARTNER_HANDLE.test(h)) return { ok: false, message: `${s.name}: enter the handle only, e.g. gdgjos (letters, digits, . _ -).` };
-    handles[s.id] = h || null;
-  }
-  const sort_order = Number.parseInt(get("sort_order") || "0", 10);
-  if (!Number.isInteger(sort_order) || Math.abs(sort_order) > 9999) return { ok: false, message: "Order must be a whole number." };
-  await updatePartner(id, { description: description || null, website_url, logo_url, ...handles, sort_order, active: form.get("active") === "on" });
+  const parsed = parsePartnerFull(form, { withName: false });
+  if (!parsed.ok) return parsed;
+  const { name: _name, ...details } = parsed.data;
+  await updatePartner(id, details);
   revalidatePath("/admin-internal/quest");
   return { ok: true, message: "Saved." };
 }

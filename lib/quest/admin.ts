@@ -147,7 +147,8 @@ export async function updatePartner(id: string, d: PartnerDetails) {
     update quest_stations set
       description = ${d.description}, website_url = ${d.website_url}, logo_url = ${d.logo_url},
       x = ${d.x}, instagram = ${d.instagram}, linkedin = ${d.linkedin}, facebook = ${d.facebook},
-      github = ${d.github}, youtube = ${d.youtube}, sort_order = ${d.sort_order}, active = ${d.active}
+      github = ${d.github}, youtube = ${d.youtube}, sort_order = ${d.sort_order}, active = ${d.active},
+      updated_by = null, updated_at = now()
     where id = ${id} and kind = 'booth'`;
 }
 

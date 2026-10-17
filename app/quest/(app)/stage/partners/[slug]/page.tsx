@@ -6,7 +6,10 @@ import { Banner } from "@/components/quest/Stage";
 import { gameBtnGhost, panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { POINTS } from "@/lib/quest/config";
+import { getCircle, roleOf } from "@/lib/quest/circles";
+import { isPartnerManager } from "@/lib/quest/partner-admin";
 import { partnerProfile } from "@/lib/quest/partners";
+import { isStaff } from "@/lib/quest/roles";
 
 export const metadata = { title: "Partner" };
 
@@ -16,6 +19,8 @@ export default async function PartnerPage({ params, searchParams }: PageProps<"/
   if (!/^[a-z0-9-]{1,80}$/.test(slug)) notFound();
   const p = await partnerProfile(me.id, slug);
   if (!p) notFound();
+  const circle = await getCircle();
+  const canEdit = (circle && isStaff(await roleOf(circle.id, me))) || (await isPartnerManager(me.id, p.id));
   const r = (await searchParams).r;
 
   return (
@@ -28,9 +33,16 @@ export default async function PartnerPage({ params, searchParams }: PageProps<"/
       {r === "again" && <Banner tone="info">You&apos;ve already scanned this booth.</Banner>}
       <VisitTimer stationId={p.id} name={p.name} done={p.visited} />
 
-      <Link href="/quest/stage/partners" className="flex min-h-11 items-center gap-1.5 self-start text-sm font-bold text-fg/60 hover:text-fg">
-        <ArrowLeft aria-hidden className="size-4" /> All partners
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link href="/quest/stage/partners" className="flex min-h-11 items-center gap-1.5 text-sm font-bold text-fg/60 hover:text-fg">
+          <ArrowLeft aria-hidden className="size-4" /> All partners
+        </Link>
+        {canEdit && (
+          <Link href={`/quest/stage/partners/${p.slug}/edit`} className="flex min-h-11 items-center rounded-full border border-fg/20 px-4 text-sm font-bold hover:bg-fg/[0.06]">
+            Edit our profile
+          </Link>
+        )}
+      </div>
 
       <section className={`${panel} flex flex-col items-center gap-3 px-5 pt-7 pb-6 text-center`} aria-labelledby="partner-h">
         <PartnerLogo name={p.name} url={p.logo_url} size={88} />

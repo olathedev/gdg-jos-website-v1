@@ -5,15 +5,19 @@ import { notFound, redirect } from "next/navigation";
 import RemovePhotoButton from "@/components/quest/RemovePhotoButton";
 import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
 import { CreateInvite, RevokeInvite } from "@/components/quest/InviteLinks";
+import { AddPartner, PartnerEditor } from "@/components/quest/PartnerEditor";
+import { PartnerLogo } from "@/components/quest/PartnerProfile";
 import RoleControl from "@/components/quest/RoleControl";
 import ShareProfile from "@/components/quest/ShareProfile";
 import { GameAvatar, panel } from "@/components/quest/ui";
 import { isOwnerEmail } from "@/lib/admin/auth";
 import { adminSiteUrl } from "@/lib/admin/site";
+import { cloudinaryEnabled } from "@/lib/cloudinary";
 import { getMe } from "@/lib/quest/auth";
 import { circleStats, type MemberQuery, members, PAGE_SIZE, roleHistory } from "@/lib/quest/circle-admin";
 import { type Circle, getCircle, isPlatformAdmin, roleOf } from "@/lib/quest/circles";
 import { listRoleInvites } from "@/lib/quest/invites";
+import { editablePartners } from "@/lib/quest/partner-admin";
 import { assignableRoles, inviteRoles, isStaff, ROLES, roleLabel, type Role } from "@/lib/quest/roles";
 import { db } from "@/lib/tickets/db";
 
@@ -23,6 +27,7 @@ const TABS = [
   { id: "overview", label: "Overview" },
   { id: "people", label: "People" },
   { id: "invites", label: "Invite links" },
+  { id: "partners", label: "Partners" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
@@ -84,6 +89,7 @@ export default async function CircleAdmin({ params, searchParams }: PageProps<"/
       {tab === "overview" && <Overview circle={circle} platform={await isPlatformAdmin(me)} />}
       {tab === "people" && <People circle={circle} me={me} actorRole={role} sp={sp} here={here} />}
       {tab === "invites" && <Invites circle={circle} actorRole={role} inviteCode={me.invite_code} />}
+      {tab === "partners" && <Partners circle={circle} isOrganiser={role === "organiser"} />}
     </main>
   );
 }
@@ -367,6 +373,48 @@ async function Invites({ circle, actorRole, inviteCode }: { circle: Circle; acto
         )}
         <p className="text-xs text-fg/50">For safety, only a fingerprint of each link is stored, so a link can be copied only when it&apos;s created.</p>
       </section>
+    </div>
+  );
+}
+
+/* ---------- Partners ---------- */
+
+async function Partners({ circle, isOrganiser }: { circle: Circle; isOrganiser: boolean }) {
+  const list = await editablePartners();
+  const canUpload = cloudinaryEnabled();
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-fg/65">
+        Every partner&apos;s public profile. Changes show to players straight away. Booth QR codes already printed keep working unless you reset them.
+      </p>
+      <AddPartner slug={circle.slug} />
+      {list.length === 0 ? (
+        <p className="text-sm text-fg/55">No partners yet.</p>
+      ) : (
+        <ul className="flex flex-col gap-2.5">
+          {list.map((p) => (
+            <li key={p.id} className={panel}>
+              <details>
+                <summary className="flex min-h-16 cursor-pointer list-none items-center gap-3 p-3.5">
+                  <PartnerLogo name={p.name} url={p.logo_url} size={44} />
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate font-bold">
+                      {p.name} {!p.active && <span className="text-xs font-normal text-fg/50">(hidden)</span>}
+                    </span>
+                    <span className="text-xs text-fg/55">
+                      {p.scans} booth scans · {p.managers.length} {p.managers.length === 1 ? "manager" : "managers"}
+                    </span>
+                  </span>
+                  <span className="text-sm font-bold text-hl">Edit</span>
+                </summary>
+                <div className="border-t border-fg/10 p-4">
+                  <PartnerEditor slug={circle.slug} partner={p} scope="full" canUpload={canUpload} isOrganiser={isOrganiser} />
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

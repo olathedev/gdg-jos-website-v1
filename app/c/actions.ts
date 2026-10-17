@@ -4,11 +4,22 @@ import { revalidatePath } from "next/cache";
 import QRCode from "qrcode";
 import { z } from "zod";
 import { adminSiteUrl } from "@/lib/admin/site";
+import { cloudinaryEnabled, type SignedUpload, signUpload } from "@/lib/cloudinary";
 import { getMe } from "@/lib/quest/auth";
 import { removePhoto } from "@/lib/quest/circle-admin";
 import { requireCircle, roleOf, setRole } from "@/lib/quest/circles";
 import { GameError } from "@/lib/quest/game";
 import { createRoleInvite, revokeRoleInvite } from "@/lib/quest/invites";
+import {
+  addManager,
+  addPartnerByName,
+  isPartnerManager,
+  removeManager,
+  resetBoothCode,
+  updatePartnerFull,
+  updatePartnerPublic,
+} from "@/lib/quest/partner-admin";
+import { parsePartnerFull, parsePartnerPublic } from "@/lib/quest/partner-input";
 import { isStaff, ROLES, roleLabel, type Role, type StaffRole } from "@/lib/quest/roles";
 import { displayName } from "@/lib/quest/validate";
 import { db } from "@/lib/tickets/db";
@@ -92,4 +103,78 @@ export async function revokeInviteAction(slug: string, id: string): Promise<Admi
     await revokeRoleInvite(circle, role, uuid.parse(id));
     return "Link revoked. It stops working straight away.";
   });
+}
+
+/* ---------- partners ---------- */
+
+/** Staff edit every field of any partner; a partner's managers only its public profile. */
+async function partnerScope(slug: string, stationId: string) {
+  const ctx = await context(slug, false);
+  if (isStaff(ctx.role)) return { ...ctx, scope: "full" as const };
+  if (await isPartnerManager(ctx.me.id, stationId)) return { ...ctx, scope: "public" as const };
+  throw new GameError("You're not allowed to edit this partner.");
+}
+
+export async function savePartnerAction(slug: string, stationId: string, _: AdminResult, form: FormData): Promise<AdminResult> {
+  return run(slug, async () => {
+    const id = uuid.parse(stationId);
+    const { me, scope } = await partnerScope(slug, id);
+    if (scope === "full") {
+      const parsed = parsePartnerFull(form);
+      if (!parsed.ok) throw new GameError(parsed.message);
+      await updatePartnerFull(id, parsed.data, me.id);
+    } else {
+      const parsed = parsePartnerPublic(form);
+      if (!parsed.ok) throw new GameError(parsed.message);
+      await updatePartnerPublic(id, parsed.data, me.id);
+    }
+    return "Saved. Players see the change now.";
+  });
+}
+
+export async function addPartnerAction(slug: string, _: AdminResult, form: FormData): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { me } = await context(slug);
+    const name = String(form.get("name") ?? "").trim();
+    if (name.length < 2 || name.length > 60) throw new GameError("Enter the partner's name (2 to 60 characters).");
+    await addPartnerByName(name, me.id);
+    return `Added ${name}. Fill in their profile below.`;
+  });
+}
+
+export async function resetBoothAction(slug: string, stationId: string): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { me } = await context(slug);
+    await resetBoothCode(uuid.parse(stationId), me.id);
+    return "New booth QR issued. Print it again; the old one no longer works.";
+  });
+}
+
+export async function addManagerAction(slug: string, stationId: string, _: AdminResult, form: FormData): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { me, role } = await context(slug);
+    if (role !== "organiser") throw new GameError("Only organisers can add partner managers.");
+    const name = await addManager(uuid.parse(stationId), String(form.get("email") ?? ""), me.id);
+    return `${name} can now edit this partner's profile.`;
+  });
+}
+
+export async function removeManagerAction(slug: string, stationId: string, userId: string): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { role } = await context(slug);
+    if (role !== "organiser") throw new GameError("Only organisers can remove partner managers.");
+    await removeManager(uuid.parse(stationId), uuid.parse(userId));
+    return "Manager removed.";
+  });
+}
+
+/** Logo upload signature for staff, or for this partner's managers. */
+export async function partnerLogoSignAction(slug: string, stationId: string): Promise<SignedUpload | { error: string }> {
+  try {
+    await partnerScope(slug, uuid.parse(stationId));
+    if (!cloudinaryEnabled()) return { error: "Uploads aren't set up on the server yet." };
+    return signUpload("partners", stationId);
+  } catch (e) {
+    return { error: e instanceof GameError ? e.message : "Not allowed." };
+  }
 }

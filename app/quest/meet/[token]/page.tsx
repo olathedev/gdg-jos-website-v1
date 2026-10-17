@@ -26,7 +26,7 @@ export default async function Meet({ params }: PageProps<"/quest/meet/[token]">)
           <h1 className="type-heading text-2xl font-bold">That&apos;s you!</h1>
           <p className="max-w-xs text-sm text-white/65">Show your QR to other players so they can scan it.</p>
           <Link href="/quest/home" className={gameBtn}>
-            Back to the map
+            Back home
           </Link>
         </div>
       ) : (

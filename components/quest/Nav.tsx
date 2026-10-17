@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapGlyph, PodiumGlyph, ScanGlyph, StageGlyph } from "./icons";
+import { PodiumGlyph, ScanGlyph, StageGlyph } from "./icons";
 
 const PeopleGlyph = ({ size = 22 }: { size?: number }) => <StageGlyph id="squad" size={size} ink="currentColor" fill="transparent" />;
 
@@ -14,15 +14,23 @@ function PadiGlyph({ size = 22 }: { size?: number }) {
   );
 }
 
+function HomeGlyph({ size = 22 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3.5 10.5 12 3.5l8.5 7V19a1.5 1.5 0 0 1-1.5 1.5h-4v-6h-6v6H5A1.5 1.5 0 0 1 3.5 19v-8.5Z" />
+    </svg>
+  );
+}
+
 const tabs = [
-  { href: "/quest/home", label: "Map", Icon: MapGlyph, also: ["/quest/stage", "/quest/quiz"] },
+  { href: "/quest/home", label: "Home", Icon: HomeGlyph, also: ["/quest/stage", "/quest/quiz"] },
   { href: "/quest/people", label: "People", Icon: PeopleGlyph, also: [] as string[] },
   { href: "/quest/scan", label: "Scan", Icon: ScanGlyph, also: [] as string[] },
   { href: "/quest/crew", label: "Padis", Icon: PadiGlyph, also: [] as string[] },
   { href: "/quest/board", label: "Board", Icon: PodiumGlyph, also: [] as string[] },
 ];
 
-/** Floating capsule: Map, People, Scan (the white disc), Padis and Board. */
+/** Floating capsule: Home, People, Scan (the white disc), Padis and Board. */
 export default function Nav({ pending = 0 }: { pending?: number }) {
   const path = usePathname();
   return (

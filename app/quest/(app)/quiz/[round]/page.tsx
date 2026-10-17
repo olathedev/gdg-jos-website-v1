@@ -40,7 +40,7 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
             See round leaderboard
           </Link>
           <Link href="/quest/home" className={gameBtnGhost}>
-            Back to the map
+            Back home
           </Link>
         </div>
       </div>

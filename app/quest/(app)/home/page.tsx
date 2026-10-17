@@ -4,7 +4,16 @@ import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from
 import JoinGdg from "@/components/quest/JoinGdg";
 import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
-import { FOLLOWS, PARTNER_GOAL, PARTNER_UNLOCK_PADIS, SQUAD_GOAL, STAGES, type StageId } from "@/lib/quest/config";
+import {
+  FOLLOWS,
+  PARTNER_GOAL,
+  PARTNER_UNLOCK_PADIS,
+  ROUND_QUESTIONS,
+  ROUND_TIME,
+  SQUAD_GOAL,
+  STAGES,
+  type StageId,
+} from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState, type StageState } from "@/lib/quest/stages";
 import { db } from "@/lib/tickets/db";
@@ -133,7 +142,7 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
           <span className="flex flex-1 flex-col">
             <span className="text-[11px] font-black tracking-[0.15em] text-alert">LIVE NOW</span>
             <span className="text-[15px] font-bold">Brain Blitz · Round {liveRound.round}</span>
-            <span className="text-xs text-fg/60">10 questions, 60 seconds. One shot.</span>
+            <span className="text-xs text-fg/60">{ROUND_QUESTIONS} questions, {ROUND_TIME}. One shot.</span>
           </span>
           <ArrowRight aria-hidden className="size-5 text-hl" />
         </Link>

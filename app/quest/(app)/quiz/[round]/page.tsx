@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LockGlyph, RankBadge, StageBadge } from "@/components/quest/icons";
+import AutoRefresh from "@/components/quest/AutoRefresh";
+import RoundBoard from "@/components/quest/RoundBoard";
 import RoundPlayer from "@/components/quest/RoundPlayer";
 import { LockedStage } from "@/components/quest/Stage";
 import { gameBtn, gameBtnGhost } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { POINTS, ROUND_QUESTIONS } from "@/lib/quest/config";
-import { roundView } from "@/lib/quest/stages";
+import { roundBoard, roundView } from "@/lib/quest/stages";
 
 export const metadata = { title: "Brain Blitz" };
 
@@ -19,6 +21,9 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
   if (view.kind === "locked") return <LockedStage id="quiz" message="Scan 3 people in Padi Up to unlock Brain Blitz." />;
 
   if (view.kind === "ready" || view.kind === "playing") return <RoundPlayer round={round} initial={view} />;
+
+  // Once you've played, or the round has closed, the page carries that round's top 10.
+  const top = view.kind === "result" || view.kind === "closed" ? await roundBoard(round) : [];
 
   if (view.kind === "result") {
     return (
@@ -35,9 +40,14 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
           +{view.score * POINTS.roundAnswer} points · {view.seconds}s
           {view.rank ? ` · #${view.rank} this round` : ""}
         </span>
+        {/* Keeps the board moving while others are still playing this round. */}
+        {view.live && <AutoRefresh seconds={20} />}
+        <div className="mt-2 w-full max-w-md">
+          <RoundBoard round={round} rows={top} meId={me.id} />
+        </div>
         <div className="mt-2 flex w-full max-w-xs flex-col gap-3">
           <Link href="/quest/stage/quiz" className={gameBtn}>
-            See round leaderboard
+            Back to Brain Blitz
           </Link>
           <Link href="/quest/home" className={gameBtnGhost}>
             Back home
@@ -59,6 +69,11 @@ export default async function RoundPage({ params }: PageProps<"/quest/quiz/[roun
       <p className="max-w-xs text-sm text-fg/65">
         {view.kind === "soon" ? "Organisers open each round live. Keep an eye on the screens." : "This round has ended."}
       </p>
+      {view.kind === "closed" && (
+        <div className="mt-2 w-full max-w-md">
+          <RoundBoard round={round} rows={top} meId={me.id} closed />
+        </div>
+      )}
       <Link href="/quest/stage/quiz" className={gameBtn}>
         Back to Brain Blitz
       </Link>

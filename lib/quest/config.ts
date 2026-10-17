@@ -27,11 +27,17 @@ export const POINTS = {
   roundAnswer: 10,
 } as const;
 
+/** Brain Blitz: each player's clock, from the moment they tap Start. */
+export const ROUND_SECONDS = 120;
+export const ROUND_QUESTIONS = 10;
+/** ROUND_SECONDS for people to read, e.g. "2 min". */
+export const ROUND_TIME = ROUND_SECONDS % 60 ? `${ROUND_SECONDS}s` : `${ROUND_SECONDS / 60} min`;
+
 /** The four stages, in unlock order. */
 export const STAGES = [
   { id: "socials", num: 1, title: "Follow the Signal", short: "Socials", blurb: "Follow GDG Jos on every platform.", color: "#4285F4" },
   { id: "padiup", num: 2, title: "Padi Up", short: "Padi Up", blurb: "Meet people and scan their QR. You both score.", color: "#EA4335" },
-  { id: "quiz", num: 3, title: "Brain Blitz", short: "Quiz", blurb: "10 questions. 60 seconds. 3 rounds.", color: "#F9AB00" },
+  { id: "quiz", num: 3, title: "Brain Blitz", short: "Quiz", blurb: `${ROUND_QUESTIONS} questions. ${ROUND_TIME}. 3 rounds.`, color: "#F9AB00" },
   { id: "partners", num: 4, title: "Partner Link-up", short: "Partners", blurb: "Visit 3 partner stands and scan their code.", color: "#34A853" },
 ] as const;
 
@@ -42,8 +48,6 @@ export const SQUAD_GOAL = 3;
 export const PARTNER_GOAL = 3;
 /** Padis (accepted connections) needed before Partner Link-up unlocks. */
 export const PARTNER_UNLOCK_PADIS = 3;
-export const ROUND_SECONDS = 60;
-export const ROUND_QUESTIONS = 10;
 /** Seconds to wait after a wrong guess about someone before trying again. */
 export const SQUAD_RETRY_SECONDS = 30;
 

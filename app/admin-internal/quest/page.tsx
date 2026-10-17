@@ -15,6 +15,7 @@ import {
 import { adminSiteUrl } from "@/lib/admin/site";
 import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
 import { listPartners, listReports, listRoundQuestions, listRounds, partnersOpen, questStats } from "@/lib/quest/admin";
+import { ROUND_TIME } from "@/lib/quest/config";
 import { supabaseAuthEnabled } from "@/lib/quest/session";
 import { phase } from "@/lib/quest/time";
 
@@ -90,7 +91,7 @@ export default async function QuestAdminPage() {
       <div className="mt-10 space-y-14">
         <Section
           title="Brain Blitz rounds"
-          sub="Stage 3. Open a round when you announce it; players get 60 seconds from the moment they tap Start, one attempt each. Close it when you're done to freeze the round leaderboard."
+          sub={`Stage 3. Open a round when you announce it; players get ${ROUND_TIME} from the moment they tap Start, one attempt each. Close it when you're done: no new starts, and anyone mid-round has up to ${ROUND_TIME} to finish before the leaderboard is final.`}
         >
           <ul className="divide-y divide-zinc-100 rounded-2xl border border-zinc-200/80">
             {rounds.map((r) => {

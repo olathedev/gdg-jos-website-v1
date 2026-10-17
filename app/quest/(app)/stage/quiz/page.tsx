@@ -1,10 +1,11 @@
 import Link from "next/link";
 import AutoRefresh from "@/components/quest/AutoRefresh";
-import { LockGlyph, RankBadge } from "@/components/quest/icons";
+import { LockGlyph } from "@/components/quest/icons";
+import RoundBoard from "@/components/quest/RoundBoard";
 import { LockedStage, StageHeader } from "@/components/quest/Stage";
-import { GameAvatar, panel } from "@/components/quest/ui";
+import { panel } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
-import { POINTS, ROUND_QUESTIONS, ROUND_SECONDS } from "@/lib/quest/config";
+import { POINTS, ROUND_QUESTIONS, ROUND_TIME } from "@/lib/quest/config";
 import { gameState, roundBoard } from "@/lib/quest/stages";
 
 export const metadata = { title: "Brain Blitz" };
@@ -26,7 +27,7 @@ export default async function QuizStage() {
       <AutoRefresh seconds={20} />
       <StageHeader id="quiz" progress={played} goal={3} done={g.states.quiz === "done"}>
         <span className="rounded-full bg-h-yellow px-3 py-1 text-xs font-black text-ink">
-          {ROUND_QUESTIONS} questions · {ROUND_SECONDS}s · +{POINTS.roundAnswer} per right answer
+          {ROUND_QUESTIONS} questions · {ROUND_TIME} · +{POINTS.roundAnswer} per right answer
         </span>
       </StageHeader>
 
@@ -54,7 +55,7 @@ export default async function QuizStage() {
                       ? "Open now. One shot only."
                       : r.status === "soon"
                         ? "Opens soon. Watch the screens."
-                        : "Closed"}
+                        : "Closed. See the top 10"}
                 </span>
               </span>
               {live && !r.finished && (
@@ -66,7 +67,7 @@ export default async function QuizStage() {
           const cls = `${panel} flex items-center gap-4 p-4 ${live && !r.finished ? "border-h-yellow/50" : ""}`;
           return (
             <li key={r.round}>
-              {live || (r.played && !r.finished) || r.finished ? (
+              {r.status !== "soon" ? (
                 <Link href={`/quest/quiz/${r.round}`} className={`${cls} transition-transform active:scale-[0.98]`}>
                   {body}
                 </Link>
@@ -78,28 +79,7 @@ export default async function QuizStage() {
         })}
       </ul>
 
-      {shown && (
-        <section className="flex flex-col gap-3" aria-labelledby="rb-h">
-          <h2 id="rb-h" className="text-center text-[11px] font-bold tracking-[0.2em] text-fg/50">
-            ROUND {shown.round} · TOP 10
-          </h2>
-          {top.length === 0 ? (
-            <p className={`${panel} px-5 py-6 text-center text-sm text-fg/60`}>No scores yet. Be first.</p>
-          ) : (
-            <ol className={`${panel} flex flex-col divide-y divide-fg/5 px-3`}>
-              {top.map((r) => (
-                <li key={r.id} className={`flex items-center gap-3 py-2.5 ${r.id === me.id ? "text-hl" : ""}`}>
-                  <RankBadge rank={r.rank} size={26} />
-                  <GameAvatar avatar={r.avatar} size={32} />
-                  <span className="flex-1 truncate text-sm font-bold">{r.name}</span>
-                  <span className="text-xs text-fg/50 tabular-nums">{r.seconds}s</span>
-                  <span className="w-10 text-right text-sm font-black tabular-nums">{r.score}/{ROUND_QUESTIONS}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-      )}
+      {shown && <RoundBoard round={shown.round} rows={top} meId={me.id} closed={shown.status === "closed"} />}
     </div>
   );
 }

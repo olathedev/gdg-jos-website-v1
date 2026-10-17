@@ -151,9 +151,9 @@ export type RoundView =
       answered: number;
       score: number;
     }
-  | { kind: "result"; score: number; total: number; rank: number | null; seconds: number };
+  | { kind: "result"; score: number; total: number; rank: number | null; seconds: number; live: boolean };
 
-async function result(userId: string, round: number, total: number): Promise<RoundView> {
+async function result(userId: string, round: number, total: number, live: boolean): Promise<RoundView> {
   const [r] = await db()<{ score: number; seconds: number; rank: number }[]>`
     with t as (
       select user_id, score,
@@ -163,7 +163,7 @@ async function result(userId: string, round: number, total: number): Promise<Rou
     select score, round(secs)::int as seconds,
            (select count(*)::int + 1 from t o where o.score > t.score or (o.score = t.score and o.secs < t.secs)) as rank
     from t where user_id = ${userId}`;
-  return { kind: "result", score: r?.score ?? 0, total, rank: r?.rank ?? null, seconds: Math.min(r?.seconds ?? ROUND_SECONDS, ROUND_SECONDS) };
+  return { kind: "result", score: r?.score ?? 0, total, rank: r?.rank ?? null, seconds: Math.min(r?.seconds ?? ROUND_SECONDS, ROUND_SECONDS), live };
 }
 
 export async function roundView(userId: string, round: number): Promise<RoundView> {
@@ -175,7 +175,7 @@ export async function roundView(userId: string, round: number): Promise<RoundVie
     const [play] = await db()<Play[]>`select started_at, finished_at, score from quest_round_plays where user_id = ${userId} and round = ${round}`;
     const items = await roundItems(userId, round);
     if (play.finished_at || Date.now() > deadline(play) || items.every((i) => i.answered !== null)) {
-      return result(userId, round, items.length);
+      return result(userId, round, items.length, info.status === "live");
     }
     return {
       kind: "playing",

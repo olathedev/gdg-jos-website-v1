@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { answerRoundAction, finishRoundAction, startRoundAction } from "@/app/quest/actions";
-import { ROUND_QUESTIONS, ROUND_SECONDS } from "@/lib/quest/config";
+import { ROUND_QUESTIONS, ROUND_SECONDS, ROUND_TIME } from "@/lib/quest/config";
 import type { RoundView } from "@/lib/quest/stages";
 import { StageBadge } from "./icons";
 import { gameBtn } from "./ui";
@@ -50,7 +50,7 @@ export default function RoundPlayer({ round, initial }: { round: number; initial
         <span className="text-[11px] font-bold tracking-[0.2em] text-hl">ROUND {round}</span>
         <h1 className="type-heading text-3xl font-bold">Ready?</h1>
         <ul className="flex flex-col gap-1.5 text-sm text-fg/70">
-          <li>{ROUND_QUESTIONS} questions, {ROUND_SECONDS} seconds on the clock</li>
+          <li>{ROUND_QUESTIONS} questions, {ROUND_TIME} on the clock</li>
           <li>The clock starts the moment you tap Start</li>
           <li>One shot only. Ties go to the faster finish</li>
         </ul>

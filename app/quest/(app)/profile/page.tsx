@@ -20,11 +20,13 @@ export const metadata = { title: "Profile" };
 export default async function Profile() {
   const me = await requireAgent();
   const [slug, site] = await Promise.all([ensureSlug(me), adminSiteUrl()]);
-  const [{ score }, board, g, [{ joined }]] = await Promise.all([
+  const [{ score }, board, g, [{ joined, invited }]] = await Promise.all([
     myScore(me.id),
     leaderboard(),
     gameState(me.id),
-    db()<{ joined: boolean }[]>`select exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined`,
+    db()<{ joined: boolean; invited: number }[]>`
+      select exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined,
+             (select count(*)::int from quest_profiles where invited_by = ${me.id} and onboarded_at is not null) as invited`,
   ]);
   const rank = board.byId.get(me.id)?.rank;
   const socials = [
@@ -140,6 +142,9 @@ export default async function Profile() {
         <h2 id="link-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/45">
           YOUR PROFILE LINK
         </h2>
+        <p className="text-center text-xs text-fg/60">
+          Share it to invite padis.{invited > 0 && ` ${invited} ${invited === 1 ? "has" : "have"} joined from your invites.`}
+        </p>
         <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
       </section>
 

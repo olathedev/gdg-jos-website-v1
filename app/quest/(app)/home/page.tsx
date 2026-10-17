@@ -3,7 +3,9 @@ import Link from "next/link";
 import { LockGlyph, QrGlyph, RankBadge, ScanGlyph, StageBadge, StageGlyph } from "@/components/quest/icons";
 import JoinGdg, { JoinWhatsApp } from "@/components/quest/JoinGdg";
 import { GameAvatar, gameBtn, gameBtnGhost, panel } from "@/components/quest/ui";
+import ShareProfile from "@/components/quest/ShareProfile";
 import XPost from "@/components/quest/XPost";
+import { adminSiteUrl } from "@/lib/admin/site";
 import { requireAgent } from "@/lib/quest/auth";
 import {
   FOLLOWS,
@@ -17,7 +19,9 @@ import {
   type StageId,
 } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
+import { ensureSlug } from "@/lib/quest/profiles";
 import { gameState, type StageState } from "@/lib/quest/stages";
+import { displayName } from "@/lib/quest/validate";
 import { db } from "@/lib/tickets/db";
 
 export const metadata = { title: "Home" };
@@ -25,16 +29,19 @@ export const metadata = { title: "Home" };
 export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const me = await requireAgent();
   const welcome = (await searchParams).welcome === "1";
-  const [{ score }, board, g, [{ pending, posted, joined }]] = await Promise.all([
+  const [{ score }, board, g, [{ pending, posted, joined, invited }], slug, site] = await Promise.all([
     myScore(me.id),
     leaderboard(),
     gameState(me.id),
-    db()<{ pending: number; posted: boolean; joined: boolean }[]>`
+    db()<{ pending: number; posted: boolean; joined: boolean; invited: number }[]>`
       select
         (select count(*)::int from quest_connections
           where (user_a = ${me.id} or user_b = ${me.id}) and status = 'pending' and requester <> ${me.id}) as pending,
         exists (select 1 from quest_x_posts where user_id = ${me.id} and status = 'counted') as posted,
-        exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined`,
+        exists (select 1 from quest_points where user_id = ${me.id} and source_type = 'community') as joined,
+        (select count(*)::int from quest_profiles where invited_by = ${me.id} and onboarded_at is not null) as invited`,
+    ensureSlug(me),
+    adminSiteUrl(),
   ]);
   const rank = board.byId.get(me.id)?.rank;
   const top = board.rows.slice(0, 3);
@@ -195,6 +202,20 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
             {cleared === 4 ? "Keep scoring" : `Open ${current.title}`} <ArrowRight aria-hidden className="size-4" />
           </Link>
         )}
+      </section>
+
+      {/* Invites: your profile link signs friends up as invited by you */}
+      <section className={`${panel} flex flex-col gap-3 p-4`} aria-labelledby="invite-h">
+        <div className="flex flex-col gap-0.5">
+          <h2 id="invite-h" className="text-[15px] font-bold">
+            Bring your padis
+          </h2>
+          <p className="text-xs text-fg/60">
+            Share your link. Friends who join through it land on your profile.
+            {invited > 0 && ` ${invited} ${invited === 1 ? "padi has" : "padis have"} joined from your invites.`}
+          </p>
+        </div>
+        <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
       </section>
 
       {/* Quick actions */}

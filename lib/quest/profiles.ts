@@ -91,3 +91,17 @@ export async function profileBySlug(slug: string, viewerId: string): Promise<Pub
       r.status === "accepted" ? "connected" : r.status === "pending" ? (r.requester === viewerId ? "requested" : "incoming") : "none",
   };
 }
+
+/**
+ * For a signed-out visitor and link previews: the owner's invite code (so signing up through
+ * their link records who invited you) and their first name, or null when the profile is hidden
+ * or the player is under 18. Nothing else about the person leaves the server.
+ */
+export async function inviteBySlug(slug: string) {
+  if (!SLUG.test(slug)) return null;
+  const [r] = await db()<{ full_name: string; is_adult: boolean; hidden: boolean; invite_code: string | null }[]>`
+    select full_name, is_adult, hidden, invite_code from quest_profiles where slug = ${slug} and onboarded_at is not null`;
+  if (!r) return null;
+  const first = r.full_name.trim().split(/\s+/)[0] ?? "";
+  return { firstName: r.hidden || !r.is_adult || !first ? null : first, inviteCode: r.invite_code };
+}

@@ -2,8 +2,11 @@
 
 import { Check, Copy, Share2 } from "lucide-react";
 import { useState } from "react";
+import { BrandMark } from "./icons";
 
-/** Copy link + Share (Web Share API where available, otherwise copy). */
+const TEXT = "Let's be padis at DevFest Jos 2026! Join me on PadiUp:";
+
+/** Copy link, WhatsApp, and Share (Web Share API where available, otherwise copy). The link is also an invite. */
 export default function ShareProfile({ url, name }: { url: string; name: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
@@ -18,7 +21,7 @@ export default function ShareProfile({ url, name }: { url: string; name: string 
   const share = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${name} on PadiUp`, text: "Be my padi at DevFest Jos", url });
+        await navigator.share({ title: `${name} on PadiUp`, text: TEXT, url });
         return;
       } catch (e) {
         if (e instanceof DOMException && e.name === "AbortError") return;
@@ -35,8 +38,12 @@ export default function ShareProfile({ url, name }: { url: string; name: string 
       <div className="flex gap-2">
         <button type="button" onClick={copy} className={btn}>
           {copied ? <Check aria-hidden className="size-4 text-live" /> : <Copy aria-hidden className="size-4" />}
-          {copied ? "Copied" : "Copy link"}
+          {copied ? "Copied" : "Copy"}
         </button>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${TEXT} ${url}`)}`} target="_blank" rel="noopener noreferrer" className={btn}>
+          <BrandMark id="whatsapp" size={16} /> WhatsApp
+          <span className="sr-only">(opens WhatsApp)</span>
+        </a>
         <button type="button" onClick={share} className={btn}>
           <Share2 aria-hidden className="size-4" /> Share
         </button>

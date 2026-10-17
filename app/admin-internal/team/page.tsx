@@ -27,7 +27,7 @@ export default async function TeamPage() {
     <AdminChrome base={base} user={me} active="team">
       <h1 className="text-2xl font-semibold tracking-tight">Team</h1>
       <p className="mt-1 text-sm text-zinc-500">
-        Owners are set in the server config. Volunteers can&apos;t open this dashboard; they&apos;re for the check-in app.
+        Owners are set in the server config. Volunteers can sign in but only see Check-in: no sales, money, mail or team.
       </p>
 
       <div className="mt-8">

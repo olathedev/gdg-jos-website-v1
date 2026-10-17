@@ -39,7 +39,7 @@ export const invitableBy: Record<Role, InvitableRole[]> = {
 /** You can only remove people strictly below you (owners live in env, so they can't be removed here). */
 export const canRemove = (actor: Role, target: Role) => target !== "owner" && rank[actor] > rank[target];
 
-/** Roles that can open the admin dashboard (volunteers are for the future check-in app). */
+/** Roles that can open the admin dashboard. Volunteers only get the Check-in screen. */
 export const dashboardRoles: Role[] = ["owner", "superadmin", "admin"];
 
 export function adminPath() {
@@ -185,6 +185,15 @@ export async function requireAdmin() {
   return u;
 }
 
+/** Anyone on the team, volunteers included: only for the Check-in screen. */
+export const currentStaff = currentUser;
+
+export async function requireStaff() {
+  const u = await currentUser();
+  if (!u) throw new Error("Not authorised");
+  return u;
+}
+
 /* ---------- login + brute-force protection ---------- */
 
 async function clientIp() {
@@ -235,9 +244,9 @@ export async function attemptLogin(emailRaw: string, secretValue: string): Promi
     await new Promise((r) => setTimeout(r, 600));
     return { ok: false, error: "That email and password don't match." };
   }
-  if (!role || !dashboardRoles.includes(role)) {
-    return { ok: false, error: "Volunteer accounts can't open the admin dashboard." };
-  }
+  if (!role) return { ok: false, error: "That email and password don't match." };
+  // Volunteers sign in too; every dashboard page and action still requires an admin role,
+  // so they only reach Check-in.
   await createSession(email);
   return { ok: true };
 }

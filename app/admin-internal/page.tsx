@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Money03Icon, Ticket02Icon, UserCheck01Icon } from "@hugeicons/core-free-icons";
 import { LoginForm } from "@/components/admin/AdminForms";
 import Icon from "@/components/admin/Icon";
 import OrdersView from "@/components/admin/OrdersView";
 import { AdminChrome, TopStrip, Wordmark } from "@/components/admin/Chrome";
-import { adminEnabled, adminPath, currentAdmin } from "@/lib/admin/auth";
+import { adminEnabled, adminPath, currentAdmin, currentStaff } from "@/lib/admin/auth";
 import { getStats, listOrders } from "@/lib/admin/data";
 import { formatNaira } from "@/lib/tickets/tiers";
 
@@ -18,6 +18,7 @@ export default async function AdminPage({ searchParams }: { searchParams: SP }) 
   if (!adminEnabled()) notFound();
   const base = `/${adminPath()}`;
   const admin = await currentAdmin();
+  if (!admin && (await currentStaff())) redirect(`${base}/checkin`);
 
   if (!admin) {
     return (

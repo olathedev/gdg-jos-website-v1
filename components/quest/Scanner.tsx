@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQrCamera } from "./useQrCamera";
 import { gameBtn } from "./ui";
 
 // In-app QR scanner. Uses the browser's BarcodeDetector where it exists (Chrome on Android)
@@ -21,92 +22,26 @@ function questPath(text: string) {
   }
 }
 
-type Detector = { detect: (src: CanvasImageSource) => Promise<{ rawValue: string }[]> };
-
 export default function Scanner() {
   const router = useRouter();
-  const video = useRef<HTMLVideoElement>(null);
-  const [status, setStatus] = useState<Status>("starting");
+  const [found, setFound] = useState(false);
   const [miss, setMiss] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+  const missTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const retry = useCallback(() => {
-    setStatus("starting");
-    setAttempt((a) => a + 1);
-  }, []);
-
-  useEffect(() => {
-    let stream: MediaStream | null = null;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let stopped = false;
-    let missTimer: ReturnType<typeof setTimeout> | undefined;
-
-    async function start() {
-      if (!navigator.mediaDevices?.getUserMedia) return setStatus("nocamera");
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
-      } catch (e) {
-        const name = e instanceof DOMException ? e.name : "";
-        return setStatus(name === "NotAllowedError" || name === "SecurityError" ? "denied" : "nocamera");
-      }
-      if (stopped || !video.current) return stream.getTracks().forEach((t) => t.stop());
-      video.current.srcObject = stream;
-      await video.current.play().catch(() => {});
-      setStatus("scanning");
-
-      const Native = (window as unknown as { BarcodeDetector?: new (o: { formats: string[] }) => Detector }).BarcodeDetector;
-      const detector = Native ? new Native({ formats: ["qr_code"] }) : null;
-      const jsQR = detector ? null : (await import("jsqr")).default;
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
-      const tick = async () => {
-        if (stopped) return;
-        const v = video.current;
-        if (v && v.readyState >= 2 && v.videoWidth) {
-          let text: string | null = null;
-          try {
-            if (detector) {
-              text = (await detector.detect(v))[0]?.rawValue ?? null;
-            } else if (jsQR && ctx) {
-              const scale = Math.min(1, 640 / v.videoWidth);
-              canvas.width = Math.round(v.videoWidth * scale);
-              canvas.height = Math.round(v.videoHeight * scale);
-              ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-              const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-              text = jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" })?.data ?? null;
-            }
-          } catch {
-            text = null;
-          }
-          if (text) {
-            const path = questPath(text);
-            if (path) {
-              stopped = true;
-              stream?.getTracks().forEach((t) => t.stop());
-              navigator.vibrate?.(60);
-              setStatus("found");
-              router.push(path);
-              return;
-            }
-            setMiss(true);
-            clearTimeout(missTimer);
-            missTimer = setTimeout(() => setMiss(false), 2200);
-          }
-        }
-        timer = setTimeout(tick, 160);
-      };
-      void tick();
+  const { video, status: cam, retry } = useQrCamera((text) => {
+    const path = questPath(text);
+    if (path) {
+      navigator.vibrate?.(60);
+      setFound(true);
+      router.push(path);
+      return true;
     }
-
-    void start();
-    return () => {
-      stopped = true;
-      clearTimeout(timer);
-      clearTimeout(missTimer);
-      stream?.getTracks().forEach((t) => t.stop());
-    };
-  }, [router, attempt]);
+    setMiss(true);
+    clearTimeout(missTimer.current);
+    missTimer.current = setTimeout(() => setMiss(false), 2200);
+  });
+  useEffect(() => () => clearTimeout(missTimer.current), []);
+  const status: Status = found ? "found" : cam === "stopped" ? "found" : cam;
 
   const blocked = status === "denied" || status === "nocamera";
 

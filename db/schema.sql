@@ -223,3 +223,6 @@ create table if not exists quest_meta (
   updated_at timestamptz not null default now()
 );
 alter table quest_meta enable row level security;
+
+-- Check-in: who scanned each ticket at the door (admin or volunteer email).
+alter table tickets add column if not exists checked_in_by text;

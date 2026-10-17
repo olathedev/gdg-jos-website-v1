@@ -24,9 +24,10 @@ export function Wordmark() {
 }
 
 /** Page frame for signed-in admin pages: top strip, header with tabs, centred content. */
-export function AdminChrome({ base, user, active, children }: { base: string; user: AdminUser; active: "sales" | "mail" | "quest" | "team"; children: ReactNode }) {
+export function AdminChrome({ base, user, active, children }: { base: string; user: AdminUser; active: "sales" | "checkin" | "mail" | "quest" | "team"; children: ReactNode }) {
   const tabs = [
     { id: "sales", label: "Sales", href: base },
+    { id: "checkin", label: "Check-in", href: `${base}/checkin` },
     { id: "mail", label: "Mail", href: `${base}/mail` },
     { id: "quest", label: "DevFest Quest", href: `${base}/quest` },
     { id: "team", label: "Team", href: `${base}/team` },
@@ -55,7 +56,7 @@ export function AdminChrome({ base, user, active, children }: { base: string; us
           </div>
           <UserMenu email={user.email} role={user.role} />
         </div>
-        <nav aria-label="Admin" className="flex gap-1 px-5 pb-3 sm:hidden">
+        <nav aria-label="Admin" className="flex gap-1 overflow-x-auto px-5 pb-3 sm:hidden">
           {tabs.map((t) => (
             <Link
               key={t.id}

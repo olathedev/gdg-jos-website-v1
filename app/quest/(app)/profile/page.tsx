@@ -76,7 +76,7 @@ export default async function Profile() {
           </ul>
         )}
         <p className="text-xs text-white/45">
-          You&apos;re in People.{" "}
+          {me.hidden ? "You're hidden from People." : "You're in People."}{" "}
           {me.whatsapp && me.share_whatsapp ? "Padis see your WhatsApp." : ""}
         </p>
         <Link href="/quest/setup" className="mt-1 flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-h-yellow hover:bg-white/[0.05]">

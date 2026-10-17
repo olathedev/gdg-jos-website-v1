@@ -17,6 +17,7 @@ type Initial = {
   instagram: string | null;
   whatsapp: string | null;
   share_whatsapp: boolean;
+  hidden: boolean;
   onboarded: boolean;
 };
 
@@ -84,6 +85,7 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
   const [fact, setFact] = useState(initial.fun_fact ?? "");
   const [socialError, setSocialError] = useState(false);
   const [shareWa, setShareWa] = useState(initial.share_whatsapp);
+  const [hidden, setHidden] = useState(initial.hidden);
 
   const toggle = (l: string) => setPicked((cur) => (cur.includes(l) ? cur.filter((x) => x !== l) : cur.length < 3 ? [...cur, l] : cur));
 
@@ -265,6 +267,13 @@ export default function PlayerForm({ initial, next }: { initial: Initial; next?:
           onChange={setShareWa}
           title="Share my WhatsApp with padis"
           hint="Only people you accept or scan see it"
+        />
+        <Toggle
+          name="hidden"
+          checked={hidden}
+          onChange={setHidden}
+          title="Hide me from the directory"
+          hint="You won't show in People. Scanning in person still works."
         />
       </div>
 

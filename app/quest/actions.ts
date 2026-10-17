@@ -107,6 +107,7 @@ export async function savePlayerAction(_: Result, form: FormData): Promise<Resul
     instagram: String(form.get("instagram") ?? ""),
     whatsapp: String(form.get("whatsapp") ?? ""),
     share_whatsapp: form.get("share_whatsapp") === "on",
+    hidden: form.get("hidden") === "on",
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check your details." };
   try {

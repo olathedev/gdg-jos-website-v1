@@ -34,6 +34,7 @@ export type Profile = {
   invite_code: string;
   onboarded_at: Date | null;
   last_active_at?: Date | null;
+  hidden: boolean;
   avatar: string | null;
   fun_fact: string | null;
 };
@@ -45,7 +46,7 @@ const order = (a: string, b: string) => (a < b ? [a, b] : [b, a]);
 export async function getProfile(id: string) {
   const [p] = await db()<Profile[]>`
     select id, email, full_name, stack, github, linkedin, x_handle, instagram, whatsapp,
-           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at, avatar, fun_fact
+           is_adult, listed, share_whatsapp, quest_token, invite_code, onboarded_at, avatar, fun_fact, hidden
     from quest_profiles where id = ${id}`;
   return p ?? null;
 }
@@ -112,6 +113,7 @@ export async function savePlayer(userId: string, input: PlayerInput) {
         whatsapp = ${input.whatsapp},
         is_adult = true,
         listed = true,
+        hidden = ${input.hidden},
         share_whatsapp = ${input.share_whatsapp && Boolean(input.whatsapp)},
         onboarded_at = coalesce(onboarded_at, now())
       where id = ${userId}
@@ -157,7 +159,7 @@ function publicSocials(p: Pick<Profile, "github" | "linkedin" | "x_handle" | "in
   return out;
 }
 
-/** Every player. Socials stay hidden until a padi request is accepted (or you scan each other). */
+/** Every player except those who chose to hide, and anyone blocked either way. Socials stay hidden until a padi request is accepted (or you scan each other). */
 export async function directory(me: string) {
   const sql = db();
   const rows = await sql<(Profile & { status: string | null; requester: string | null })[]>`
@@ -166,7 +168,7 @@ export async function directory(me: string) {
     from quest_profiles p
     left join quest_connections c
       on (c.user_a = least(p.id, ${me}::uuid) and c.user_b = greatest(p.id, ${me}::uuid))
-    where p.id <> ${me} and p.onboarded_at is not null
+    where p.id <> ${me} and p.onboarded_at is not null and not p.hidden
       ${notBlocked(me)}
     order by p.onboarded_at desc
     limit 1000`;
@@ -196,7 +198,7 @@ export async function requestConnection(me: Profile, otherId: string) {
   const sql = db();
   const [other] = await sql`
     select p.id from quest_profiles p
-    where p.id = ${otherId} and p.onboarded_at is not null ${notBlocked(me.id)}`;
+    where p.id = ${otherId} and p.onboarded_at is not null and not p.hidden ${notBlocked(me.id)}`;
   if (!other) throw new GameError("That player isn't available.");
   const [{ n }] = await sql<{ n: number }[]>`
     select count(*)::int as n from quest_connections

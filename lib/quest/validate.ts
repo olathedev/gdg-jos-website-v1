@@ -84,6 +84,7 @@ export const playerSchema = z.object({
   instagram: username("instagram.com/", "Instagram"),
   whatsapp: profileSchema.shape.whatsapp,
   share_whatsapp: z.boolean(),
+  hidden: z.boolean(),
 }).refine((d) => Boolean(d.github || d.linkedin || d.x_handle || d.instagram), {
   message: "Add at least one social: GitHub, LinkedIn, X or Instagram.",
 });

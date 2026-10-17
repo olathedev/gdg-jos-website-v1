@@ -44,6 +44,7 @@ export default async function Setup({ searchParams }: PageProps<"/quest/setup">)
           instagram: me.instagram,
           whatsapp: me.whatsapp,
           share_whatsapp: me.share_whatsapp,
+          hidden: me.hidden,
           onboarded: ready,
         }}
       />

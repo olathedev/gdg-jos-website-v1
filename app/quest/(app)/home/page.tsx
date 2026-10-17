@@ -20,6 +20,7 @@ import {
 } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { ensureSlug } from "@/lib/quest/profiles";
+import { CURRENT_CIRCLE } from "@/lib/quest/roles";
 import { gameState, type StageState } from "@/lib/quest/stages";
 import { displayName } from "@/lib/quest/validate";
 import { db } from "@/lib/tickets/db";
@@ -28,7 +29,9 @@ export const metadata = { title: "Home" };
 
 export default async function Home({ searchParams }: PageProps<"/quest/home">) {
   const me = await requireAgent();
-  const welcome = (await searchParams).welcome === "1";
+  const w = (await searchParams).welcome;
+  const welcome = w === "1";
+  const welcomeCircle = w === "circle";
   const [{ score }, board, g, [{ pending, posted, joined, invited }], slug, site] = await Promise.all([
     myScore(me.id),
     leaderboard(),
@@ -67,6 +70,11 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
 
   return (
     <div className="flex flex-col gap-5 pt-2">
+      {welcomeCircle && (
+        <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-good">
+          Welcome to the DevFest Jos circle! Find your padis.
+        </p>
+      )}
       {welcome && (
         <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-good">
           You&apos;re in! Tap Start the quest to begin.
@@ -216,6 +224,14 @@ export default async function Home({ searchParams }: PageProps<"/quest/home">) {
           </p>
         </div>
         <ShareProfile url={`${site}/p/${slug}`} name={displayName(me.full_name)} />
+        <div className="flex flex-col gap-1 border-t border-fg/10 pt-3">
+          <h3 className="text-sm font-bold">Invite to the DevFest Jos circle</h3>
+          <ShareProfile
+            url={`${site}/c/${CURRENT_CIRCLE}?ref=${me.invite_code}`}
+            name="DevFest Jos 2026"
+            text="Join the DevFest Jos circle on PadiUp and earn points as you connect:"
+          />
+        </div>
       </section>
 
       {/* Quick actions */}

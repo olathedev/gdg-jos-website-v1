@@ -7,7 +7,7 @@ import { BrandMark } from "./icons";
 const TEXT = "Let's be padis at DevFest Jos 2026! Join me on PadiUp:";
 
 /** Copy link, WhatsApp, and Share (Web Share API where available, otherwise copy). The link is also an invite. */
-export default function ShareProfile({ url, name }: { url: string; name: string }) {
+export default function ShareProfile({ url, name, text = TEXT }: { url: string; name: string; text?: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -21,7 +21,7 @@ export default function ShareProfile({ url, name }: { url: string; name: string 
   const share = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${name} on PadiUp`, text: TEXT, url });
+        await navigator.share({ title: `${name} on PadiUp`, text, url });
         return;
       } catch (e) {
         if (e instanceof DOMException && e.name === "AbortError") return;
@@ -40,7 +40,7 @@ export default function ShareProfile({ url, name }: { url: string; name: string 
           {copied ? <Check aria-hidden className="size-4 text-live" /> : <Copy aria-hidden className="size-4" />}
           {copied ? "Copied" : "Copy"}
         </button>
-        <a href={`https://wa.me/?text=${encodeURIComponent(`${TEXT} ${url}`)}`} target="_blank" rel="noopener noreferrer" className={btn}>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`} target="_blank" rel="noopener noreferrer" className={btn}>
           <BrandMark id="whatsapp" size={16} /> WhatsApp
           <span className="sr-only">(opens WhatsApp)</span>
         </a>

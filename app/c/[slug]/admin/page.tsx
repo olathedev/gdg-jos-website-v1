@@ -4,13 +4,17 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import RemovePhotoButton from "@/components/quest/RemovePhotoButton";
 import RoleBadge, { roleRing } from "@/components/quest/RoleBadge";
+import { CreateInvite, RevokeInvite } from "@/components/quest/InviteLinks";
 import RoleControl from "@/components/quest/RoleControl";
+import ShareProfile from "@/components/quest/ShareProfile";
 import { GameAvatar, panel } from "@/components/quest/ui";
 import { isOwnerEmail } from "@/lib/admin/auth";
+import { adminSiteUrl } from "@/lib/admin/site";
 import { getMe } from "@/lib/quest/auth";
 import { circleStats, type MemberQuery, members, PAGE_SIZE, roleHistory } from "@/lib/quest/circle-admin";
 import { type Circle, getCircle, isPlatformAdmin, roleOf } from "@/lib/quest/circles";
-import { assignableRoles, isStaff, ROLES, roleLabel, type Role } from "@/lib/quest/roles";
+import { listRoleInvites } from "@/lib/quest/invites";
+import { assignableRoles, inviteRoles, isStaff, ROLES, roleLabel, type Role } from "@/lib/quest/roles";
 import { db } from "@/lib/tickets/db";
 
 export const metadata: Metadata = { title: "Circle admin" };
@@ -18,6 +22,7 @@ export const metadata: Metadata = { title: "Circle admin" };
 const TABS = [
   { id: "overview", label: "Overview" },
   { id: "people", label: "People" },
+  { id: "invites", label: "Invite links" },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
@@ -78,6 +83,7 @@ export default async function CircleAdmin({ params, searchParams }: PageProps<"/
 
       {tab === "overview" && <Overview circle={circle} platform={await isPlatformAdmin(me)} />}
       {tab === "people" && <People circle={circle} me={me} actorRole={role} sp={sp} here={here} />}
+      {tab === "invites" && <Invites circle={circle} actorRole={role} inviteCode={me.invite_code} />}
     </main>
   );
 }
@@ -303,6 +309,63 @@ async function People({
             ))}
           </ul>
         )}
+      </section>
+    </div>
+  );
+}
+
+/* ---------- Invite links ---------- */
+
+async function Invites({ circle, actorRole, inviteCode }: { circle: Circle; actorRole: Role; inviteCode: string }) {
+  const [links, site] = await Promise.all([listRoleInvites(circle), adminSiteUrl()]);
+  const roles = inviteRoles(actorRole);
+  return (
+    <div className="flex flex-col gap-6">
+      <section className={`${panel} flex flex-col gap-2 p-4`} aria-labelledby="join-h">
+        <h2 id="join-h" className="text-sm font-bold">
+          Circle join link
+        </h2>
+        <p className="text-xs text-fg/60">Anyone can use it to join {circle.name} as an attendee. It carries your invite code.</p>
+        <ShareProfile url={`${site}/c/${circle.slug}?ref=${inviteCode}`} name={circle.name} text={`Join the ${circle.name} circle on PadiUp and earn points as you connect:`} />
+      </section>
+
+      <section className="flex flex-col gap-3" aria-labelledby="new-h">
+        <h2 id="new-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/50">
+          NEW ROLE INVITE LINK
+        </h2>
+        <p className="text-sm text-fg/65">Whoever joins through it gets the role (never lower than what they already have). Speakers can get theirs before they arrive.</p>
+        <CreateInvite slug={circle.slug} circleName={circle.name} roles={roles} />
+      </section>
+
+      <section className="flex flex-col gap-3" aria-labelledby="links-h">
+        <h2 id="links-h" className="text-[11px] font-bold tracking-[0.2em] text-fg/50">
+          ROLE LINKS
+        </h2>
+        {links.length === 0 ? (
+          <p className="text-sm text-fg/55">No role links yet.</p>
+        ) : (
+          <ul className="flex flex-col gap-2.5">
+            {links.map((l) => (
+              <li key={l.id} className={`${panel} flex items-start justify-between gap-3 p-3.5 ${l.active ? "" : "opacity-60"}`}>
+                <div className="flex min-w-0 flex-col gap-1 text-sm">
+                  <span className="flex flex-wrap items-center gap-2">
+                    <RoleBadge role={l.role} circle={circle.name} />
+                    <span className="font-bold tabular-nums">
+                      {l.uses} of {l.maxUses} used
+                    </span>
+                  </span>
+                  {l.note && <span className="text-fg/80">{l.note}</span>}
+                  <span className="text-xs text-fg/55">
+                    {l.status === "revoked" ? "Revoked" : l.status === "used" ? "Used up" : l.status === "expired" ? "Expired" : `Expires ${when.format(new Date(l.expiresAt))}`}
+                    {" · "}by {l.createdBy}, {when.format(new Date(l.createdAt))}
+                  </span>
+                </div>
+                {l.active && roles.includes(l.role) && <RevokeInvite slug={circle.slug} id={l.id} />}
+              </li>
+            ))}
+          </ul>
+        )}
+        <p className="text-xs text-fg/50">For safety, only a fingerprint of each link is stored, so a link can be copied only when it&apos;s created.</p>
       </section>
     </div>
   );

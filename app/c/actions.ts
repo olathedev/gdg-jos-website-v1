@@ -1,12 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import QRCode from "qrcode";
 import { z } from "zod";
+import { adminSiteUrl } from "@/lib/admin/site";
 import { getMe } from "@/lib/quest/auth";
 import { removePhoto } from "@/lib/quest/circle-admin";
 import { requireCircle, roleOf, setRole } from "@/lib/quest/circles";
 import { GameError } from "@/lib/quest/game";
-import { isStaff, ROLES, roleLabel, type Role } from "@/lib/quest/roles";
+import { createRoleInvite, revokeRoleInvite } from "@/lib/quest/invites";
+import { isStaff, ROLES, roleLabel, type Role, type StaffRole } from "@/lib/quest/roles";
 import { displayName } from "@/lib/quest/validate";
 import { db } from "@/lib/tickets/db";
 
@@ -53,5 +56,40 @@ export async function removePhotoAction(slug: string, userId: string): Promise<A
   return run(slug, async () => {
     await context(slug);
     return (await removePhoto(uuid.parse(userId))) ? "Photo removed. They now show their initials." : "They don't have a photo.";
+  });
+}
+
+/* ---------- role invite links ---------- */
+
+export type InviteResult = { ok: boolean; message: string; url?: string; qr?: string } | null;
+
+/** The full link and its QR come back once: only a hash of the token is stored. */
+export async function createInviteAction(slug: string, _: InviteResult, form: FormData): Promise<InviteResult> {
+  try {
+    const { me, circle, role } = await context(slug);
+    const pick = String(form.get("role") ?? "");
+    if (!(["speaker", "co_organiser", "organiser"] as const).includes(pick as StaffRole)) throw new GameError("Pick a role.");
+    const { token } = await createRoleInvite(circle, me, role, {
+      role: pick as StaffRole,
+      maxUses: Number.parseInt(String(form.get("uses") ?? "1"), 10),
+      days: Number.parseInt(String(form.get("days") ?? "7"), 10),
+      note: String(form.get("note") ?? ""),
+    });
+    const url = `${await adminSiteUrl()}/c/${circle.slug}/r/${token}`;
+    const qr = await QRCode.toDataURL(url, { margin: 1, width: 480, errorCorrectionLevel: "M" });
+    revalidatePath(`/c/${slug}/admin`);
+    return { ok: true, message: `${roleLabel(pick as Role)} link created. Copy or share it now: for safety it can't be shown again.`, url, qr };
+  } catch (e) {
+    if (e instanceof GameError) return { ok: false, message: e.message };
+    console.error("[circle-admin]", e);
+    return { ok: false, message: "Something went wrong. Try again." };
+  }
+}
+
+export async function revokeInviteAction(slug: string, id: string): Promise<AdminResult> {
+  return run(slug, async () => {
+    const { circle, role } = await context(slug);
+    await revokeRoleInvite(circle, role, uuid.parse(id));
+    return "Link revoked. It stops working straight away.";
   });
 }

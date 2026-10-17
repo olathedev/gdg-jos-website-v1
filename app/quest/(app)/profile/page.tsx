@@ -11,6 +11,7 @@ import { BrandMark, QrGlyph, Spark, StageBadge } from "@/components/quest/icons"
 import { GameAvatar, gameBtn, gameBtnGhost, panel, stackStyle } from "@/components/quest/ui";
 import { requireAgent } from "@/lib/quest/auth";
 import { getCircle, roleOf } from "@/lib/quest/circles";
+import { roleLabel } from "@/lib/quest/roles";
 import { STAGES } from "@/lib/quest/config";
 import { leaderboard, myScore } from "@/lib/quest/points";
 import { gameState } from "@/lib/quest/stages";
@@ -19,8 +20,9 @@ import { db } from "@/lib/tickets/db";
 
 export const metadata = { title: "Profile" };
 
-export default async function Profile() {
+export default async function Profile({ searchParams }: PageProps<"/quest/profile">) {
   const me = await requireAgent();
+  const granted = (await searchParams).role;
   const [slug, site, circle] = await Promise.all([ensureSlug(me), adminSiteUrl(), getCircle()]);
   const role = circle ? await roleOf(circle.id, me) : "attendee";
   const [{ score }, board, g, [{ joined, invited }]] = await Promise.all([
@@ -48,6 +50,13 @@ export default async function Profile() {
 
   return (
     <div className="flex flex-col gap-5 pt-2">
+      {circle && typeof granted === "string" && (
+        <p role="status" className="quest-pop rounded-full border border-g-green/40 bg-g-green/10 px-4 py-2.5 text-center text-sm font-bold text-good">
+          {granted === "kept" || role === "attendee"
+            ? `You're in ${circle.name}.`
+            : `You're now a${role === "organiser" ? "n" : ""} ${roleLabel(role)} at ${circle.name}`}
+        </p>
+      )}
       {/* Player card */}
       <section className={`${panel} flex flex-col items-center gap-3 px-5 pt-7 pb-6 text-center`} aria-label="Your player card">
         <GameAvatar avatar={me.avatar} initials={initials(me.full_name)} size={96} ring={roleRing(role === "attendee" ? null : role)} />
